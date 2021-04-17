@@ -67,7 +67,7 @@ public abstract class GameAPI {
 	 * Gets a list of all the keys events fired since the last call to resetKeyBuffers() in the order they were pressed.
 	 * @return A LinkedList representing all of the key events
 	 */
-	public LinkedList<KeyEvent> getKeyEvents () {
+	public ArrayList<KeyEvent> getKeyEvents () {
 		return GameLoop.getInputImage ().getKeyEvents ();
 	}
 	
@@ -126,7 +126,7 @@ public abstract class GameAPI {
 	 * Gets a list of all the mosue events fired since the last call to resetKeyBuffers() in the order they were pressed.
 	 * @return A LinkedList representing all of the recent mouse events
 	 */
-	public LinkedList<MouseEvent> getMouseEvents () {
+	public ArrayList<MouseEvent> getMouseEvents () {
 		return GameLoop.getInputImage ().getMouseEvents ();
 	}
 }

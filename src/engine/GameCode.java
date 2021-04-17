@@ -2,6 +2,7 @@ package engine;
 
 import map.Roome;
 import players.Bit;
+import resources.Textbox;
 
 public class GameCode {
 	
@@ -11,7 +12,6 @@ public class GameCode {
 	public static void testBitch () {
 		
 		Roome.generateMap ();
-		
 		Bit bit = new Bit ();
 		bit.declare((1080 * 5) + 540, (720 * 5) + 360);
 	}

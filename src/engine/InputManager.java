@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -46,11 +47,11 @@ public class InputManager {
 	/**
 	 * An ordered list of recent keyEvents
 	 */
-	private LinkedList<KeyEvent> keyEvents = new LinkedList<KeyEvent> ();
+	private ArrayList<KeyEvent> keyEvents = new ArrayList<KeyEvent> ();
 	/**
 	 * An ordered list of recent mouseEvents
 	 */
-	private LinkedList<MouseEvent> mouseEvents = new LinkedList<MouseEvent> ();
+	private ArrayList<MouseEvent> mouseEvents = new ArrayList<MouseEvent> ();
 	/**
 	 * A string of recently typed text
 	 */
@@ -124,13 +125,11 @@ public class InputManager {
 		System.arraycopy (keysDown, 0, image.keysDown, 0, keysDown.length);
 		System.arraycopy (keysPressed, 0, image.keysPressed, 0, keysPressed.length);
 		System.arraycopy (keysReleased, 0, image.keysReleased, 0, keysReleased.length);
-		Iterator<KeyEvent> iter = keyEvents.iterator ();
-		while (iter.hasNext ()) {
-			image.keyEvents.add (iter.next ());
+		for (int i = 0; i < keyEvents.size(); i++) {
+			image.keyEvents.add (keyEvents.get(i));
 		}
-		Iterator<MouseEvent> iter2 = mouseEvents.iterator ();
-		while (iter.hasNext ()) {
-			image.mouseEvents.add (iter2.next ());
+		for (int i = 0; i < mouseEvents.size(); i++) {
+			image.mouseEvents.add (mouseEvents.get(i));
 		}
 		for (int i = 0; i < clicks.length; i ++) {
 			image.clicks [i] = clicks [i];
@@ -306,7 +305,7 @@ public class InputManager {
 	 * Gets a list of all the keyEvents fired since the last call to clearKeyBuffers().
 	 * @return A LinkedList with all of the KeyEvents since the last call to clearKeyBuffers ()
 	 */
-	public LinkedList<KeyEvent> getKeyEvents () {
+	public ArrayList<KeyEvent> getKeyEvents () {
 		return keyEvents;
 	}
 	
@@ -397,7 +396,7 @@ public class InputManager {
 	 * Gets a list of the mouse events fired since the last call to clearMouseBuffers ()
 	 * @return A LinkedList with the mouse events since the last call to clearMouseBuffers ()
 	 */
-	public LinkedList<MouseEvent> getMouseEvents () {
+	public ArrayList<MouseEvent> getMouseEvents () {
 		return mouseEvents;
 	}
 	
@@ -422,7 +421,7 @@ public class InputManager {
 	public void resetKeyBuffers () {
 		keysPressed = new boolean[255];
 		keysReleased = new boolean[255];
-		keyEvents = new LinkedList<KeyEvent> ();
+		keyEvents = new ArrayList<KeyEvent> ();
 		chars = "";
 	}
 	
@@ -432,7 +431,7 @@ public class InputManager {
 	public void resetMouseBuffers () {
 		clicks = new boolean[3];
 		buttonsReleased = new boolean[3];
-		mouseEvents = new LinkedList<MouseEvent> ();
+		mouseEvents = new ArrayList<MouseEvent> ();
 	}
 	
 	/**

@@ -60,6 +60,7 @@ public class AnimationHandler {
 			if (frameTime == 0) {
 				startTime = RenderLoop.frameStartTime ();
 				image.draw ((int)x, (int)y, startFrame);
+				
 			} else {
 				long elapsedTime = RenderLoop.frameStartTime () - startTime;
 				int elapsedFrames = ((int)(((double)elapsedTime) / ((double)frameTime)) + startFrame);

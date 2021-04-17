@@ -13,6 +13,7 @@ public class Bit extends GameObject {
 		this.setSprite(new Sprite ("resources/sprites/config/bits.txt"));
 		this.getAnimationHandler().setAnimationFrame(playerNum);
 		this.setHitboxAttributes(21, 16);
+		this.setRenderPriority(1);
 		
 	}
 	
@@ -22,8 +23,7 @@ public class Bit extends GameObject {
 	}
 	
 	@Override
-	public void draw () {
-		super.draw();
+	public void frameEvent () {
 		if (keyDown('W')) {
 			this.goYAndScroll(this.getY() -2);
 		}

@@ -31,12 +31,13 @@ public class RenderLoop {
 		frameTime = System.currentTimeMillis ();
 		//Create the GameWindow
 		wind = new GameWindow (1080, 720);
+		GameCode.testBitch();
 		//Start the game logic loop on a separate thread
 		GameLoop gameLoop = new GameLoop ();
 		new Thread (gameLoop).start ();
 		//Initializes lastUpdate to the current time
 		lastUpdate = System.nanoTime ();
-		GameCode.testBitch();
+		
 		while (true) {
 			//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
 			long targetNanoseconds = (long)(1000000000 / maxFramerate);
