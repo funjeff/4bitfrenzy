@@ -55,6 +55,7 @@ public class AnimationHandler {
 	 * @param y The y coordinate to draw at
 	 */
 	public void draw (double x, double y) {
+
 		if (image != null) {
 			if (frameTime == 0) {
 				startTime = RenderLoop.frameStartTime ();

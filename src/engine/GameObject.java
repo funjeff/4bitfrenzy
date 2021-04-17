@@ -50,6 +50,12 @@ public abstract class GameObject extends GameAPI {
 	 */
 	private CollisionInfo lastCollision;
 	
+	private boolean declared = false;
+	
+	int gamelogicPriority = 0;
+	
+	int renderPriority = 0; 
+	
 	/**
 	 * Container and utility class for GameObject variants
 	 * @author nathan
@@ -206,15 +212,39 @@ public abstract class GameObject extends GameAPI {
 	 */
 	public void declare () {
 		ObjectHandler.insert (this);
+		declared = true;
 	}
-	
+	/**
+	 * Whether or not this GameObject is currently declared.
+	 * @return true if declared; false otherwise
+	 */
+	public boolean declared () {
+		return declared;
+	}
 	/**
 	 * Removes this object from the static instance of ObjectHandler.
 	 */
 	public void forget () {
+		declared = false;
 		ObjectHandler.remove (this);
 	}
 	
+	public int getGamelogicPriority() {
+		return gamelogicPriority;
+	}
+
+	public void setGamelogicPriority(int gamelogicPriority) {
+		this.gamelogicPriority = gamelogicPriority;
+	}
+
+	public int getRenderPriority() {
+		return renderPriority;
+	}
+
+	public void setRenderPriority(int renderPriority) {
+		this.renderPriority = renderPriority;
+	}
+
 	/**
 	 * Draws this GameObject at its x and y coordinates relative to the room view.
 	 */
@@ -228,6 +258,13 @@ public abstract class GameObject extends GameAPI {
 	 */
 	public void drawAbsolute () {
 		animationHandler.draw (x, y);
+	}
+	public void frameEvent () {
+		
+	}
+	
+	public void pausedEvent () {
+		
 	}
 	
 	/**

@@ -1,9 +1,8 @@
 package engine;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 /**
  * A hierarchical data structure with fast access through a HashTable.
  * @author nathan
@@ -94,25 +93,25 @@ public class HashIndexedTree<T,Q> {
 		 * Returns a list of all of this node's children, starting at the bottom of the tree.
 		 * @return A linked list containing all of this node's children
 		 */
-		public LinkedList<R> getAllChildren () {
-			LinkedList<R> result = new LinkedList<R> ();
+		public ArrayList<R> getAllChildren () {
+			ArrayList<R> result = new ArrayList<R> ();
 			getAllChildren (result);
 			return result;
 		}
 		
 		/**
 		 * A recursive method which traverses the entire tree under this node.
-		 * @param fillList The list to store the found elements
+		 * @param result The list to store the found elements
 		 */
-		private void getAllChildren (LinkedList<R> fillList) {
+		private void getAllChildren (ArrayList<R> result) {
 			Iterator<Node<R>> iter = children.iterator ();
 			while (iter.hasNext ()) {
 				Node<R> workingNode = iter.next ();
 				if (workingNode.children != null) {
-					workingNode.getAllChildren (fillList);
+					workingNode.getAllChildren (result);
 				}
 				if (workingNode.data != null) {
-					fillList.add (workingNode.data);
+					result.add (workingNode.data);
 				}
 			}
 		}
@@ -126,14 +125,23 @@ public class HashIndexedTree<T,Q> {
 	 */
 	public void addChild (T parent, T key, Q element) {
 		Node head = elements.get (parent);
-		elements.put (key, head.add (element));
+		if (elements.get(key) == null) {
+			elements.put (key, head.add (element));
+			
+		} else {
+			if (elements.get(key).data == null) {
+				
+				elements.get(key).data = element;
+			}
+		}
 	}
-	
+
 	/**
 	 * Removes the child indexed by the given key.
 	 * @param key The key of the node to remove
 	 */
 	public void removeChild (T key) {
+
 		Node<Q> toRemove = elements.get (key);
 		toRemove.parent.remove (toRemove.data);
 		elements.remove (key);
@@ -144,10 +152,15 @@ public class HashIndexedTree<T,Q> {
 	 * @param parentKey The index of the parent node
 	 * @return A list containing all the children stored under the parent key
 	 */
-	public LinkedList<Q> getAllChildren (T parentKey) {
-		LinkedList<Q> result = new LinkedList<Q> ();
+	public ArrayList<Q> getAllChildren (T parentKey) {
 		Node<Q> head = elements.get (parentKey);
-		return head.getAllChildren ();
+		if (parentKey.equals("RessesiveTrigger")) {
+		}
+		if (head != null) {
+			return head.getAllChildren ();
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -159,10 +172,16 @@ public class HashIndexedTree<T,Q> {
 		Node<Q> element = elements.get (key);
 		if (element != null) {
 			return element.data;
-		}
+		} 
 		return null;
 	}
-	
+	/**
+	 * returns true if the requested node exists wheather or not there is any data stored in that node
+	 */
+	public boolean nodeExists (T key) {
+		Node<Q> element = elements.get (key);
+		return element != null;
+	}
 	/**
 	 * Represents a query to use when searching for objects in the ObjectHandler
 	 * @author nathan

@@ -36,6 +36,7 @@ public class GameLoop implements Runnable {
 			long startTime = System.nanoTime ();
 			//doGameLogic
 			inputImage = RenderLoop.wind.getInputImage ();
+			GameCode.gameLoopFunc ();
 			ObjectHandler.callAll ();
 			RenderLoop.wind.resetInputBuffers ();
 			//Calculate elapsed time and time to sleep for

@@ -67,7 +67,7 @@ public class GameWindow extends JFrame {
 		Graphics bufferGraphics = getBufferGraphics ();
 		Graphics windowGraphics = getContentPane ().getGraphics ();
 		windowGraphics.drawImage (buffer, 0, 0, getContentPane ().getWidth (), getContentPane ().getHeight (), null);	
-		bufferGraphics.setColor (new Color (0xC0C0C0));
+		bufferGraphics.setColor (new Color (0x000000));
 		bufferGraphics.fillRect (0, 0, buffer.getWidth (), buffer.getHeight ());
 	}
 	

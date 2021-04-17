@@ -36,6 +36,7 @@ public class RenderLoop {
 		new Thread (gameLoop).start ();
 		//Initializes lastUpdate to the current time
 		lastUpdate = System.nanoTime ();
+		GameCode.testBitch();
 		while (true) {
 			//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
 			long targetNanoseconds = (long)(1000000000 / maxFramerate);
@@ -43,9 +44,12 @@ public class RenderLoop {
 			long startTime = System.nanoTime ();
 			frameTime = System.currentTimeMillis ();
 			//Render the window
+			GameCode.renderFunc ();
 			ObjectHandler.renderAll ();
+			wind.refresh();
 			//Calculate elapsed time and time to sleep for
 			lastUpdate = System.nanoTime ();
+			
 			long elapsedTime = lastUpdate - startTime;
 			int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
 			if (sleepTime < 0) {

@@ -1,9 +1,16 @@
 package engine;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -36,6 +43,7 @@ public class Sprite {
 	private boolean isAnimated;
 	
 	/**
+	 * 
 	 * Constructs a sprite with the given image filepath and parsing parameter filepath.
 	 * @param imagepath The filepath to the image to use
 	 * @param parsepath The filepath to the parsing parameters to use
@@ -96,7 +104,6 @@ public class Sprite {
 			isAnimated = false;
 		}
 	}
-	
 	/**
 	 * Constructs a sprite with the given image path and parser. Does not support caching.
 	 * @param imagepath The image to use
@@ -121,27 +128,39 @@ public class Sprite {
 	}
 	
 	/**
-	 * Constructs a sprite with the given image filepath.
+	 * Constructs a sprite with the given image filepath--or uses only the filepath of the parser if given a .txt filepath.
 	 * @param imagepath The filepath to use for the image
 	 */
 	public Sprite (String imagepath) {
-		this.imagePath = imagepath;
-		CacheNode data = cache.get (imagepath);
-		if (data == null) {
-			File imageFile = new File (imagepath);
-			BufferedImage img = null;
-			try {
-				img = ImageIO.read (imageFile);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		String[] splitPath = imagepath.split ("\\.");
+		if (splitPath.length != 0 && splitPath [splitPath.length - 1].equals ("txt")) {
+		
+			parsePath = imagepath;
+			images = new SpriteParser (imagepath).parse ();
+			if (images.length > 1) {
+				isAnimated = true;
+			} else {
+				isAnimated = false;
 			}
-			images = new BufferedImage[] {img};
-			cache.put (imagepath, new CacheNode (imagepath, images));
 		} else {
-			images = data.getData ();
+			this.imagePath = imagepath;
+			CacheNode data = cache.get (imagepath);
+			if (data == null) {
+				File imageFile = new File (imagepath);
+				BufferedImage img = null;
+				try {
+					img = ImageIO.read (imageFile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				images = new BufferedImage[] {img};
+				cache.put (imagepath, new CacheNode (imagepath, images));
+			} else {
+				images = data.getData ();
+			}
+			isAnimated = false;
 		}
-		isAnimated = false;
 	}
 	
 	/**
@@ -162,7 +181,20 @@ public class Sprite {
 	public int getFrameCount () {
 		return images.length;
 	}
-	
+	/**
+	 * returns the width of the sprite
+	 * @return the width of the sprite
+	 */
+	public int getWidth() {
+		return images[0].getWidth();
+	}
+	/**
+	 * returns the height of the sprite
+	 * @return the height of the sprite
+	 */
+	public int getHeight() {
+		return images[0].getHeight();
+	}
 	/**
 	 * Constructs a sprite with the given image. Does not support caching.
 	 * @param image The image to use
@@ -179,7 +211,6 @@ public class Sprite {
 	public void draw (int usedX, int usedY) {
 		draw (usedX, usedY, 0);
 	}
-	
 	/**
 	 * Draws the given frame of this sprite at the given x and y coordinates.
 	 * @param usedX The x coordinate to draw this sprite at
@@ -191,7 +222,79 @@ public class Sprite {
 			RenderLoop.wind.getBufferGraphics ().drawImage (images [frame], usedX, usedY, null);
 		}
 	}
-	
+	/**
+	 * Draws the given frame of this sprite at the given x and y coordinates. with the given dimentions
+	 * @param usedX The x coordinate to draw this sprite at
+	 * @param usedY The y coordinate to draw this sprite at
+	 * @param frame The frame of this sprite to draw
+	 * @param width the width to cut the sprite off at
+	 * @param height the height to cut the sprite off at
+	 */
+	public void draw (int usedX, int usedY, int frame, int width,int height) {
+		if (frame < images.length) {
+			RenderLoop.wind.getBufferGraphics ().drawImage (	images[frame].getSubimage(0, 0, width, height), usedX, usedY, null);
+		}
+	}
+	/**
+	 * Draws the given frame of this sprite at the given x and y coordinates.
+	 * @param usedX The x coordinate to draw this sprite at
+	 * @param usedY The y coordinate to draw this sprite at
+	 * @param flipHorizontal whether to apply horizontal flip
+	 * @param flipVertical whether to apply vertical flip
+	 * @param frame The frame of this sprite to draw
+	 */
+	public void draw (int usedX, int usedY, boolean flipHorizontal, boolean flipVertical, int frame) {
+		//Yeaaaaaaah this doesn't actually do anything special right now. TODO
+		int x1, x2, y1, y2;
+		if (flipHorizontal) {
+			x1 = getFrame (frame).getWidth ();
+			x2 = 0;
+		} else {
+			x1 = 0;
+			x2 = getFrame (frame).getWidth ();
+		}
+		if (flipVertical) {
+			y1 = getFrame (frame).getHeight ();
+			y2 = 0;
+		} else {
+			y1 = 0;
+			y2 = getFrame (frame).getHeight ();
+		}
+		if (frame < images.length) {
+			RenderLoop.wind.getBufferGraphics ().drawImage (getFrame (frame), usedX, usedY, usedX + getFrame (frame).getWidth (), usedY + getFrame (frame).getHeight (), x1, y1, x2, y2, null);
+		}
+	}
+	/**
+	 * Draws the given frame of this sprite at the given x and y coordinates.
+	 * @param usedX The x coordinate to draw this sprite at
+	 * @param usedY The y coordinate to draw this sprite at
+	 * @param flipHorizontal whether to apply horizontal flip
+	 * @param flipVertical whether to apply vertical flip
+	 * @param frame The frame of this sprite to draw
+	 * @param width The widht to draw too
+	 * @param height the height to draw too
+	 */
+	public void draw (int usedX, int usedY, boolean flipHorizontal, boolean flipVertical, int frame, int width, int height) {
+		
+		int x1, x2, y1, y2;
+		if (flipHorizontal) {
+			x1 = getFrame (frame).getWidth ();
+			x2 = 0;
+		} else {
+			x1 = 0;
+			x2 = getFrame (frame).getWidth ();
+		}
+		if (flipVertical) {
+			y1 = getFrame (frame).getHeight ();
+			y2 = 0;
+		} else {
+			y1 = 0;
+			y2 = getFrame (frame).getHeight ();
+		}
+		if (frame < images.length) {
+			RenderLoop.wind.getBufferGraphics ().drawImage (getFrame (frame).getSubimage(0, 0, width, height), usedX, usedY, usedX + getFrame(frame).getWidth(), usedY + + getFrame(frame).getHeight(), x1, y1, x2, y2, null);
+		}
+	}
 	/**
 	 * Gets the BufferedImage representing the given frame of the sprite.
 	 * @param frame The frame to get
@@ -200,7 +303,14 @@ public class Sprite {
 	public BufferedImage getFrame (int frame) {
 		return images [frame];
 	}
-	
+	/**
+	 * sets any frame of the animation to anything you want
+	 * @param frame the frame to change
+	 * @param newImage the new image
+	 */
+	public void setFrame (int frame, BufferedImage newImage) {
+		images[frame] = newImage;
+	}
 	/**
 	 * Gets the filepath of the image used to create this sprite.
 	 * @return the filepath of this sprite's image; returns null if not applicable
@@ -216,8 +326,52 @@ public class Sprite {
 	public String getParsePath () {
 		return parsePath;
 	}
+
+	public static void scale (Sprite toScale, int width, int height) {
+		for (int i = 0; i < toScale.getFrameCount(); i++) {
+			Image img = toScale.getFrame(i).getScaledInstance(width, height, Image.SCALE_FAST);
+			BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D bGr = bimage.createGraphics();
+		    bGr.drawImage(img, 0, 0, null);
+		    bGr.dispose();
+			toScale.setFrame(i,bimage);
+		}
+	}
+	/**
+	 * Gets the BufferedImage associated with the given filepath.
+	 * @param path the filepath to use
+	 * @return the resulting image; null if no image is found
+	 */
+	public static BufferedImage getImage (String path) {
+		CacheNode data = cache.get (path);
+		if (data == null) {
+			File imageFile = new File (path);
+			BufferedImage img = null;
+			try {
+				img = ImageIO.read (imageFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			BufferedImage[] currentImg = new BufferedImage[] {img};
+			cache.put (path, new CacheNode (path, currentImg));
+			return currentImg [0];
+		} else {
+			return data.getData () [0];
+		}
+	}
 	
-	private class CacheNode {
+	//lol got this from stack overflow
+	public void setOpacity (float opacity, int frame) {
+		BufferedImage newImg = new BufferedImage (this.getFrame(frame).getWidth(), this.getFrame(frame).getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = (Graphics2D) newImg.getGraphics();
+		AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float) opacity);
+		g.setComposite(ac);
+		g.drawImage(this.getFrame(frame), 0, 0, newImg.getWidth(), newImg.getHeight(), null);
+		this.setFrame(frame, newImg);
+	}
+	
+	private static class CacheNode {
 		
 		/**
 		 * The number of times the data in this node has been accessed
