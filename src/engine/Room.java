@@ -463,19 +463,7 @@ public class Room {
 		}
 		return 1;
 	}
-	public void setView (int x, int y) {
-		//Sets the top-right coordinate of the viewport of the room to (x, y)
-		this.viewX = x;
-		this.viewY = y;
-	}
-	public int getViewX () {
-		//Returns the x-coordinate of the viewport of the room
-		return viewX;
-	}
-	public int getViewY () {
-		//Returns the y-coordinate of the viewport of the room
-		return viewY;
-	}
+	
 	public int getWidth () {
 		//Returns the width of the room in tiles
 		return levelWidth;

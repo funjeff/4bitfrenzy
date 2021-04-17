@@ -1,5 +1,6 @@
 package players;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.Sprite;
 import map.Roome;
@@ -7,30 +8,36 @@ import map.Roome;
 public class Bit extends GameObject {
 	
 	int playerNum = 0;
-	
+
 	public Bit () {
 		this.setSprite(new Sprite ("resources/sprites/config/bits.txt"));
 		this.getAnimationHandler().setAnimationFrame(playerNum);
+		this.setHitboxAttributes(21, 16);
+		
 	}
+	
 	@Override
-	public void frameEvent () {
-		
-		
+	public void onDeclare() {
+		GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
+	}
+	
+	@Override
+	public void draw () {
+		super.draw();
 		if (keyDown('W')) {
-			this.setY(this.getY() -1);
+			this.goYAndScroll(this.getY() -2);
 		}
 		if (keyDown ('D')) {
-			this.setX(this.getX() + 1);
+			this.goXAndScroll(this.getX() + 2);
 		}
 		if (keyDown ('A')) {
-			this.setX(this.getX() - 1);
+			this.goXAndScroll(this.getX() - 2);
 		}
 		if (this.keyDown('S')) {
-			this.setY(this.getY() + 1);
+			this.goYAndScroll(this.getY() + 2);
 		}
-	}
-	public Roome getSurroundingRoom ()
-	{
-		return null;
+		
+		
+		
 	}
 }

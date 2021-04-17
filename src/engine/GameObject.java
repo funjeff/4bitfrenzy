@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import map.Roome;
+
 /**
  * Represents an in-game object that can be interacted with in some way
  * @author nathan
@@ -211,8 +213,18 @@ public abstract class GameObject extends GameAPI {
 	 * Inserts this object into the static instance of ObjectHandler, effectively scheduling it for calls to frameEvent and draw, in addition to allowing collision detection with it.
 	 */
 	public void declare () {
+		this.declare(0,0);
+	}
+	public void declare (int x, int y) {
 		ObjectHandler.insert (this);
 		declared = true;
+		this.x = x;
+		this.y = y;
+		this.onDeclare();
+	}
+	
+	public void onDeclare() {
+		
 	}
 	/**
 	 * Whether or not this GameObject is currently declared.
@@ -250,7 +262,14 @@ public abstract class GameObject extends GameAPI {
 	 */
 	public void draw () {
 		//TODO
-		animationHandler.draw (x, y);
+		if (this.getSprite() != null) {
+			Rectangle thisRect = new Rectangle ((int)this.getX(), (int)this.getY(), this.getSprite().getFrame(0).getWidth(), this.getSprite().getFrame(0).getHeight());
+			
+			Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), 1080, 720);
+			if (thisRect.intersects(veiwport)) {	
+				animationHandler.draw (x - GameCode.getViewX(), y - GameCode.getViewY());
+			}
+		}
 	}
 	
 	/**
@@ -374,7 +393,10 @@ public abstract class GameObject extends GameAPI {
 		}
 		return new Rectangle ((int)x, (int)y, (int)hitboxWidth, (int)hitboxHeight);
 	}
-	
+	public void setHitboxAttributes(double hitboxWidth, double hitboxHeight) {
+		this.hitboxWidth = hitboxWidth;
+		this.hitboxHeight = hitboxHeight;
+	}
 	/**
 	 * Gets the variant object representing this GameObject's variant.
 	 * @return This GameObject's variant
@@ -398,6 +420,50 @@ public abstract class GameObject extends GameAPI {
 	public void setX (double val) {
 		x = val;
 	}
+	/**
+	 * trys to move to a new x pos but doesen't if it would hit a wall
+	 * @param val the new x pos to go too
+	 * @return true if the move was sucessfull false otherwise 
+	 */
+	public boolean goX(double val) {
+		double x = this.getX();
+		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
+		this.setX(val);
+		if (currentRoom.isColliding(this)) {
+			this.setX(x);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * trys to move to a new x pos but doesen't if it would hit a wall
+	 * scrolls the screen if nessary
+	 * @param val the new x pos to go too
+	 * @return true if the move was sucessfull false otherwise 
+	 */
+	public boolean goXAndScroll(double val) {
+		double x = this.getX();
+		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
+		this.setX(val);
+		if (currentRoom.isColliding(this)) {
+			this.setX(x);
+			return false;
+		}
+		
+		Rectangle hBox = new Rectangle (this.hitbox());
+		
+		hBox.x = hBox.x;
+		hBox.y = hBox.y;
+		
+		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),144 + GameCode.getViewY(),648,432);
+		
+		if (!centerRect.contains(hBox)) {
+			GameCode.setView((int)(GameCode.getViewX() + (val - x)), GameCode.getViewY());
+		}
+		
+		return true;
+	}
 	
 	/**
 	 * Updates the y component of this GameObject's position.
@@ -406,6 +472,52 @@ public abstract class GameObject extends GameAPI {
 	public void setY (double val) {
 		y = val;
 	}
+	
+	/**
+	 * trys to move to a new y pos but doesen't if it would hit a wall
+	 * @param val the new y pos to go too
+	 * @return true if the move was sucessfull false otherwise 
+	 */
+	public boolean goY(double val) {
+		double y = this.getY();
+		this.setY(val);
+		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
+		if (currentRoom.isColliding(this)) {
+			this.setY(y);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * trys to move to a new x pos but doesen't if it would hit a wall
+	 * scrolls the screen if nessary
+	 * @param val the new x pos to go too
+	 * @return true if the move was sucessfull false otherwise 
+	 */
+	public boolean goYAndScroll(double val) {
+		double y = this.getY();
+		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
+		this.setY(val);
+		if (currentRoom.isColliding(this)) {
+			this.setY(y);
+			return false;
+		}
+		
+		Rectangle hBox = new Rectangle (this.hitbox());
+		
+		hBox.x = hBox.x;
+		hBox.y = hBox.y;
+		
+		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),144 + GameCode.getViewY(),648,432);
+		
+		if (!centerRect.contains(hBox)) {
+			GameCode.setView(GameCode.getViewX(), (int)(GameCode.getViewY()  + (val - y)));
+		}
+		
+		return true;
+	}
+	
 	
 	/**
 	 * Sets the sprite of this GameObject to the given sprite.
