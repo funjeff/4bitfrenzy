@@ -12,9 +12,14 @@ public class Register extends GameObject {
 	
 	int memAddress = 17;
 	
+	int secondAddress = -1;
+	
 	Textbox display;
 	
+	public boolean scrambled = false;
+	
 	long spawnTime;
+	
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
@@ -70,12 +75,36 @@ public class Register extends GameObject {
 		return null;
 	}
 	
+	
+	
+	public void scramble () {
+		scrambled = true;
+		display = null;
+		this.setSprite(new Sprite ("resources/sprites/Regester scrambled.png"));
+		
+	}
+	
+	public void combine (Register reg) {
+		secondAddress = reg.memAddress;
+		reg.forget();
+		this.setSprite(new Sprite ("resources/sprites/Regester combined.png"));
+	}
+	
 	@Override
 	public void draw () {
 		super.draw();
-		display.setX(this.getX() + 35);
-		display.setY(this.getY() + 5);
-		display.draw();
+		if (display != null) {
+			if (secondAddress == -1) {
+				display.setX(this.getX() + 35);
+				display.setY(this.getY() + 5);
+				display.draw();
+			} else {
+				display.setX(this.getX() + 8);
+				display.setY(this.getY() + 5);
+				display.changeText(Integer.toHexString(memAddress) + " " + Integer.toHexString(secondAddress));
+				display.draw();
+			}
+		}
 	}
 	
 	

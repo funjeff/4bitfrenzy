@@ -10,6 +10,8 @@ import engine.ObjectHandler;
 import engine.Sprite;
 import gameObjects.Compass;
 import gameObjects.Register;
+import items.Item;
+import items.ItemBox;
 import map.Roome;
 import resources.Textbox;
 
@@ -17,16 +19,24 @@ public class Bit extends GameObject {
 	
 	int playerNum = 0;
 	
-	ArrayList<GameObject> regestersBeingCarried = null;
+	public ArrayList<GameObject> regestersBeingCarried = null;
 	
 	Compass compass;
 	
+	ItemBox inventory = new ItemBox ();
+	
+	public int lastMove = 0; // 0 for up 1 for down 2 for right 3 for left
+	
+	int speed = 5;
+	
+	long speedUpTimer = 0;
 	
 	public Bit () {
 		this.setSprite(new Sprite ("resources/sprites/config/bits.txt"));
 		this.getAnimationHandler().setAnimationFrame(playerNum);
 		this.setHitboxAttributes(21, 16);
 		this.setRenderPriority(1);
+		inventory.declare();
 		compass = new Compass (this);
 		Random rand = new Random ();
 		compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
@@ -42,6 +52,31 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void frameEvent () {
+		if (keyPressed (10)) {
+			if (inventory.getItem() != null) {
+				inventory.useItem(this);
+			}
+		}
+		
+		if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
+			speedUpTimer = 0;
+			speed = speed - 2;
+		}
+		
+		if (this.isCollidingChildren("Item")) {
+			Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
+			if (toUse.pickupablity) {
+				if (inventory.getItem() != null) {
+					Item it = inventory.getItem();
+					Roome romm = Roome.getRoom(this.getX(), this.getY());
+					int [] spawnCoords = romm.biatch.getPosibleCoords(it.hitbox().width, it.hitbox().height);
+					it.declare(spawnCoords[0], spawnCoords[1]);
+				}
+				inventory.setItem(toUse);
+				toUse.forget();
+			}
+		}
+		
 		
 		double resistance = 1;
 		
@@ -54,7 +89,7 @@ public class Bit extends GameObject {
 			
 		}
 		
-		double speed = 5 * resistance;
+		double speed = this.speed * resistance;
 		
 		if(keyPressed (' ')) {
 			
@@ -72,38 +107,41 @@ public class Bit extends GameObject {
 			if (this.goY((int)(this.getY() - speed))) {
 				this.carryRegestersY((((int)speed) * -1) - 1);
 			}
+			lastMove = 0;
 		}
 		if (keyDown ('D')) {
 			if (this.goX((int)(this.getX() + speed))) {
 				this.carryRegestersX((int)speed);
 			}
+			lastMove = 2;
 		}
 		if (keyDown ('A')) {
 			if (this.goX((int)(this.getX() - speed))) {
 				this.carryRegestersX((((int)speed) * -1) - 1);
 			}
+			lastMove = 3;
 		}
 		if (this.keyDown('S')) {
 			if (this.goY((int)(this.getY() + speed))) {
 				this.carryRegestersY((int)speed);
 			}
+			lastMove = 1;
 		}
-		this.setHitboxAttributes(this.hitbox().width + 4, this.hitbox().height + 4);
-		this.setX(this.getX() - 2);
-		this.setY(this.getY() - 2);
+		this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
+		this.setX(this.getX() - 3);
+		this.setY(this.getY() - 3);
 		
 		if (this.isColliding("Register") && keyDown (16)) {
 			
 			regestersBeingCarried = this.getCollisionInfo().getCollidingObjects();
 			
-			Random rand = new Random ();
-			Register reg = (Register) regestersBeingCarried.get(rand.nextInt(regestersBeingCarried.size()));
+			Register reg = (Register) regestersBeingCarried.get(0);
 			
 			compass.setPointObject(reg.getDataSlot() );
 		}
-		this.setHitboxAttributes(this.hitbox().width - 4, this.hitbox().height - 4);
-		this.setX(this.getX() + 2);
-		this.setY(this.getY() + 2);
+		this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
+		this.setX(this.getX() + 3);
+		this.setY(this.getY() + 3);
 		
 	}
 	private void carryRegestersY (double dist) {
@@ -168,13 +206,17 @@ public class Bit extends GameObject {
 		Rectangle hBox = new Rectangle (this.hitbox());
 		
 
-		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),144 + GameCode.getViewY(),648,432);
+		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
 		
 		if (!centerRect.contains(hBox)) {
 			GameCode.setView((int)(GameCode.getViewX() + (val - x)), GameCode.getViewY());
 		}
 		
 		return true;
+	}
+	public void speedUpTemporarly() {
+		speed = speed + 2;
+		speedUpTimer = System.currentTimeMillis() +  30 * 1000;
 	}
 	@Override
 	public boolean goY(double val) {
@@ -211,9 +253,10 @@ public class Bit extends GameObject {
 		
 		Rectangle hBox = new Rectangle (this.hitbox());
 	
+
+		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
 		
-		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),144 + GameCode.getViewY(),648,432);
-		
+	
 		if (!centerRect.contains(hBox)) {
 			GameCode.setView(GameCode.getViewX(), (int)(GameCode.getViewY()  + (val - y)));
 		}

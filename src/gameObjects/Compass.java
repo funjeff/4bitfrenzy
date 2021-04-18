@@ -23,6 +23,7 @@ public class Compass extends GameObject {
 	
 	public Compass (Bit owner) {
 		this.owner = owner;
+		this.setRenderPriority(3);
 	}
 	
 	@Override

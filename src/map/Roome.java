@@ -49,8 +49,7 @@ public class Roome extends GameObject {
 	
 	public PixelBitch biatch;
 	
-	boolean pixelColls;
-	
+
 	
 	public Roome ()
 	{
@@ -66,7 +65,7 @@ public class Roome extends GameObject {
 			String toUse = "";
 			
 			
-			int lineNum = rand.nextInt(12); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			int lineNum = rand.nextInt(1); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
 			
 			//thanks stack overflow :)
 			try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/rooms.txt"))) {
@@ -76,9 +75,7 @@ public class Roome extends GameObject {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (toUse.equals("resources/sprites/room_bricks.png") || toUse.equals("resources/sprites/room_corners.png") || toUse.equals("resources/sprites/room_heart.png") || toUse.equals("resources/sprites/room_lake.png") || toUse.equals("resources/sprites/room_ram_fields.png") ) {
-				pixelColls = true;
-			}
+
 			this.setSprite(new Sprite (toUse));
 			
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
@@ -432,6 +429,66 @@ public class Roome extends GameObject {
 //		}
 //	
 	}
+	public void destroyTopWall() {
+		
+		try {
+			Roome nextRoom = map[roomPosY - 1][roomPosX];
+			nextRoom.bottomJunction = true;
+			nextRoom.boxes[11].forget();
+			
+		} catch (IndexOutOfBoundsException e) {
+				
+			return;
+			
+		}
+		topJunction = true;
+		boxes[8].forget();
+		
+	}
+	public void destroyBottomWall() {
+		try {
+			Roome nextRoom = map[roomPosY + 1][roomPosX];
+			nextRoom.topJunction = true;
+			nextRoom.boxes[8].forget();
+			
+		} catch (IndexOutOfBoundsException e) {
+				
+			return;
+			
+		}
+		bottomJunction = true;
+		boxes[11].forget();
+	}
+	public void destroyRightWall() {
+		try {
+			Roome nextRoom = map[roomPosY][roomPosX + 1];
+			nextRoom.leftJunction = true;
+			nextRoom.boxes[9].forget();
+			
+		} catch (IndexOutOfBoundsException e) {
+				
+			return;
+			
+		}
+		rightJunction = true;
+		boxes[10].forget();
+	}
+	public void destroyLeftWall() {
+		try {
+			Roome nextRoom = map[roomPosY][roomPosX - 1];
+			nextRoom.rightJunction = true;
+			nextRoom.boxes[10].forget();
+			
+		} catch (IndexOutOfBoundsException e) {
+				
+			return;
+			
+		}
+		
+		leftJunction = true;
+		boxes[9].forget();
+	}
+	
 	@Override
 	public boolean isColliding (GameObject obj) {
 		Rectangle objHitbox = new Rectangle (obj.hitbox());
@@ -463,11 +520,10 @@ public class Roome extends GameObject {
 		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
 		
-		if (pixelColls) {
+		
 			if (biatch.isColliding(obj)) {
 				return true;
 			}
-		}
 //	Graphics2D grapics =(Graphics2D) RenderLoop.wind.getBufferGraphics();
 //		
 //		grapics.drawRect(rect1.x,rect1.y,rect1.width,rect1.height);

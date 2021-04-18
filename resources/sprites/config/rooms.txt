@@ -1,6 +1,6 @@
-resources/sprites/room_bricks.png
-resources/sprites/room_corners.png
 resources/sprites/room_default.png
+resources/sprites/room_corners.png
+resources/sprites/room_bricks.png
 resources/sprites/room_flower.png
 resources/sprites/room_funny.png
 resources/sprites/room_head.png

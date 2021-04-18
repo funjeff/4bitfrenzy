@@ -3,6 +3,7 @@ package gameObjects;
 import java.util.ArrayList;
 
 import engine.GameObject;
+import engine.ObjectHandler;
 import engine.Sprite;
 import players.Bit;
 import resources.Hud;
@@ -37,6 +38,32 @@ public class DataSlot extends GameObject {
 		this.setHitboxAttributes(84, 90);
 	}
 	
+	public Register getRegester() {
+		ArrayList <GameObject> slots = ObjectHandler.getObjectsByName("Register");
+		for (int i = 0; i < slots.size(); i++) {
+			Register working = (Register)slots.get(i);
+			
+			if (working.memAddress == this.memAddress) {
+				return working;
+			}
+			
+		}
+		return null;
+	}
+	
+	public DataSlot getDataSlot(int memAddress) {
+		ArrayList <GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
+		for (int i = 0; i < slots.size(); i++) {
+			DataSlot working = (DataSlot)slots.get(i);
+			
+			if (working.memAddress == memAddress) {
+				return working;
+			}
+			
+		}
+		return null;
+	}
+	
 	@Override
 	public void frameEvent () {
 		
@@ -45,9 +72,23 @@ public class DataSlot extends GameObject {
 			for (int i = 0; i < collidingRegesters.size(); i++) {
 				
 				Register working = (Register)collidingRegesters.get(i);
-				if (working.getMemAddress() == memAddress) {
+				if (working.getMemAddress() == memAddress || working.scrambled || working.secondAddress == memAddress) {
 					this.awardPoints(working);
 					working.forget();
+					if (working.scrambled) {
+						Register OG = this.getRegester();
+						if (OG != null) {
+							OG.memAddress = working.memAddress;
+							OG.display.changeText(Integer.toHexString(working.memAddress));
+						}
+					}
+					if (working.secondAddress != -1) {
+						if (working.memAddress == memAddress) {
+							this.getDataSlot(working.secondAddress).forget();
+						} else {
+							working.getDataSlot().forget();
+						}
+					}
 					this.cleared = true;
 					this.getAnimationHandler().setAnimationFrame(1);
 					display = null;
