@@ -14,6 +14,7 @@ import engine.GameCode;
 import engine.RenderLoop;
 import gameObjects.TitleScreen;
 import map.Roome;
+import resources.Hud;
 
 public class Client extends Thread {
 
@@ -62,8 +63,10 @@ public class Client extends Thread {
 						System.out.println ("Message recieved: " + str);
 						
 						//Parse message, etc.
-						if (str.equals ("PONG")) {
+						if (str.length () >= 6 && str.substring (0, 6).equals("PLAYER")) {
 							TitleScreen.connectSuccess ();
+							NetworkHandler.setPlayerNum (str.charAt (7) - '0');
+							RenderLoop.wind.setTitle (str);
 						}
 						
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
@@ -73,8 +76,32 @@ public class Client extends Thread {
 							GameCode.initGameState ();
 						}
 						
+						if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
+							
+							//Get the data
+							String[] data = str.split (":");
+							
+							//Extract the timer
+							String timer_data = data[1];
+							int timer_amt = Integer.parseInt (timer_data);
+							Hud.timeLeft = timer_amt;
+							
+							//Extract the score
+							String score_data = data[2];
+							int score_amt = Integer.parseInt (score_data);
+							Hud.score = score_amt;
+							
+							//Extract the bit positions
+							String bit_data = data[3];
+							String[] bit_coords = bit_data.split (",");
+							int bit_x = Integer.parseInt (bit_coords[0]);
+							int bit_y = Integer.parseInt (bit_coords[1]);
+							GameCode.bit.setX (bit_x);
+							GameCode.bit.setY (bit_y);
+							
+						}
+						
 						System.out.println ("Message recieved: " + str);
-						RenderLoop.wind.setTitle (str);
 
 					}
 					

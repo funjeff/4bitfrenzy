@@ -12,10 +12,10 @@ import map.Roome;
 
 public class Hud extends GameObject {
 	
-	static long score = 0;
+	public static long score = 0;
 	static Textbox scoreDisplay;
-	static long timeLeft = 60000 * 5;
-	static int roundNum = 1;
+	public static long timeLeft = 60000 * 5;
+	public static int roundNum = 1;
 	static Textbox timer;
 	static Textbox waveNum;
 	static Textbox registersRemaining;

@@ -20,6 +20,8 @@ public class ServerConnection extends Thread {
 	private volatile boolean write = false;
 	private volatile String message;
 	
+	private String inputs;
+	
 	public ServerConnection (Server server, Socket incoming) {
 		this.server = server;
 		this.incoming = incoming;
@@ -44,8 +46,12 @@ public class ServerConnection extends Thread {
 				if (dataIn.available () != 0) {
 					String str = dataIn.readUTF ();
 					if (str.equals ("PING")) {
-						dataOut.writeUTF ("PONG");
+						dataOut.writeUTF ("PLAYER " + (server.getNumPlayers () + 1));
 						TitleScreen.playerJoin ();
+					}
+					if (str.length () >= 4 && str.substring (0, 4).equals ("KEYS")) {
+						String[] keyData = str.split (":");
+						inputs = keyData[1];
 					}
 					RenderLoop.wind.setTitle (str);
 					System.out.println ("Message recieved: " + str);
@@ -69,6 +75,10 @@ public class ServerConnection extends Thread {
 	public void message (String message) {
 		this.write = true;
 		this.message = message;
+	}
+	
+	public String getInputs () {
+		return inputs;
 	}
 	
 }

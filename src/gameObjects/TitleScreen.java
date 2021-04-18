@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import engine.GameObject;
+import engine.RenderLoop;
 import engine.Sprite;
 import network.Client;
 import network.NetworkHandler;
@@ -126,7 +127,7 @@ public class TitleScreen extends GameObject {
 			if (isHost) {
 				ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
 				if (keyPressed (KeyEvent.VK_ENTER)) {
-					System.out.println ("STARTING");
+					RenderLoop.wind.setTitle ("PLAYER 1");
 					titleClosed = true;
 					ipBox.forget ();
 					forget ();

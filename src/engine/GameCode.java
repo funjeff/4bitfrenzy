@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -27,6 +28,8 @@ public class GameCode {
 	
 	private static TitleScreen titleScreen;
 	
+	public static Bit bit;
+	
 	
 	
 	public static void testBitch () {
@@ -53,7 +56,41 @@ public class GameCode {
 	
 	public static void gameLoopFunc () {
 		
-
+		if (NetworkHandler.isHost () && titleScreen.titleClosed) {
+			
+			//Send server stuff out
+			String toSend = "DATA:";
+			try {
+				toSend += Hud.timeLeft;
+				toSend += ":" + Hud.score;
+				toSend += ":" + (int)bit.getX () + "," + (int)bit.getY ();
+			} catch (NullPointerException e) {
+				return;
+			}
+			NetworkHandler.getServer ().sendMessage (toSend);
+			
+		} else {
+			
+			String toSend = "KEYS:";
+			try {
+				if (bit.keyDown ('W')) {
+					toSend += 'W';
+				}
+				if (bit.keyDown ('A')) {
+					toSend += 'A';
+				}
+				if (bit.keyDown ('S')) {
+					toSend += 'S';
+				}
+				if (bit.keyDown ('D')) {
+					toSend += 'D';
+				}
+			} catch (NullPointerException e) {
+				return; //Stuff hasn't been initialized yet
+			}
+			NetworkHandler.getClient ().messageServer (toSend);
+			
+		}
 		
 	}
 
@@ -72,7 +109,7 @@ public class GameCode {
 	}
 	
 	public static void initGameState () {
-		Bit bit = new Bit ();
+		bit = new Bit ();
 		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
 		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 		bit.declare(spawnCoords[0],spawnCoords[1]);
