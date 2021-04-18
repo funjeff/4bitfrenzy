@@ -143,10 +143,13 @@ public class GameCode {
 		bit4.playerNum = 4;
 		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
 		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-		bit.declare(spawnCoords[0],spawnCoords[1]);
-		bit2.declare(spawnCoords[0] + 16,spawnCoords[1] + 16);
-		bit3.declare(spawnCoords[0] + 32,spawnCoords[1] + 32);
-		bit4.declare(spawnCoords[0] + 48,spawnCoords[1] + 48);
+		int [] spawnCoords2 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+		int [] spawnCoords3 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+		int [] spawnCoords4 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+ 		bit.declare(spawnCoords[0],spawnCoords[1]);
+		bit2.declare(spawnCoords2[0] + 16,spawnCoords2[1] + 16);
+		bit3.declare(spawnCoords3[0] + 32,spawnCoords3[1] + 32);
+		bit4.declare(spawnCoords4[0] + 48,spawnCoords4[1] + 48);
 		bit.updateIcon ();
 		bit2.updateIcon ();
 		bit3.updateIcon ();

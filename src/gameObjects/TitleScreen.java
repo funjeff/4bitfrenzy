@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import engine.GameCode;
 import engine.GameObject;
+import engine.ObjectHandler;
 import engine.RenderLoop;
 import engine.Sprite;
 import network.Client;
@@ -18,6 +19,8 @@ public class TitleScreen extends GameObject {
 	
 	private String ip;
 	
+	static int perkNum;
+	
 	private boolean typeIp = false;
 	
 	private static Textbox ipBox;
@@ -26,6 +29,7 @@ public class TitleScreen extends GameObject {
 	private Button hostButton;
 	private Button joinButton;
 	private Button rulesButton;
+	private Button perksButton;
 	
 	
 	boolean ipMode = false;
@@ -50,19 +54,23 @@ public class TitleScreen extends GameObject {
 		hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
 		joinButton = new Button (new Sprite ("resources/sprites/join.png"));
 		rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
+		perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
 		
 		hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
 		joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
 		rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
+		perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
 		
 		hostButton.declare (700, 32);
 		joinButton.declare (640, 207);
 		rulesButton.declare(680, 382);
+		perksButton.declare(720, 550);
 		
 		
 		hostButton.setRenderPriority(69);
 		joinButton.setRenderPriority(69);
 		rulesButton.setRenderPriority(69);
+		perksButton.setRenderPriority(69);
 		
 		//Make the textbox
 		ipBox = new Textbox ("HELLO");
@@ -72,7 +80,7 @@ public class TitleScreen extends GameObject {
 		ipBox.changeText ("HIA");
 		ipBox.changeBoxVisability ();
 		
-		ipBox.setRenderPriority(78);
+		ipBox.setRenderPriority(69);
 		
 	}
 	
@@ -136,6 +144,7 @@ public class TitleScreen extends GameObject {
 			hostButton.forget();
 			joinButton.forget();
 			rulesButton.forget();
+			perksButton.forget();
 			this.setSprite(new Sprite ("resources/sprites/game infographic.png"));
 			if (!getKeyEvents().isEmpty()) {
 				
@@ -146,24 +155,65 @@ public class TitleScreen extends GameObject {
 				hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
 				joinButton = new Button (new Sprite ("resources/sprites/join.png"));
 				rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
+				perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
 				
 				hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
 				joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
 				rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
+				perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
 				
 				hostButton.declare (700, 32);
 				joinButton.declare (640, 207);
 				rulesButton.declare(680, 382);
+				perksButton.declare(720, 550);
 				
 				
 				hostButton.setRenderPriority(69);
 				joinButton.setRenderPriority(69);
 				rulesButton.setRenderPriority(69);
+				perksButton.setRenderPriority(69);
 				rulesButton.pressed = false;
 			}
 			
 		}
-		
+		if (perksButton.isPressed()) {
+			hostButton.forget();
+			joinButton.forget();
+			rulesButton.forget();
+			perksButton.forget();
+			perkMenu menu = new perkMenu ();
+			if (ObjectHandler.getObjectsByName("perkMenu") == null || ObjectHandler.getObjectsByName("perkMenu").size() == 0) {
+				menu.declare();
+			}
+			if (!getKeyEvents().isEmpty()) {
+				
+				setSprite (bg);
+				ip = "127.0.0.1:8080";
+				
+				//Make the buttons
+				hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
+				joinButton = new Button (new Sprite ("resources/sprites/join.png"));
+				rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
+				perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
+				
+				hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
+				joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
+				rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
+				perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
+				
+				hostButton.declare (700, 32);
+				joinButton.declare (640, 207);
+				rulesButton.declare(680, 382);
+				perksButton.declare(720, 550);
+				
+				
+				hostButton.setRenderPriority(69);
+				joinButton.setRenderPriority(69);
+				rulesButton.setRenderPriority(69);
+				perksButton.setRenderPriority(69);
+				rulesButton.pressed = false;
+			}
+		}
 		if (ipMode && !failedMode && !connectedMode && !waitMode) {
 			
 			//Change box contents for host
@@ -197,6 +247,7 @@ public class TitleScreen extends GameObject {
 		hostButton.forget ();
 		joinButton.forget ();
 		rulesButton.forget();
+		perksButton.forget();
 		
 		//Setup the server if hosting
 		if (isHost) {
@@ -206,6 +257,7 @@ public class TitleScreen extends GameObject {
 		}
 		
 		ipMode = true;
+		System.out.println (isHost);
 	}
 	
 	public static void connectSuccess () {
@@ -252,5 +304,66 @@ public class TitleScreen extends GameObject {
 			pressed = false;
 		}
 		
+	}
+	
+	public class perkMenu extends GameObject {
+		//Make the buttons
+			
+			Button blastButton;
+			Button haulerButton;
+			Button naviationButton;
+			Button duplicatieButton;
+			@Override
+			public void onDeclare () {
+				blastButton = new Button (new Sprite ("resources/sprites/blast processsing  red.png"));
+				haulerButton = new Button (new Sprite ("resources/sprites/grip strength.png"));
+				naviationButton = new Button (new Sprite ("resources/sprites/navigation bit red.png"));
+				duplicatieButton = new Button (new Sprite ("resources/sprites/duplication red.png"));
+				
+				
+				blastButton.setGreen(new Sprite ("resources/sprites/blast processsing greem"));
+				haulerButton.setGreen(new Sprite ("resources/sprites/grip strength green.png"));
+				naviationButton.setGreen(new Sprite ("resources/sprites/navigation bit green.png"));
+				duplicatieButton.setGreen(new Sprite ("resources/sprites/duplication green.png"));
+				
+				
+				blastButton.declare (700, 32);
+				haulerButton.declare (640, 207);
+				naviationButton.declare(680, 382);
+				duplicatieButton.declare(720, 550);
+				
+				
+				blastButton.setRenderPriority(69);
+				haulerButton.setRenderPriority(69);
+				naviationButton.setRenderPriority(69);
+				duplicatieButton.setRenderPriority(69);
+	}
+				public perkMenu () {
+					this.setSprite (new Sprite ("resources/sprites/perk Menu.png"));
+				}
+				@Override
+				public void frameEvent () {
+					if (blastButton.isPressed ()) {
+						perkNum = 0;
+						this.forget();
+					}
+					
+					if (haulerButton.isPressed ()) {
+						perkNum = 1;
+						this.forget();
+					}
+					if (naviationButton.isPressed ()) {
+						perkNum = 2;
+						this.forget();
+					}
+					
+					if (duplicatieButton.isPressed ()) {
+						perkNum = 4;
+						this.forget();
+					}
+					
+				}
+				
+				
 	}
 }

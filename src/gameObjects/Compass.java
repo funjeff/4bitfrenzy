@@ -2,7 +2,9 @@ package gameObjects;
 
 import engine.GameCode;
 import engine.GameObject;
+import engine.ObjectHandler;
 import engine.Sprite;
+import network.NetworkHandler;
 import players.Bit;
 
 public class Compass extends GameObject {

@@ -49,10 +49,13 @@ public class Bit extends GameObject {
 		this.setHitboxAttributes(21, 16);
 		this.setRenderPriority(1);
 		inventory.declare();
-		compass = new Compass (this);
+		
 		Random rand = new Random ();
-		compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
-		compass.declare(0, 0);
+		if (ObjectHandler.getObjectsByName("Compass") == null || ObjectHandler.getObjectsByName("Compass").size() == 0) {
+			compass = new Compass (this);
+			compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+			compass.declare(0, 0);
+		}
 	}
 	
 	public void updateIcon () {
@@ -96,12 +99,13 @@ public class Bit extends GameObject {
 				}
 			}
 			
-			if (!ObjectHandler.getObjectsByName("Register").isEmpty()){
+			if (!ObjectHandler.getObjectsByName("Register").isEmpty() && compass != null){
 				GameObject old = compass.getPointObject();
 				while (old.equals(compass.getPointObject())){
 					Random rand = new Random ();
 					compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
 				}
+
 			}
 		}
 		
@@ -124,7 +128,7 @@ public class Bit extends GameObject {
 				speed = speed + 2;
 			}
 			
-			if(keyPressed (' ')) {
+			if(keyPressed (' ') && compass != null) {
 				
 				GameObject old = compass.getPointObject();
 				
