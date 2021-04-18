@@ -96,7 +96,7 @@ public class Bit extends GameObject {
 			double resistance = 1;
 			if (perk != 1) {
 				if (regestersBeingCarried != null) {
-					if (!keyDown(16)) {
+					if (keys != null && !keys.contains ("v")) {
 						regestersBeingCarried = null;
 					} else {
 						resistance = 0.5/regestersBeingCarried.size();
@@ -151,7 +151,7 @@ public class Bit extends GameObject {
 			this.setX(this.getX() - 3);
 			this.setY(this.getY() - 3);
 			
-			if (this.isColliding("Register") && keyDown (16)) {
+			if (this.isColliding("Register") && (keys != null && keys.contains ("v"))) {
 				
 				regestersBeingCarried = this.getCollisionInfo().getCollidingObjects();
 				
