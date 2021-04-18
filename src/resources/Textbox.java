@@ -210,16 +210,14 @@ public void drawBox (){
 		// translates the charictar in the message to a askii value that is used to specify position on the
 		// text sheet run for every for every charitar in the message every frame
 			while (charictarNumber < text1.length()){
-
 				char charictarInQuestion = text1.charAt(charictarNumber);
 				charictarNumber = charictarNumber + 1;
-				int charitarCode = KeyEvent.getExtendedKeyCodeForChar(charictarInQuestion);
-				fontSheet.draw(x_beginning, y_origin, charitarCode);
+				fontSheet.draw(x_beginning, y_origin, charictarInQuestion);
 				x_beginning = x_beginning + 16;
 				space = space - 1;
 					if ((x_beginning - x_origin)/16 > width1) {
 						x_beginning = x_origin;
-						y_origin = y_origin + 16;
+						y_origin = y_origin + 32;
 						if ((y_origin - (this.getY() - GameCode.getViewY()))/16 > height1) {
 							break;
 						}

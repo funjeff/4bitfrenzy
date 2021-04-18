@@ -27,6 +27,15 @@ public class AnimationHandler {
 	 */
 	private boolean repeat;
 	
+	
+	private boolean flipHorizontal;
+	
+	/**
+	 * Whether or not to apply vertical flip
+	 */
+	private boolean flipVertical;
+	
+	
 	/**
 	 * Constructs a new AnimationHandler with the given image, defaulting to a static image.
 	 * @param image The image to use
@@ -46,6 +55,8 @@ public class AnimationHandler {
 		startTime = RenderLoop.frameStartTime ();
 		startFrame = 0;
 		this.frameTime = frameTime;
+		this.setFlipHorizontal(false);
+		this.setFlipVertical(false);
 		repeat = true;
 	}
 	
@@ -59,16 +70,16 @@ public class AnimationHandler {
 		if (image != null) {
 			if (frameTime == 0) {
 				startTime = RenderLoop.frameStartTime ();
-				image.draw ((int)x, (int)y, startFrame);
+				image.draw ((int)x, (int)y,flipHorizontal,flipVertical, startFrame);
 				
 			} else {
 				long elapsedTime = RenderLoop.frameStartTime () - startTime;
 				int elapsedFrames = ((int)(((double)elapsedTime) / ((double)frameTime)) + startFrame);
 				if (!repeat && elapsedFrames >= image.getFrameCount ()) {
-					image.draw ((int)x, (int)y, image.getFrameCount () - 1);
+					image.draw ((int)x, (int)y, flipHorizontal, flipVertical, image.getFrameCount () - 1);
 				} else {
 					int frame = elapsedFrames % image.getFrameCount ();
-					image.draw ((int)x, (int)y, frame);
+					image.draw ((int)x, (int)y, flipHorizontal, flipVertical, frame);
 				}
 			}
 		}
@@ -152,5 +163,36 @@ public class AnimationHandler {
 	 */
 	public boolean repeats () {
 		return repeat;
+	}
+	/**
+	 * Returns whether or not horizontal flipping is applied.
+	 * @return the horizontal flip
+	 */
+	public boolean flipHorizontal () {
+		return flipHorizontal;
+	}
+	
+	/**
+	 * Returns whether or not vertical flipping is applied.
+	 * @return the vertical flip
+	 */
+	public boolean flipVertical () {
+		return flipVertical;
+	}
+	
+	/**
+	 * Sets whether or not to flip the image horizontally to the given value.
+	 * @param flip whether or not to apply horizontal flip
+	 */
+	public void setFlipHorizontal (boolean flip) {
+		flipHorizontal = flip;
+	}
+	
+	/**
+	 * Sets whether or not to flip the image vertically to the given value.
+	 * @param flip whether or not to apply vertical flip
+	 */
+	public void setFlipVertical (boolean flip) {
+		flipVertical = flip;
 	}
 }

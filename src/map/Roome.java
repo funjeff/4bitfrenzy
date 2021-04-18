@@ -21,6 +21,9 @@ import engine.GameObject;
 import engine.ObjectHandler;
 import engine.RenderLoop;
 import engine.Sprite;
+import gameObjects.DataSlot;
+import gameObjects.PixelBitch;
+import gameObjects.Register;
 import resources.Textbox;
 
 public class Roome extends GameObject {
@@ -37,9 +40,16 @@ public class Roome extends GameObject {
 	int roomPosX; // the location of the room in the map array (x coordinate)
 	int roomPosY; // the location of the room in the map array (y coordinate)
 	
+	boolean inRoomcollsions;
 	
 	Textbox [] boxes = new Textbox [12];
 	
+	public Register r = null;
+	public DataSlot ds = null;
+	
+	public PixelBitch biatch;
+	
+	boolean pixelColls;
 	
 	
 	public Roome ()
@@ -47,137 +57,180 @@ public class Roome extends GameObject {
 		
 	}
 	public void init () {
-		String toUse = "";
 		
-		Random rand = new Random ();
-		
-		int lineNum = rand.nextInt(12); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
-		
-		//thanks stack overflow :)
-		try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/rooms.txt"))) {
-		    toUse = lines.skip(lineNum).findFirst().get();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.setSprite(new Sprite (toUse));
-		
-		
-		boxes[0] = new Textbox("");
-		boxes[0].changeBoxVisability();
-		boxes[0].changeWidth(432/16);
-		boxes[0].changeHeight(144/16);
-		boxes[0].declare((int)this.getX(), (int)this.getY());
-		
-		boxes[1] = new Textbox("");
-		boxes[1].changeBoxVisability();
-		boxes[1].changeWidth(216/16);
-		boxes[1].changeHeight(108/16);
-		boxes[1].declare((int)this.getX(), (int)this.getY() + 144);
-		
-		
-		boxes[2] = new Textbox("");
-		boxes[2].changeBoxVisability();
-		boxes[2].changeWidth(432/16);
-		boxes[2].changeHeight(144/16);
-		boxes[2].declare((int)this.getX() + 648, (int)this.getY());
-		
-		boxes[3] = new Textbox("");
-		boxes[3].changeBoxVisability();
-		boxes[3].changeWidth(216/16);
-		boxes[3].changeHeight(108/16);
-		boxes[3].declare((int)this.getX() + 864, (int)this.getY() + 144);
-		
-		boxes[4] = new Textbox("");
-		boxes[4].changeBoxVisability();
-		boxes[4].changeWidth(216/16);
-		boxes[4].changeHeight(108/16);
-		boxes[4].declare((int)this.getX(), (int)this.getY() + 468);
-		
-		boxes[5] = new Textbox("");
-		boxes[5].changeBoxVisability();
-		boxes[5].changeWidth(432/16);
-		boxes[5].changeHeight(144/16);
-		boxes[5].declare((int)this.getX(), (int)this.getY() + 576);
-		
-		boxes[6] = new Textbox("");
-		boxes[6].changeBoxVisability();
-		boxes[6].changeWidth(216/16);
-		boxes[6].changeHeight(108/16);
-		boxes[6].declare((int)this.getX() + 864, (int)this.getY() + 468);
-		
-		boxes[7] = new Textbox("");
-		boxes[7].changeBoxVisability();
-		boxes[7].changeWidth(432/16);
-		boxes[7].changeHeight(144/16);
-		boxes[7].declare((int)this.getX() + 648, (int)this.getY() + 576);
-		
-		boxes[8] = new Textbox("");
-		boxes[8].changeBoxVisability();
-		boxes[8].changeWidth(216/16);
-		boxes[8].changeHeight(144/16);
-		
-		
-		if (!topJunction) {
-			boxes[8].declare((int)this.getX() + 432, (int)this.getY());
-		}
-		
-		boxes[9] = new Textbox("");
-		boxes[9].changeBoxVisability();
-		boxes[9].changeWidth(216/16);
-		boxes[9].changeHeight(216/16);
-		
-		if (!leftJunction) {
-			boxes[9].declare((int)this.getX(), (int)this.getY() + 252);
-		}
-		
-		boxes[10] = new Textbox("");
-		boxes[10].changeBoxVisability();
-		boxes[10].changeWidth(216/16);
-		boxes[10].changeHeight(216/16);
-		if (!rightJunction) {
-			boxes[10].declare((int)this.getX() + 864, (int)this.getY() + 252);
-		}
-		
-		boxes[11] = new Textbox("");
-		boxes[11].changeBoxVisability();
-		boxes[11].changeWidth(216/16);
-		boxes[11].changeHeight(144/16);
-		if (!bottomJunction) {
-			boxes[11].declare((int)this.getX() + 432, (int)this.getY() + 576);
-		}
-		
-		
-//		int colorNum = rand.nextInt(5); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
-//		
-//		String color = "";
-//		
-//		//thanks stack overflow :)
-//		try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/colors.txt"))) {
-//		  color = (lines.skip(colorNum).findFirst().get());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		for (int i = 0; i < boxes.length; i++) {
+		if (biatch == null) {
 			
-			String finalMessage = "";
-			while (boxes[i].getSpace() > finalMessage.length()) {
-				int lineNum2 = rand.nextInt(315); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			Random rand = new Random ();
+			
+			
+			String toUse = "";
+			
+			
+			int lineNum = rand.nextInt(12); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			
+			//thanks stack overflow :)
+			try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/rooms.txt"))) {
 				
-				//thanks stack overflow :)
-				try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/code.txt"))) {
-				    finalMessage = finalMessage + lines.skip(lineNum2).findFirst().get();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			    toUse = lines.skip(lineNum).findFirst().get();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (toUse.equals("resources/sprites/room_bricks.png") || toUse.equals("resources/sprites/room_corners.png") || toUse.equals("resources/sprites/room_heart.png") || toUse.equals("resources/sprites/room_lake.png") || toUse.equals("resources/sprites/room_ram_fields.png") ) {
+				pixelColls = true;
+			}
+			this.setSprite(new Sprite (toUse));
+			
+			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
+			
+				if (rand.nextInt(20) == 13) {
+				
+				int memNum = rand.nextInt(256);
+				
+				Register r = new Register(memNum);
+				
+				int [] spawnPoint = biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
+				
+				r.declare(spawnPoint[0],spawnPoint[1]);
+				
+				this.r = r;
+				
+				
+				Roome dataRoom = map [rand.nextInt(10)][rand.nextInt(10)];
+				
+				if (dataRoom.biatch == null) {
+					dataRoom.init();
 				}
+				
+				
+				DataSlot ds = new DataSlot (memNum);
+				
+				int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
+				
+				
+				ds.declare(otherPoint[0],otherPoint[1]);
+				
+				dataRoom.ds = ds;
 			}
 			
-			boxes[i].changeText(finalMessage.toUpperCase());
-			boxes[i].setFont("text (lime green)");
 			
+			
+			boxes[0] = new Textbox("");
+			boxes[0].changeBoxVisability();
+			boxes[0].changeWidth(432/16);
+			boxes[0].changeHeight(144/16);
+			boxes[0].declare((int)this.getX(), (int)this.getY());
+			
+			boxes[1] = new Textbox("");
+			boxes[1].changeBoxVisability();
+			boxes[1].changeWidth(216/16);
+			boxes[1].changeHeight(108/16);
+			boxes[1].declare((int)this.getX(), (int)this.getY() + 144);
+			
+			
+			boxes[2] = new Textbox("");
+			boxes[2].changeBoxVisability();
+			boxes[2].changeWidth(432/16);
+			boxes[2].changeHeight(144/16);
+			boxes[2].declare((int)this.getX() + 648, (int)this.getY());
+			
+			boxes[3] = new Textbox("");
+			boxes[3].changeBoxVisability();
+			boxes[3].changeWidth(216/16);
+			boxes[3].changeHeight(108/16);
+			boxes[3].declare((int)this.getX() + 864, (int)this.getY() + 144);
+			
+			boxes[4] = new Textbox("");
+			boxes[4].changeBoxVisability();
+			boxes[4].changeWidth(216/16);
+			boxes[4].changeHeight(108/16);
+			boxes[4].declare((int)this.getX(), (int)this.getY() + 468);
+			
+			boxes[5] = new Textbox("");
+			boxes[5].changeBoxVisability();
+			boxes[5].changeWidth(432/16);
+			boxes[5].changeHeight(144/16);
+			boxes[5].declare((int)this.getX(), (int)this.getY() + 576);
+			
+			boxes[6] = new Textbox("");
+			boxes[6].changeBoxVisability();
+			boxes[6].changeWidth(216/16);
+			boxes[6].changeHeight(108/16);
+			boxes[6].declare((int)this.getX() + 864, (int)this.getY() + 468);
+			
+			boxes[7] = new Textbox("");
+			boxes[7].changeBoxVisability();
+			boxes[7].changeWidth(432/16);
+			boxes[7].changeHeight(144/16);
+			boxes[7].declare((int)this.getX() + 648, (int)this.getY() + 576);
+			
+			boxes[8] = new Textbox("");
+			boxes[8].changeBoxVisability();
+			boxes[8].changeWidth(216/16);
+			boxes[8].changeHeight(144/16);
+			
+			
+			if (!topJunction) {
+				boxes[8].declare((int)this.getX() + 432, (int)this.getY());
+			}
+			
+			boxes[9] = new Textbox("");
+			boxes[9].changeBoxVisability();
+			boxes[9].changeWidth(216/16);
+			boxes[9].changeHeight(216/16);
+			
+			if (!leftJunction) {
+				boxes[9].declare((int)this.getX(), (int)this.getY() + 252);
+			}
+			
+			boxes[10] = new Textbox("");
+			boxes[10].changeBoxVisability();
+			boxes[10].changeWidth(216/16);
+			boxes[10].changeHeight(216/16);
+			if (!rightJunction) {
+				boxes[10].declare((int)this.getX() + 864, (int)this.getY() + 252);
+			}
+			
+			boxes[11] = new Textbox("");
+			boxes[11].changeBoxVisability();
+			boxes[11].changeWidth(216/16);
+			boxes[11].changeHeight(144/16);
+			if (!bottomJunction) {
+				boxes[11].declare((int)this.getX() + 432, (int)this.getY() + 576);
+			}
+			
+			
+			int colorNum = rand.nextInt(5); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			
+			String color = "";
+			
+			//thanks stack overflow :)
+			try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/colors.txt"))) {
+			  color = (lines.skip(colorNum).findFirst().get());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			for (int i = 0; i < boxes.length; i++) {
+				
+				String finalMessage = "";
+				while (boxes[i].getSpace()/2 > finalMessage.length()) {
+					int lineNum2 = rand.nextInt(315); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+					
+					//thanks stack overflow :)
+					try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/code.txt"))) {
+					    finalMessage = finalMessage + " " + lines.skip(lineNum2).findFirst().get();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				boxes[i].changeText(finalMessage.toUpperCase());
+				boxes[i].setFont(color);
+				
+			}
 		}
 	}
 	
@@ -410,6 +463,11 @@ public class Roome extends GameObject {
 		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
 		
+		if (pixelColls) {
+			if (biatch.isColliding(obj)) {
+				return true;
+			}
+		}
 //	Graphics2D grapics =(Graphics2D) RenderLoop.wind.getBufferGraphics();
 //		
 //		grapics.drawRect(rect1.x,rect1.y,rect1.width,rect1.height);
