@@ -73,22 +73,18 @@ public class GameCode {
 				
 				ArrayList<GameObject> regObjs = ObjectHandler.getObjectsByName ("Register");
 				for (int i = 0; i < regObjs.size (); i++) {
-					if (((Register)regObjs.get (i)).wasUpdated ()) {
-						toSend += regObjs.get (i).toString ();
-						if (i != regObjs.size () - 1) {
-							toSend += ",";
-						}
+					toSend += regObjs.get (i).toString ();
+					if (i != regObjs.size () - 1) {
+						toSend += ",";
 					}
 				}
 				
 				toSend += ":";
 				ArrayList<GameObject> slotObjs = ObjectHandler.getObjectsByName ("DataSlot");
 				for (int i = 0; i < slotObjs.size (); i++) {
-					if (((DataSlot)slotObjs.get (i)).wasUpdated ()) {
-						toSend += slotObjs.get (i).toString ();
-						if (i != slotObjs.size () - 1) {
-							toSend += ",";
-						}
+					toSend += slotObjs.get (i).toString ();
+					if (i != slotObjs.size () - 1) {
+						toSend += ",";
 					}
 				}
 			} catch (NullPointerException e) {
@@ -154,9 +150,7 @@ public class GameCode {
 		bit3.updateIcon ();
 		bit4.updateIcon ();
 		Hud hud = new Hud ();
-		if (NetworkHandler.isHost ()) {
-			hud.newWave ();
-		}
+		hud.newWave ();
 		hud.declare();
 	}
 	

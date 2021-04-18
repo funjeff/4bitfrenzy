@@ -25,8 +25,6 @@ public class Register extends GameObject {
 	
 	boolean modified;
 	
-	String prevEncoding = null;
-	
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
@@ -40,7 +38,8 @@ public class Register extends GameObject {
 	public void refreshRegister (String info) {
 		String [] infos = info.split(" ");
 		memAddress = Integer.parseInt(infos[1]);
-		display.changeText(infos[1]);
+		int num = Integer.parseInt (infos[1]);
+		display.changeText(Integer.toHexString (num).toUpperCase ());
 		if (Integer.parseInt(infos[2]) != -1) {
 			this.setSprite(new Sprite ("resources/sprites/Regester combined.png"));
 			secondAddress = Integer.parseInt(infos[2]);
@@ -119,7 +118,12 @@ public class Register extends GameObject {
 	@Override
 	public void frameEvent () {
 		super.frameEvent ();
-		
+		if (TitleScreen.titleClosed) {
+			this.updateTime++;
+			if (this.updateTime > 15 && !NetworkHandler.isHost ()) {
+				forget ();
+			}
+		}
 	}
 	
 	@Override
@@ -140,10 +144,6 @@ public class Register extends GameObject {
 	}
 	@Override
 	public String toString () {
-		prevEncoding = getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + spawnTime + " " + this.getX() + " " + this.getY();
-		return prevEncoding;
-	}
-	public boolean wasUpdated () {
-		return prevEncoding == null || !prevEncoding.equals (toString ());
+		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + spawnTime + " " + this.getX() + " " + this.getY();
 	}
 }

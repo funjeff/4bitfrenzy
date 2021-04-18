@@ -101,6 +101,13 @@ public class DataSlot extends GameObject {
 			}
 		}
 		
+		if (TitleScreen.titleClosed) {
+			this.updateTime++;
+			if (this.updateTime > 15 && !NetworkHandler.isHost ()) {
+				forget ();
+			}
+		}
+		
 	}
 	public void draw () {
 		super.draw();
@@ -146,18 +153,12 @@ public class DataSlot extends GameObject {
 		}
 	}
 	
-	public boolean wasUpdated () {
-		if (prevEncoding == null || !prevEncoding.equals (toString ())) {
-			return true;
-		}
-		return false;
-	}
-	
 	public void refreshDataSlot (String info) {
 		
 		String [] infos = info.split(" ");
 		if (display != null) {
-			display.changeText(infos[1]);
+			int val = Integer.parseInt (infos[1]);
+			display.changeText(Integer.toHexString (val).toUpperCase ());
 		}
 		if (Boolean.parseBoolean(infos[2])) {
 			this.getAnimationHandler().setAnimationFrame(1);
