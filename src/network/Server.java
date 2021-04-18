@@ -1,5 +1,6 @@
 package network;
 
+import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -109,6 +110,9 @@ public class Server extends Thread {
 				}
 				if (GameCode.bit.keyDown ('D')) {
 					toSend += 'D';
+				}
+				if (GameCode.bit.keyDown (KeyEvent.VK_SHIFT)) {
+					toSend += 'v';
 				}
 				//System.out.println (toSend);
 				return toSend;

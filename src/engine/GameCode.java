@@ -109,6 +109,9 @@ public class GameCode {
 				if (bit.keyDown ('D')) {
 					toSend += 'D';
 				}
+				if (bit.keyDown (KeyEvent.VK_SHIFT)) {
+					toSend += 'v';
+				}
 			} catch (NullPointerException e) {
 				return; //Stuff hasn't been initialized yet
 			}

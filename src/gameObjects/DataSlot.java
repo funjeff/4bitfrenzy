@@ -40,7 +40,7 @@ public class DataSlot extends GameObject {
 		this.getAnimationHandler().setAnimationFrame(0);
 		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
-		display.setRenderPriority(2);
+		display.setRenderPriority(3);
 		this.setRenderPriority(2);
 		display.setFont("text (red)");
 		this.setHitboxAttributes(84, 90);

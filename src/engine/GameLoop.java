@@ -19,7 +19,7 @@ public class GameLoop implements Runnable {
 	/**
 	 * The maximum framerate the game can run at
 	 */
-	public static final double stepsPerSecond = 30;
+	public static final double stepsPerSecond = 60;
 	/**
 	 * The time of the last update to the GameWindow, in nanoseconds.
 	 */
