@@ -39,9 +39,10 @@ public class GameCode {
 	public static void testBitch () {
 		
 		titleScreen = new TitleScreen ();
+		
+		Roome.generateMap();
 		titleScreen.declare (0, 0);
 		titleScreen.setRenderPriority(69);
-		Roome.generateMap();
 		}
 	
 	public static void setView (int x, int y) {
@@ -59,6 +60,7 @@ public class GameCode {
 	}
 	
 	public static void gameLoopFunc () {
+		
 		frame++;
 		if (NetworkHandler.isHost () && titleScreen.titleClosed) {
 			//Send server stuff out

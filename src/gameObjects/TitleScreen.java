@@ -3,6 +3,7 @@ package gameObjects;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.RenderLoop;
 import engine.Sprite;
@@ -13,7 +14,7 @@ import resources.Textbox;
 
 public class TitleScreen extends GameObject {
 	
-	public Sprite bg = new Sprite ("resources/sprites/title_screen.png");
+	public Sprite bg = new Sprite ("resources/sprites/title.png");
 	
 	private String ip;
 	
@@ -24,6 +25,8 @@ public class TitleScreen extends GameObject {
 	
 	private Button hostButton;
 	private Button joinButton;
+	private Button rulesButton;
+	
 	
 	boolean ipMode = false;
 	boolean isHost = false;
@@ -44,13 +47,22 @@ public class TitleScreen extends GameObject {
 		ip = "127.0.0.1:8080";
 		
 		//Make the buttons
-		hostButton = new Button (new Sprite ("resources/sprites/host_game_button.png"));
-		joinButton = new Button (new Sprite ("resources/sprites/join_game_button.png"));
-		hostButton.declare (32, 32);
-		joinButton.declare (128, 128);
+		hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
+		joinButton = new Button (new Sprite ("resources/sprites/join.png"));
+		rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
+		
+		hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
+		joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
+		rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
+		
+		hostButton.declare (700, 32);
+		joinButton.declare (640, 207);
+		rulesButton.declare(680, 382);
+		
 		
 		hostButton.setRenderPriority(69);
 		joinButton.setRenderPriority(69);
+		rulesButton.setRenderPriority(69);
 		
 		//Make the textbox
 		ipBox = new Textbox ("HELLO");
@@ -60,7 +72,7 @@ public class TitleScreen extends GameObject {
 		ipBox.changeText ("HIA");
 		ipBox.changeBoxVisability ();
 		
-		ipBox.setRenderPriority(69);
+		ipBox.setRenderPriority(78);
 		
 	}
 	
@@ -120,6 +132,37 @@ public class TitleScreen extends GameObject {
 			joinButton.reset ();
 			enterIpMode ();
 		}
+		if (rulesButton.isPressed()) {
+			hostButton.forget();
+			joinButton.forget();
+			rulesButton.forget();
+			this.setSprite(new Sprite ("resources/sprites/game infographic.png"));
+			if (!getKeyEvents().isEmpty()) {
+				
+				setSprite (bg);
+				ip = "127.0.0.1:8080";
+				
+				//Make the buttons
+				hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
+				joinButton = new Button (new Sprite ("resources/sprites/join.png"));
+				rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
+				
+				hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
+				joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
+				rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
+				
+				hostButton.declare (700, 32);
+				joinButton.declare (640, 207);
+				rulesButton.declare(680, 382);
+				
+				
+				hostButton.setRenderPriority(69);
+				joinButton.setRenderPriority(69);
+				rulesButton.setRenderPriority(69);
+				rulesButton.pressed = false;
+			}
+			
+		}
 		
 		if (ipMode && !failedMode && !connectedMode && !waitMode) {
 			
@@ -127,7 +170,7 @@ public class TitleScreen extends GameObject {
 			if (isHost) {
 				ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
 				if (keyPressed (KeyEvent.VK_ENTER)) {
-					RenderLoop.wind.setTitle ("PLAYER 1");
+					System.out.println ("STARTING");
 					titleClosed = true;
 					ipBox.forget ();
 					forget ();
@@ -153,6 +196,7 @@ public class TitleScreen extends GameObject {
 		//Remove the buttons
 		hostButton.forget ();
 		joinButton.forget ();
+		rulesButton.forget();
 		
 		//Setup the server if hosting
 		if (isHost) {
@@ -162,7 +206,6 @@ public class TitleScreen extends GameObject {
 		}
 		
 		ipMode = true;
-		System.out.println (isHost);
 	}
 	
 	public static void connectSuccess () {
@@ -176,20 +219,28 @@ public class TitleScreen extends GameObject {
 	public static class Button extends GameObject {
 		
 		private boolean pressed = false;
+		private Sprite green;
+		private Sprite red;
 		
 		public Button (Sprite sprite) {
 			pressed = false;
+			red = sprite;
 			setSprite (sprite);
 		}
-		
+		public void setGreen (Sprite green) {
+			this.green = green;
+		}
 		@Override
 		public void frameEvent () {
 			int mouseX = getCursorX ();
 			int mouseY = getCursorY ();
 			if (mouseX > getX () && mouseY > getY () && mouseX < getX () + getSprite ().getWidth () && mouseY < getY () + getSprite ().getHeight ()) {
+				this.setSprite(green);
 				if (this.mouseButtonReleased (0)) {
 					pressed = true;
 				}
+			} else {
+				this.setSprite(red);
 			}
 		}
 		
@@ -202,5 +253,4 @@ public class TitleScreen extends GameObject {
 		}
 		
 	}
-	
 }

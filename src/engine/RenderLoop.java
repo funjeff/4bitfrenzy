@@ -28,6 +28,8 @@ public class RenderLoop {
 	
 	static public Thread renderThread;
 	
+	static public boolean running = true;
+	
 	public static void main (String[] args) {
 		//Sets the initial frame time
 		frameTime = System.currentTimeMillis ();
@@ -41,7 +43,7 @@ public class RenderLoop {
 		lastUpdate = System.nanoTime ();
 		renderThread = Thread.currentThread ();
 		
-		while (true) {
+		while (running) {
 			//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
 			long targetNanoseconds = (long)(1000000000 / maxFramerate);
 			//Get the time before refreshing the window
@@ -70,6 +72,7 @@ public class RenderLoop {
 				
 			}
 		}
+		wind.dispose();
 	}
 	
 	/**

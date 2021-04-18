@@ -24,6 +24,11 @@ import engine.Sprite;
 import gameObjects.DataSlot;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
+import items.Bombs;
+import items.DataScrambler;
+import items.Glue;
+import items.Speed;
+import items.Teleporter;
 import network.NetworkHandler;
 import resources.Textbox;
 
@@ -87,6 +92,39 @@ public class Roome extends GameObject {
 			
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
 			
+			
+				if (rand.nextInt(10) == 4) {
+					
+					int [] spawnCoords = biatch.getPosibleCoords(32, 32);
+					
+					switch (rand.nextInt(5)) {
+					case 0:
+						Glue glue = new Glue ();
+						glue.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 1:
+						Bombs bombs = new Bombs ();
+						bombs.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 2:
+						Speed speed = new Speed ();
+						speed.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 3:
+						Teleporter tele = new Teleporter ();
+						tele.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 4:
+						DataScrambler scrambler = new DataScrambler ();
+						scrambler.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					}
+							
+					
+					
+				}
+			
+			
 				if (rand.nextInt(20) == 13) {
 				
 				int memNum = rand.nextInt(256);
@@ -100,10 +138,45 @@ public class Roome extends GameObject {
 				this.r = r;
 				
 				
-				Roome dataRoom = map [rand.nextInt(10)][rand.nextInt(10)];
+				
+				int xCoord = rand.nextInt(3);
+				
+				if (rand.nextBoolean()) {
+					xCoord = xCoord * -1;
+				}
+				
+				xCoord = roomPosX + xCoord;
+				
+				
+				int yCoord = rand.nextInt(3);
+				
+				if (rand.nextBoolean()) {
+					yCoord = yCoord * -1;
+				}
+				
+				yCoord = roomPosY + yCoord;
+				
+				if (xCoord > 9) {
+					xCoord = 9;
+				}
+				
+				if (xCoord < 0) {
+					xCoord = 0;
+				}
+				if (yCoord > 9) {
+					yCoord = 9;
+				}
+				
+				if (yCoord < 0) {
+					yCoord = 0;
+				}
+				
+				Roome dataRoom = map [xCoord][yCoord];
+				
+	
 				
 				if (dataRoom.biatch == null) {
-					dataRoom.init(1, 1); //TODO change this, it NEEDS to be changed
+					dataRoom.init(1, 1); //TODO change this! it NEEDS to be changed
 				}
 				
 				

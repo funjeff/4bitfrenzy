@@ -7,7 +7,13 @@ import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
 import gameObjects.DataSlot;
+import gameObjects.GameOverScreen;
 import gameObjects.Register;
+import items.Bombs;
+import items.DataScrambler;
+import items.Glue;
+import items.Speed;
+import items.Teleporter;
 import map.Roome;
 
 public class Hud extends GameObject {
@@ -20,7 +26,11 @@ public class Hud extends GameObject {
 	static Textbox waveNum;
 	static Textbox registersRemaining;
 	long prevTime;
+	static int lives = 10;
 	
+
+	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
+
 	
 	public Hud () {
 		scoreDisplay = new Textbox ("SCORE: 00000000");
@@ -106,28 +116,74 @@ public class Hud extends GameObject {
 		
 		timer.changeText(Integer.toString(numMinutes) + ":"+ secondsString + " REMAINING");
 		timer.draw();
+		
+		for (int i = 0; i < lives; i++) {
+				HEART.draw((i * 54) + 20, 0);
+		}
 		} catch (NullPointerException e) {
 			//Things aren't set up yet
 		}
 	
 	}
-	
-	
 	public static void newWave() {
 		roundNum = roundNum + 1;
 		waveNum.changeText("WAVE NUMBER " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
+
+		for (int i = 0; i < slots.size(); i++) {
+			DataSlot currentSlot = (DataSlot) slots.get(i);
+			if (currentSlot.isCleared()) {
+				currentSlot.forget();
+			} else {
+				lives = lives - 1;
+				if (lives <= 0) {
+					GameOverScreen screen = new GameOverScreen();
+					screen.declare(0,0);
+					GameCode.setView(0, 0);
+				}
+			}
+		}
 		if (slots != null) {
 			for (int i = 0; i < slots.size(); i++) {
 				DataSlot currentSlot = (DataSlot) slots.get(i);
 				if (currentSlot.isCleared()) {
 					currentSlot.forget();
+
 				}
 			}
 		}
 		Random rand = new Random ();
 		for (int i = 0; i < Roome.map.length; i++) {
 			for (int j = 0; j < Roome.map[i].length; j++) {
+				if (rand.nextInt(10) < roundNum) {
+					
+					int [] spawnCoords = Roome.map[i][j].biatch.getPosibleCoords(32, 32);
+					
+					switch (rand.nextInt(5)) {
+					case 0:
+						Glue glue = new Glue ();
+						glue.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 1:
+						Bombs bombs = new Bombs ();
+						bombs.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 2:
+						Speed speed = new Speed ();
+						speed.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 3:
+						Teleporter tele = new Teleporter ();
+						tele.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					case 4:
+						DataScrambler scrambler = new DataScrambler ();
+						scrambler.declare(spawnCoords[0], spawnCoords[1]);
+						break;
+					}
+							
+				}
+				
 				if (rand.nextInt(20) < roundNum) {
 					int memNum = rand.nextInt(256);
 					
@@ -139,8 +195,39 @@ public class Hud extends GameObject {
 					
 					Roome.map[i][j].r = r;
 					
+					int xCoord = rand.nextInt(3);
 					
-					Roome dataRoom = Roome.map [rand.nextInt(10)][rand.nextInt(10)];
+					if (rand.nextBoolean()) {
+						xCoord = xCoord * -1;
+					}
+					
+					xCoord = i + xCoord;
+					
+					
+					int yCoord = rand.nextInt(3);
+					
+					if (rand.nextBoolean()) {
+						yCoord = yCoord * -1;
+					}
+					
+					yCoord = j + yCoord;
+					
+					if (xCoord > 9) {
+						xCoord = 9;
+					}
+					
+					if (xCoord < 0) {
+						xCoord = 0;
+					}
+					if (yCoord > 9) {
+						yCoord = 9;
+					}
+					
+					if (yCoord < 0) {
+						yCoord = 0;
+					}
+					
+					Roome dataRoom = Roome.map [xCoord][yCoord];
 					DataSlot ds = new DataSlot (memNum);
 					
 					int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
@@ -152,7 +239,6 @@ public class Hud extends GameObject {
 				}
 			}
 		}
-		
 		timeLeft = 60000 * 5 + 60000 * roundNum;
 	}
 	

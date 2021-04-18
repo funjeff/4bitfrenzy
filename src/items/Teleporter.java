@@ -1,6 +1,10 @@
 package items;
 
+import java.util.Random;
+
 import engine.Sprite;
+import map.Roome;
+import players.Bit;
 
 public class Teleporter extends Item {
 
@@ -14,11 +18,15 @@ public class Teleporter extends Item {
 		this.setY(Double.parseDouble(infos[1]));
 	}
 	/**
-	 * returns true if item use was succsefull false otherwise
+	 * returns true if item use was succsefully false otherwise
 	 */
 	@Override
 	public boolean useItem (Bit user) {
-		
+		Random rand = new Random ();
+		int [] telportCoords = Roome.map[rand.nextInt(10)][rand.nextInt(10)].biatch.getPosibleCoords(user.hitbox().width, user.hitbox().height);
+		user.goX(telportCoords[0]);
+		user.goY(telportCoords[1]);
+		return true;
 	}
 	@Override
 	public String toString () {

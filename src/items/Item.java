@@ -7,6 +7,8 @@ public class Item extends GameObject {
 	
 	public boolean pickupablity = true;
 	
+	public int uses = 2;
+	
 	public Item () {
 		
 	}

@@ -12,6 +12,7 @@ import gameObjects.Compass;
 import gameObjects.Register;
 import items.Item;
 import items.ItemBox;
+import map.Map;
 import map.Roome;
 import network.NetworkHandler;
 import resources.Textbox;
@@ -32,7 +33,9 @@ public class Bit extends GameObject {
 	
 	long speedUpTimer = 0;
 	
-	int perk; 
+	Map map = new Map ();
+	
+	public int perk = 5; 
 	// 0 = blast processing
 	// 1 = register hauler
 	// 2 = navigation bit
@@ -48,8 +51,8 @@ public class Bit extends GameObject {
 		inventory.declare();
 		compass = new Compass (this);
 		Random rand = new Random ();
-		//compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
-		//compass.declare(0, 0);
+		compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+		compass.declare(0, 0);
 	}
 	
 	public void updateIcon () {
@@ -65,8 +68,9 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void frameEvent () {
+		String keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
 		if (NetworkHandler.isHost ()) {
-			String keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
+
 			if (keyPressed (10)) {
 				if (inventory.getItem() != null) {
 					inventory.useItem(this);
@@ -92,7 +96,16 @@ public class Bit extends GameObject {
 				}
 			}
 			
-			
+			if (!ObjectHandler.getObjectsByName("Register").isEmpty()){
+				GameObject old = compass.getPointObject();
+				while (old.equals(compass.getPointObject())){
+					Random rand = new Random ();
+					compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+				}
+			}
+		}
+		
+		
 			double resistance = 1;
 			if (perk != 1) {
 				if (regestersBeingCarried != null) {
@@ -162,10 +175,7 @@ public class Bit extends GameObject {
 			this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
 			this.setX(this.getX() + 3);
 			this.setY(this.getY() + 3);
-		} else {
-			
 		}
-	}
 	private void carryRegestersY (double dist) {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
@@ -296,5 +306,11 @@ public class Bit extends GameObject {
 		}
 		return true;
 	}
-	
+	@Override
+	public void draw () {
+		super.draw();
+		if (perk == 2 && keyDown ('M')) {
+			map.draw();
+		}
+	}
 }
