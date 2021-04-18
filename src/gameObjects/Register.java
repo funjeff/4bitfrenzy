@@ -25,9 +25,29 @@ public class Register extends GameObject {
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
 		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
-		this.setRenderPriority(1);
 		display.setFont("text (lime green)");
+		this.setRenderPriority(1);
 		this.setHitboxAttributes(98, 42);
+	}
+	
+	public void refreshRegister (String info) {
+		
+		String [] infos = info.split(" ");
+		memAddress = Integer.parseInt(infos[0]);
+		display.changeText(infos[0]);
+		if (Integer.parseInt(infos[1]) != -1) {
+			this.setSprite(new Sprite ("resources/sprites/Regester combined.png"));
+			secondAddress = Integer.parseInt(infos[1]);
+		}
+		
+		if (Boolean.parseBoolean(infos[2])) {
+			this.setSprite(new Sprite ("resources/sprites/Regester scrambled.png"));
+		
+		}
+		this.setX(Double.parseDouble(infos[3]));
+		this.setY(Double.parseDouble(infos[4]));
+		
+		
 	}
 	@Override 
 	public void onDeclare () {
@@ -106,6 +126,8 @@ public class Register extends GameObject {
 			}
 		}
 	}
-	
-	
+	@Override
+	public String toString () {
+		return memAddress + " " + secondAddress + " " + scrambled + " " + spawnTime + " " + this.getX() + " " + this.getY();
+	}
 }

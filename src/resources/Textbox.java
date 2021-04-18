@@ -78,6 +78,9 @@ public class Textbox extends GameObject {
 		text1 = newText;
 		message = newText;
 	}
+	public String getText () {
+		return text1;
+	}
 	public void setFont (String fontName) {
 		ArrayList <String> parserQuantitys = new ArrayList<String> ();
 		parserQuantitys.add("grid 16 16");

@@ -31,7 +31,7 @@ public class DataSlot extends GameObject {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite("resources/sprites/config/drive.txt"));
 		this.getAnimationHandler().setAnimationFrame(0);
-		display = new Textbox (Integer.toHexString(memAddress));
+		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
 		this.setRenderPriority(2);
 		display.setFont("text (red)");
@@ -130,4 +130,35 @@ public class DataSlot extends GameObject {
 	public void setCleared(boolean cleared) {
 		this.cleared = cleared;
 	}
+	
+	@Override
+	public String toString () {
+		if (reward == null) {
+			return memAddress  + " " + cleared + " " + null + " " + this.getX() + " " + this.getY();
+		} else {
+			return memAddress  + " " + cleared + " " + reward.getText() + " " + this.getX() + " " + this.getY();
+		}
+	}
+	
+	public void refreshDataSlot (String info) {
+		
+		String [] infos = info.split(" ");
+		if (display != null) {
+			display.changeText(infos[0]);
+		}
+		if (Boolean.parseBoolean(infos[1])) {
+			this.getAnimationHandler().setAnimationFrame(1);
+		}
+		if (infos[2] != null) {
+			reward = new Textbox (infos[2]);
+			reward.changeBoxVisability();
+			reward.setFont("text (lime green)");
+			display = null;
+		}
+		this.setX(Double.parseDouble(infos[3]));
+		this.setY(Double.parseDouble(infos[4]));
+		
+		
+	}
+	
 }

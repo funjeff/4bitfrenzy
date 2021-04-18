@@ -65,6 +65,10 @@ public abstract class GameObject extends GameAPI {
 	
 	int renderPriority = 0; 
 	
+	int id;
+	
+	static int lastID;
+	
 	/**
 	 * Container and utility class for GameObject variants
 	 * @author nathan
@@ -227,6 +231,8 @@ public abstract class GameObject extends GameAPI {
 		declared = true;
 		this.x = x;
 		this.y = y;
+		id = lastID;
+		lastID = lastID + 1;
 		this.onDeclare();
 	}
 	
