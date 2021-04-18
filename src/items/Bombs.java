@@ -28,6 +28,15 @@ public class Bombs extends Item {
 		pickupablity = false;
 		return true;
 	}
+	
+	
+	public void refresh(String info) {
+		String [] infos = info.split(" ");
+		this.setX(Double.parseDouble(infos[0]));
+		this.setY(Double.parseDouble(infos[1]));
+	}
+	
+	
 	@Override
 	public void frameEvent () {
 		if (thrown) {
@@ -74,5 +83,9 @@ public class Bombs extends Item {
 				break;
 			}
 		}
+	}
+	@Override
+	public String toString () {
+		return this.getX() + " " + this.getY();
 	}
 }

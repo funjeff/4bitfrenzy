@@ -8,7 +8,11 @@ public class Teleporter extends Item {
 		this.setSprite(new Sprite ("resources/sprites/teleporter.png"));
 		this.setHitboxAttributes(32, 32);
 	}
-	
+	public void refresh(String info) {
+		String [] infos = info.split(" ");
+		this.setX(Double.parseDouble(infos[0]));
+		this.setY(Double.parseDouble(infos[1]));
+	}
 	/**
 	 * returns true if item use was succsefull false otherwise
 	 */
@@ -16,5 +20,8 @@ public class Teleporter extends Item {
 	public boolean useItem (Bit user) {
 		
 	}
-	
+	@Override
+	public String toString () {
+		return this.getX() + " " + this.getY();
+	}	
 }

@@ -46,5 +46,12 @@ public class ItemBox extends GameObject {
 			item.draw();
 		}
 	}
-	
+	@Override
+	public String toString () {
+		if (item == null) {
+			return "null";
+		} else {
+			return item.getClass().getSimpleName();
+		}
+	}
 }

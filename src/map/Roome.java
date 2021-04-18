@@ -24,6 +24,7 @@ import engine.Sprite;
 import gameObjects.DataSlot;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
+import network.NetworkHandler;
 import resources.Textbox;
 
 public class Roome extends GameObject {
@@ -510,6 +511,9 @@ public class Roome extends GameObject {
 		topJunction = true;
 		boxes[8].forget();
 		
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("destroy top: " + roomPosX + " " + roomPosY);
+		}
 	}
 	public void destroyBottomWall() {
 		try {
@@ -524,6 +528,9 @@ public class Roome extends GameObject {
 		}
 		bottomJunction = true;
 		boxes[11].forget();
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("destroy bottom: " + roomPosX + " " + roomPosY);
+		}
 	}
 	public void destroyRightWall() {
 		try {
@@ -538,6 +545,9 @@ public class Roome extends GameObject {
 		}
 		rightJunction = true;
 		boxes[10].forget();
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("destroy right: " + roomPosX + " " + roomPosY);
+		}
 	}
 	public void destroyLeftWall() {
 		try {
@@ -553,6 +563,9 @@ public class Roome extends GameObject {
 		
 		leftJunction = true;
 		boxes[9].forget();
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("destroy left: " + roomPosX + " " + roomPosY);
+		}
 	}
 	
 	@Override
