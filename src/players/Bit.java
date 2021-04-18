@@ -68,7 +68,12 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void frameEvent () {
-		String keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
+		String keys;
+		try {
+			keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
+		} catch (NullPointerException e) {
+			keys = null;
+		}
 		if (NetworkHandler.isHost ()) {
 
 			if (keyPressed (10)) {
