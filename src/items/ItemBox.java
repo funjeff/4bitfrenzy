@@ -28,7 +28,14 @@ public class ItemBox extends GameObject {
 	public void useItem (Bit user) {
 		if (item != null) {
 			if (item.useItem(user)) {
-				item = null;
+				if (user.perk != 4) {
+					item = null;
+				} else {
+					item.uses = item.uses - 1;
+					if (item.uses == 0) {
+						item = null;
+					}
+				}
 			}
 		}
 	}

@@ -12,6 +12,7 @@ import gameObjects.Compass;
 import gameObjects.Register;
 import items.Item;
 import items.ItemBox;
+import map.Map;
 import map.Roome;
 import resources.Textbox;
 
@@ -31,7 +32,9 @@ public class Bit extends GameObject {
 	
 	long speedUpTimer = 0;
 	
-	int perk; 
+	Map map = new Map ();
+	
+	public int perk = 5; 
 	// 0 = blast processing
 	// 1 = register hauler
 	// 2 = navigation bit
@@ -108,13 +111,13 @@ public class Bit extends GameObject {
 			
 			GameObject old = compass.getPointObject();
 			
-			
-			while (old.equals(compass.getPointObject())){
-				Random rand = new Random ();
-				compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+			if (!ObjectHandler.getObjectsByName("Register").isEmpty()){
+				while (old.equals(compass.getPointObject())){
+					Random rand = new Random ();
+					compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+				}
 			}
 		}
-		
 		
 		if (keyDown('W')) {
 			if (this.goY((int)(this.getY() - speed))) {
@@ -275,5 +278,11 @@ public class Bit extends GameObject {
 		}
 		return true;
 	}
-	
+	@Override
+	public void draw () {
+		super.draw();
+		if (perk == 2 && keyDown ('M')) {
+			map.draw();
+		}
+	}
 }
