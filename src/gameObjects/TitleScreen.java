@@ -321,7 +321,7 @@ public class TitleScreen extends GameObject {
 				duplicatieButton = new Button (new Sprite ("resources/sprites/duplication red.png"));
 				
 				
-				blastButton.setGreen(new Sprite ("resources/sprites/blast processsing greem"));
+				blastButton.setGreen(new Sprite ("resources/sprites/blast processsing greem.png"));
 				haulerButton.setGreen(new Sprite ("resources/sprites/grip strength green.png"));
 				naviationButton.setGreen(new Sprite ("resources/sprites/navigation bit green.png"));
 				duplicatieButton.setGreen(new Sprite ("resources/sprites/duplication green.png"));
@@ -345,20 +345,36 @@ public class TitleScreen extends GameObject {
 				public void frameEvent () {
 					if (blastButton.isPressed ()) {
 						perkNum = 0;
+						blastButton.forget();
+						haulerButton.forget();
+						naviationButton.forget();
+						duplicatieButton.forget();
 						this.forget();
 					}
 					
 					if (haulerButton.isPressed ()) {
 						perkNum = 1;
+						blastButton.forget();
+						haulerButton.forget();
+						naviationButton.forget();
+						duplicatieButton.forget();
 						this.forget();
 					}
 					if (naviationButton.isPressed ()) {
 						perkNum = 2;
+						blastButton.forget();
+						haulerButton.forget();
+						naviationButton.forget();
+						duplicatieButton.forget();
 						this.forget();
 					}
 					
 					if (duplicatieButton.isPressed ()) {
 						perkNum = 4;
+						blastButton.forget();
+						haulerButton.forget();
+						naviationButton.forget();
+						duplicatieButton.forget();
 						this.forget();
 					}
 					
