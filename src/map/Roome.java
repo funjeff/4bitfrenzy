@@ -421,6 +421,16 @@ public class Roome extends GameObject {
 			map [i / 10][i % 10] = r;
 		}
 		
+		String[] objsToRemove = new String[] {};
+		for (int i = 0; i < objsToRemove.length; i++) {
+			oldRooms = ObjectHandler.getObjectsByName(objsToRemove[i]);
+			if (oldRooms != null) {
+				while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
+					oldRooms.get(0).forget();
+				}
+			}
+		}
+		
 	}
 	
 	public static String saveMap () {

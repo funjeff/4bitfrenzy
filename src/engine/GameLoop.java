@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
+import network.NetworkHandler;
+
 /**
  * A loop for the game logic; mostly copy-pasted from RenderLoop
  * @author nathan
@@ -17,7 +19,7 @@ public class GameLoop implements Runnable {
 	/**
 	 * The maximum framerate the game can run at
 	 */
-	public static final double stepsPerSecond = 60;
+	public static final double stepsPerSecond = 30;
 	/**
 	 * The time of the last update to the GameWindow, in nanoseconds.
 	 */

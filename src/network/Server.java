@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import engine.GameCode;
 import engine.RenderLoop;
 
 public class Server extends Thread {
@@ -86,6 +87,42 @@ public class Server extends Thread {
 	
 	public String getIp () {
 		return serverIp;
+	}
+	
+	public int getNumPlayers () {
+		return connections.size ();
+	}
+	
+	public String getPlayerInputs (int playerNum) {
+		if (playerNum == 1) {
+			//Do inputs normally
+			String toSend = "";
+			try {
+				if (GameCode.bit.keyDown ('W')) {
+					toSend += 'W';
+				}
+				if (GameCode.bit.keyDown ('A')) {
+					toSend += 'A';
+				}
+				if (GameCode.bit.keyDown ('S')) {
+					toSend += 'S';
+				}
+				if (GameCode.bit.keyDown ('D')) {
+					toSend += 'D';
+				}
+				//System.out.println (toSend);
+				return toSend;
+			} catch (NullPointerException e) {
+				return ""; //Stuff hasn't been initialized yet
+			}
+		} else {
+			//Do inputs specially
+			if (playerNum - 1 <= connections.size ()) {
+				return connections.get (playerNum - 2).getInputs ();
+			} else {
+				return "";
+			}
+		}
 	}
 	
 	public class AcceptHandler extends Thread {

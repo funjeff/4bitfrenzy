@@ -26,7 +26,6 @@ public class TitleScreen extends GameObject {
 	private Button hostButton;
 	private Button joinButton;
 	private Button rulesButton;
-	private Button perksButton;
 	
 	
 	boolean ipMode = false;
@@ -35,7 +34,7 @@ public class TitleScreen extends GameObject {
 	boolean connectedMode = false;
 	boolean waitMode = false;
 	
-	public boolean titleClosed = false;
+	public static boolean titleClosed = false;
 	
 	static Server server;
 	static Client client;
@@ -51,23 +50,19 @@ public class TitleScreen extends GameObject {
 		hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
 		joinButton = new Button (new Sprite ("resources/sprites/join.png"));
 		rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
-		perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
 		
 		hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
 		joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
 		rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
-		perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
 		
 		hostButton.declare (700, 32);
 		joinButton.declare (640, 207);
 		rulesButton.declare(680, 382);
-		perksButton.declare(720, 550);
 		
 		
 		hostButton.setRenderPriority(69);
 		joinButton.setRenderPriority(69);
 		rulesButton.setRenderPriority(69);
-		perksButton.setRenderPriority(69);
 		
 		//Make the textbox
 		ipBox = new Textbox ("HELLO");
@@ -77,7 +72,7 @@ public class TitleScreen extends GameObject {
 		ipBox.changeText ("HIA");
 		ipBox.changeBoxVisability ();
 		
-		ipBox.setRenderPriority(69);
+		ipBox.setRenderPriority(78);
 		
 	}
 	
@@ -141,7 +136,6 @@ public class TitleScreen extends GameObject {
 			hostButton.forget();
 			joinButton.forget();
 			rulesButton.forget();
-			perksButton.forget();
 			this.setSprite(new Sprite ("resources/sprites/game infographic.png"));
 			if (!getKeyEvents().isEmpty()) {
 				
@@ -152,23 +146,19 @@ public class TitleScreen extends GameObject {
 				hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
 				joinButton = new Button (new Sprite ("resources/sprites/join.png"));
 				rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
-				perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
 				
 				hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
 				joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
 				rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
-				perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
 				
 				hostButton.declare (700, 32);
 				joinButton.declare (640, 207);
 				rulesButton.declare(680, 382);
-				perksButton.declare(720, 550);
 				
 				
 				hostButton.setRenderPriority(69);
 				joinButton.setRenderPriority(69);
 				rulesButton.setRenderPriority(69);
-				perksButton.setRenderPriority(69);
 				rulesButton.pressed = false;
 			}
 			
@@ -207,7 +197,6 @@ public class TitleScreen extends GameObject {
 		hostButton.forget ();
 		joinButton.forget ();
 		rulesButton.forget();
-		perksButton.forget();
 		
 		//Setup the server if hosting
 		if (isHost) {
@@ -217,7 +206,6 @@ public class TitleScreen extends GameObject {
 		}
 		
 		ipMode = true;
-		System.out.println (isHost);
 	}
 	
 	public static void connectSuccess () {
@@ -264,35 +252,5 @@ public class TitleScreen extends GameObject {
 			pressed = false;
 		}
 		
-	}
-	
-	public class perkMenu extends GameObject {
-		//Make the buttons
-				blastButton = new Button (new Sprite ("resources/sprites/blast processsing  red.png"));
-				haulerButton = new Button (new Sprite ("resources/sprites/grip strength.png"));
-				naviationButton = new Button (new Sprite ("resources/sprites/navigation bit red.png"));
-				duplicatieButton = new Button (new Sprite ("resources/sprites/duplication red.png"));
-				
-				
-				blastButton.setGreen(new Sprite ("resources/sprites/blast processsing greem"));
-				haluerButton.setGreen(new Sprite ("resources/sprites/grip strength green.png"));
-				naviationButton.setGreen(new Sprite ("resources/sprites/navigation bit green.png"));
-				duplicationButton.setGreen(new Sprite ("resources/sprites/duplication green.png"));
-				
-				
-				blastButton.declare (700, 32);
-				haulerButton.declare (640, 207);
-				naviationButton.declare(680, 382);
-				duplicationButton.declare(720, 550);
-				
-				
-				blastButton.setRenderPriority(69);
-				haulerButton.setRenderPriority(69);
-				naviationButton.setRenderPriority(69);
-				duplicationButton.setRenderPriority(69);
-				public perkMenu () {
-					this.setSprite ();
-				}
-				
 	}
 }

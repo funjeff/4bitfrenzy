@@ -2,6 +2,7 @@ package network;
 
 public class NetworkHandler {
 
+	private static int playerNum = 1;
 	private static boolean isHost;
 	private static Server server;
 	private static Client client;
@@ -12,6 +13,10 @@ public class NetworkHandler {
 	
 	public static boolean isHost () {
 		return isHost;
+	}
+	
+	public static int getPlayerNum () {
+		return playerNum;
 	}
 	
 	public static Client getClient () {
@@ -28,6 +33,10 @@ public class NetworkHandler {
 	
 	public static void setServer (Server s) {
 		server = s;
+	}
+	
+	public static void setPlayerNum (int num) {
+		playerNum = num;
 	}
 	
 }

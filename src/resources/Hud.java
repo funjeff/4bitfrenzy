@@ -1,6 +1,5 @@
 package resources;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,15 +18,15 @@ import map.Roome;
 
 public class Hud extends GameObject {
 	
-	static long score = 0;
+	public static long score = 0;
 	static Textbox scoreDisplay;
-	static long timeLeft = 600;
-	static int roundNum = 1;
+	public static long timeLeft = 60000 * 5;
+	public static int roundNum = 1;
 	static Textbox timer;
 	static Textbox waveNum;
 	static Textbox registersRemaining;
 	long prevTime;
-	static int lives = 1;
+	static int lives = 10;
 	
 
 	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
@@ -81,6 +80,7 @@ public class Hud extends GameObject {
 	@Override
 	public void draw () {
 		// once we do multiplayer put something here that make this happen only if its the right player
+		try {
 		scoreDisplay.setX(320 + GameCode.getViewX());
 		scoreDisplay.setY(100 + GameCode.getViewY());
 		scoreDisplay.draw();
@@ -120,14 +120,16 @@ public class Hud extends GameObject {
 		for (int i = 0; i < lives; i++) {
 				HEART.draw((i * 54) + 20, 0);
 		}
+		} catch (NullPointerException e) {
+			//Things aren't set up yet
+		}
 	
 	}
-	
-	
 	public static void newWave() {
 		roundNum = roundNum + 1;
 		waveNum.changeText("WAVE NUMBER " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
+
 		for (int i = 0; i < slots.size(); i++) {
 			DataSlot currentSlot = (DataSlot) slots.get(i);
 			if (currentSlot.isCleared()) {
@@ -138,7 +140,15 @@ public class Hud extends GameObject {
 					GameOverScreen screen = new GameOverScreen();
 					screen.declare(0,0);
 					GameCode.setView(0, 0);
-					
+				}
+			}
+		}
+		if (slots != null) {
+			for (int i = 0; i < slots.size(); i++) {
+				DataSlot currentSlot = (DataSlot) slots.get(i);
+				if (currentSlot.isCleared()) {
+					currentSlot.forget();
+
 				}
 			}
 		}
@@ -229,7 +239,6 @@ public class Hud extends GameObject {
 				}
 			}
 		}
-		
 		timeLeft = 60000 * 5 + 60000 * roundNum;
 	}
 	

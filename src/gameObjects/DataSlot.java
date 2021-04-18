@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
+import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
 import resources.Textbox;
@@ -18,6 +19,10 @@ public class DataSlot extends GameObject {
 	Textbox display;
 	
 	Textbox reward;
+	
+	int updateTime = 0;
+	
+	String prevEncoding = null;
 
 	public int getMemAddress() {
 		return memAddress;
@@ -95,6 +100,14 @@ public class DataSlot extends GameObject {
 				}
 			}
 		}
+		
+		if (TitleScreen.titleClosed) {
+			this.updateTime++;
+			if (this.updateTime > 15 && !NetworkHandler.isHost ()) {
+				forget ();
+			}
+		}
+		
 	}
 	public void draw () {
 		super.draw();
@@ -134,9 +147,9 @@ public class DataSlot extends GameObject {
 	@Override
 	public String toString () {
 		if (reward == null) {
-			return memAddress  + " " + cleared + " " + null + " " + this.getX() + " " + this.getY();
+			return getId () + " " + memAddress  + " " + cleared + " " + null + " " + this.getX() + " " + this.getY();
 		} else {
-			return memAddress  + " " + cleared + " " + reward.getText() + " " + this.getX() + " " + this.getY();
+			return getId () + " " + memAddress  + " " + cleared + " " + reward.getText() + " " + this.getX() + " " + this.getY();
 		}
 	}
 	
@@ -144,20 +157,21 @@ public class DataSlot extends GameObject {
 		
 		String [] infos = info.split(" ");
 		if (display != null) {
-			display.changeText(infos[0]);
+			int val = Integer.parseInt (infos[1]);
+			display.changeText(Integer.toHexString (val).toUpperCase ());
 		}
-		if (Boolean.parseBoolean(infos[1])) {
+		if (Boolean.parseBoolean(infos[2])) {
 			this.getAnimationHandler().setAnimationFrame(1);
 		}
-		if (infos[2] != null) {
-			reward = new Textbox (infos[2]);
+		if (infos[3] != null) {
+			reward = new Textbox (infos[3]);
 			reward.changeBoxVisability();
 			reward.setFont("text (lime green)");
 			display = null;
 		}
-		this.setX(Double.parseDouble(infos[3]));
-		this.setY(Double.parseDouble(infos[4]));
-		
+		this.setX(Double.parseDouble(infos[4]));
+		this.setY(Double.parseDouble(infos[5]));
+		updateTime = 0;
 		
 	}
 	
