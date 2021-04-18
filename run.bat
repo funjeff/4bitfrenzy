@@ -1,0 +1,1 @@
+java -jar -Xms4G -Xmx5G game_jam.jar

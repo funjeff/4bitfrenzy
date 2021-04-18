@@ -48,6 +48,7 @@ public class ServerConnection extends Thread {
 					if (str.equals ("PING")) {
 						dataOut.writeUTF ("PLAYER " + (server.getNumPlayers () + 1));
 						TitleScreen.playerJoin ();
+						dataOut.flush ();
 					}
 					if (str.length () >= 4 && str.substring (0, 4).equals ("KEYS")) {
 						String[] keyData = str.split (":");
@@ -61,6 +62,7 @@ public class ServerConnection extends Thread {
 				if (write) {
 					dataOut.writeUTF (message);
 					write = false;
+					dataOut.flush ();
 				}
 			}
 			
