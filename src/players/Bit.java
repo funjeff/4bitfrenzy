@@ -31,6 +31,14 @@ public class Bit extends GameObject {
 	
 	long speedUpTimer = 0;
 	
+	int perk; 
+	// 0 = blast processing
+	// 1 = register hauler
+	// 2 = navigation bit
+	// 3 = powerhouse
+	// 4 = duplication bit
+	// 5 = dual processing
+	
 	public Bit () {
 		this.setSprite(new Sprite ("resources/sprites/config/bits.txt"));
 		this.getAnimationHandler().setAnimationFrame(playerNum);
@@ -79,17 +87,22 @@ public class Bit extends GameObject {
 		
 		
 		double resistance = 1;
-		
-		if (regestersBeingCarried != null) {
-			if (!keyDown(16)) {
-				regestersBeingCarried = null;
-			} else {
-				resistance = 0.5/regestersBeingCarried.size();
+		if (perk != 1) {
+			if (regestersBeingCarried != null) {
+				if (!keyDown(16)) {
+					regestersBeingCarried = null;
+				} else {
+					resistance = 0.5/regestersBeingCarried.size();
+				}
+				
 			}
-			
 		}
 		
 		double speed = this.speed * resistance;
+		
+		if (perk == 0) {
+			speed = speed + 2;
+		}
 		
 		if(keyPressed (' ')) {
 			

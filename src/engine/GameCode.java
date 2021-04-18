@@ -10,7 +10,9 @@ import items.Bombs;
 import items.DataScrambler;
 import items.Glue;
 import items.Speed;
+import gameObjects.TitleScreen;
 import map.Roome;
+import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
 import resources.Textbox;
@@ -21,40 +23,18 @@ public class GameCode {
 	public static int viewY;
 	
 	static Textbox timer;
+	static boolean gameStarted = false;
 	
-	
+	private static TitleScreen titleScreen;
 	
 	
 	
 	public static void testBitch () {
 		
-		Roome.generateMap ();
-		Bit bit = new Bit ();
-		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
-		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-		bit.declare(spawnCoords[0],spawnCoords[1]);
-		
-		DataScrambler speed = new DataScrambler ();
-		speed.declare(spawnCoords[0] + 10, spawnCoords[1] + 40);
-		
-		Register reg = new Register (33);
-		Register reg2 = new Register (232);
-		
-		DataSlot d = new DataSlot (33);
-		DataSlot d2 = new DataSlot (232);
-		
-		reg.declare(spawnCoords[0] - 10, spawnCoords[1] - 40);
-		
-		reg2.declare(spawnCoords[0] + 40, spawnCoords[1]);
-		
-		d.declare(spawnCoords[0] + 200, spawnCoords[1] + 200);
-		
-		d2.declare(spawnCoords[0] - 50, spawnCoords[1] - 60);
-		
-		
-		Hud hud = new Hud ();
-		hud.declare();
-		
+		titleScreen = new TitleScreen ();
+		titleScreen.declare (0, 0);
+		titleScreen.setRenderPriority(69);
+		Roome.generateMap();
 		}
 	
 	public static void setView (int x, int y) {
@@ -73,11 +53,32 @@ public class GameCode {
 	
 	public static void gameLoopFunc () {
 		
+
+		
 	}
 
 	
 	public static void renderFunc () {
-		Roome.draw(RenderLoop.wind.getBufferGraphics ());
+		
+		if (titleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted) {
+			gameStarted = true;
+			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
+			initGameState ();
+		}
+	}
+	
+	public static void closeTitleScreen () {
+		titleScreen.forget ();
+	}
+	
+	public static void initGameState () {
+		Bit bit = new Bit ();
+		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
+		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+		bit.declare(spawnCoords[0],spawnCoords[1]);
+		
+		Hud hud = new Hud ();
+		hud.declare();
 	}
 	
 }

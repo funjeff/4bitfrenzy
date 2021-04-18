@@ -46,7 +46,7 @@ public class Textbox extends GameObject {
 	ArrayList <String> parserQuantitiys5 = new ArrayList<String>();
 	parserQuantitiys5.add("rectangle 8 0 8 8");
 	textBoxTop = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys2));
-	fontSheet = new Sprite ("resources/sprites/Text/normal.png", new SpriteParser(parserQuantitys));
+	fontSheet = new Sprite ("resources/sprites/Text/text (red).png", new SpriteParser(parserQuantitys));
 	textBoxBottum = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys3));
 	textBoxSides = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys4));
 	textBoxBackground = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys5));

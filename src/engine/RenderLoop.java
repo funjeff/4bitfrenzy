@@ -26,6 +26,8 @@ public class RenderLoop {
 	
 	static public GameWindow wind;
 	
+	static public Thread renderThread;
+	
 	public static void main (String[] args) {
 		//Sets the initial frame time
 		frameTime = System.currentTimeMillis ();
@@ -37,6 +39,7 @@ public class RenderLoop {
 		new Thread (gameLoop).start ();
 		//Initializes lastUpdate to the current time
 		lastUpdate = System.nanoTime ();
+		renderThread = Thread.currentThread ();
 		
 		while (true) {
 			//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
@@ -76,4 +79,14 @@ public class RenderLoop {
 	public static long frameStartTime () {
 		return frameTime;
 	}
+	
+	public static void pauseRender (int ms) {
+		try {
+			renderThread.sleep (ms);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
