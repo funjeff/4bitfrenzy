@@ -6,7 +6,9 @@ import java.util.Random;
 import gameObjects.DataSlot;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
+import gameObjects.TitleScreen;
 import map.Roome;
+import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
 import resources.Textbox;
@@ -17,22 +19,17 @@ public class GameCode {
 	public static int viewY;
 	
 	static Textbox timer;
+	static boolean gameStarted = false;
 	
-	
+	private static TitleScreen titleScreen;
 	
 	
 	
 	public static void testBitch () {
 		
+		titleScreen = new TitleScreen ();
+		titleScreen.declare (0, 0);
 		Roome.generateMap ();
-		Bit bit = new Bit ();
-		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
-		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-		bit.declare(spawnCoords[0],spawnCoords[1]);
-		
-		Hud hud = new Hud ();
-		hud.declare();
-		
 		}
 	
 	public static void setView (int x, int y) {
@@ -51,11 +48,32 @@ public class GameCode {
 	
 	public static void gameLoopFunc () {
 		
+
+		
 	}
 
 	
 	public static void renderFunc () {
-		Roome.draw(RenderLoop.wind.getBufferGraphics ());
+		
+		if (titleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted) {
+			gameStarted = true;
+			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
+			initGameState ();
+		}
+	}
+	
+	public static void closeTitleScreen () {
+		titleScreen.forget ();
+	}
+	
+	public static void initGameState () {
+		Bit bit = new Bit ();
+		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
+		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+		bit.declare(spawnCoords[0],spawnCoords[1]);
+		
+		Hud hud = new Hud ();
+		hud.declare();
 	}
 	
 }

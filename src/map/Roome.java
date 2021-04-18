@@ -40,6 +40,9 @@ public class Roome extends GameObject {
 	int roomPosX; // the location of the room in the map array (x coordinate)
 	int roomPosY; // the location of the room in the map array (y coordinate)
 	
+	int id;
+	int color;
+	
 	boolean inRoomcollsions;
 	
 	Textbox [] boxes = new Textbox [12];
@@ -56,7 +59,7 @@ public class Roome extends GameObject {
 	{
 		
 	}
-	public void init () {
+	public void init (int id, int colorNum) {
 		
 		if (biatch == null) {
 			
@@ -66,7 +69,8 @@ public class Roome extends GameObject {
 			String toUse = "";
 			
 			
-			int lineNum = rand.nextInt(12); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			int lineNum = id; // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			this.id = id;
 			
 			//thanks stack overflow :)
 			try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/rooms.txt"))) {
@@ -99,7 +103,7 @@ public class Roome extends GameObject {
 				Roome dataRoom = map [rand.nextInt(10)][rand.nextInt(10)];
 				
 				if (dataRoom.biatch == null) {
-					dataRoom.init();
+					dataRoom.init(1, 1); //TODO change this, it NEEDS to be changed
 				}
 				
 				
@@ -199,9 +203,7 @@ public class Roome extends GameObject {
 				boxes[11].declare((int)this.getX() + 432, (int)this.getY() + 576);
 			}
 			
-			
-			int colorNum = rand.nextInt(5); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
-			
+			color = colorNum;
 			String color = "";
 			
 			//thanks stack overflow :)
@@ -254,9 +256,8 @@ public class Roome extends GameObject {
 	public static void generateMap () {
 		do {
 			ArrayList <GameObject> oldRooms = ObjectHandler.getObjectsByName("Roome");
-			
 			if (oldRooms != null) {
-				while (!oldRooms.isEmpty()) {
+				while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
 					oldRooms.get(0).forget();
 				}
 			}
@@ -303,12 +304,75 @@ public class Roome extends GameObject {
 			}
 		} while (!areAllAccessable ());
 		
+		Random r = new Random ();
 		ArrayList <GameObject> finalRooms = ObjectHandler.getObjectsByName("Roome");
 		for (int i = 0; i < finalRooms.size(); i++) {
 			Roome working = (Roome)finalRooms.get(i);
-			working.init();
+			if (working != null) {
+				working.init(r.nextInt (12), r.nextInt (5));
+			}
 		}
 
+	}
+	
+	public static void loadMap (String mapString) {
+		
+		ArrayList <GameObject> oldRooms = ObjectHandler.getObjectsByName("Roome");
+		if (oldRooms != null) {
+			while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
+				oldRooms.get(0).forget();
+			}
+		}
+		oldRooms = ObjectHandler.getObjectsByName("Textbox");
+		if (oldRooms != null) {
+			while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
+				oldRooms.get(0).forget();
+			}
+		}
+		String[] roomStrings = mapString.split (",");
+		for (int i = 0; i < 100; i++) {
+			String curr = roomStrings[i];
+			Roome r = new Roome ();
+			r.declare ();
+			r.topJunction = curr.charAt (0) == 'y' ? true : false;
+			r.leftJunction = curr.charAt (1) == 'y' ? true : false;
+			r.rightJunction = curr.charAt (2) == 'y' ? true : false;
+			r.bottomJunction = curr.charAt (3) == 'y' ? true : false;
+			int room_id = Integer.parseInt (curr.substring (4, 6));
+			int room_color = Integer.parseInt (curr.substring (6, 7));
+			r.setX ((i % 10) * 1080);
+			r.setY ((i / 10) * 720);
+			r.init (room_id, room_color);
+			r.roomPosX = (i % 10);
+			r.roomPosY = (i / 10);
+			map [i / 10][i % 10] = r;
+		}
+		
+	}
+	
+	public static String saveMap () {
+		String val = "";
+		for (int i = 0; i < 100; i++) {
+			Roome r = map [i / 10][i % 10];
+			if (i != 99) {
+				val += r.toString () + ",";
+			} else {
+				val += r.toString ();
+			}
+		}
+		return val;
+	}
+	
+	@Override
+	public String toString () {
+		String val = "";
+		val += topJunction ? 'y' : 'n';
+		val += leftJunction ? 'y' : 'n';
+		val += rightJunction ? 'y' : 'n';
+		val += bottomJunction ? 'y' : 'n';
+		val += id >= 10 ? String.valueOf (id) : "0" + String.valueOf (id);
+		val += String.valueOf (color);
+		return val;
 	}
 	
 	public static boolean areAllAccessable () {
