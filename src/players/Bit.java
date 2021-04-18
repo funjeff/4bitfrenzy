@@ -13,11 +13,12 @@ import gameObjects.Register;
 import items.Item;
 import items.ItemBox;
 import map.Roome;
+import network.NetworkHandler;
 import resources.Textbox;
 
 public class Bit extends GameObject {
 	
-	int playerNum = 0;
+	public int playerNum = 0;
 	
 	public ArrayList<GameObject> regestersBeingCarried = null;
 	
@@ -47,8 +48,12 @@ public class Bit extends GameObject {
 		inventory.declare();
 		compass = new Compass (this);
 		Random rand = new Random ();
-		compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
-		compass.declare(0, 0);
+		//compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+		//compass.declare(0, 0);
+	}
+	
+	public void updateIcon () {
+		this.getAnimationHandler ().setAnimationFrame (playerNum - 1);
 	}
 	
 	
@@ -60,102 +65,106 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void frameEvent () {
-		if (keyPressed (10)) {
-			if (inventory.getItem() != null) {
-				inventory.useItem(this);
-			}
-		}
-		
-		if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
-			speedUpTimer = 0;
-			speed = speed - 2;
-		}
-		
-		if (this.isCollidingChildren("Item")) {
-			Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
-			if (toUse.pickupablity) {
+		if (NetworkHandler.isHost ()) {
+			String keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
+			if (keyPressed (10)) {
 				if (inventory.getItem() != null) {
-					Item it = inventory.getItem();
-					Roome romm = Roome.getRoom(this.getX(), this.getY());
-					int [] spawnCoords = romm.biatch.getPosibleCoords(it.hitbox().width, it.hitbox().height);
-					it.declare(spawnCoords[0], spawnCoords[1]);
+					inventory.useItem(this);
 				}
-				inventory.setItem(toUse);
-				toUse.forget();
 			}
-		}
-		
-		
-		double resistance = 1;
-		if (perk != 1) {
-			if (regestersBeingCarried != null) {
-				if (!keyDown(16)) {
-					regestersBeingCarried = null;
-				} else {
-					resistance = 0.5/regestersBeingCarried.size();
+			
+			if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
+				speedUpTimer = 0;
+				speed = speed - 2;
+			}
+			
+			if (this.isCollidingChildren("Item")) {
+				Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
+				if (toUse.pickupablity) {
+					if (inventory.getItem() != null) {
+						Item it = inventory.getItem();
+						Roome romm = Roome.getRoom(this.getX(), this.getY());
+						int [] spawnCoords = romm.biatch.getPosibleCoords(it.hitbox().width, it.hitbox().height);
+						it.declare(spawnCoords[0], spawnCoords[1]);
+					}
+					inventory.setItem(toUse);
+					toUse.forget();
 				}
+			}
+			
+			
+			double resistance = 1;
+			if (perk != 1) {
+				if (regestersBeingCarried != null) {
+					if (!keyDown(16)) {
+						regestersBeingCarried = null;
+					} else {
+						resistance = 0.5/regestersBeingCarried.size();
+					}
+					
+				}
+			}
+			
+			double speed = this.speed * resistance;
+			
+			if (perk == 0) {
+				speed = speed + 2;
+			}
+			
+			if(keyPressed (' ')) {
 				
+				GameObject old = compass.getPointObject();
+				
+				
+				while (old.equals(compass.getPointObject())){
+					Random rand = new Random ();
+					compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+				}
 			}
-		}
-		
-		double speed = this.speed * resistance;
-		
-		if (perk == 0) {
-			speed = speed + 2;
-		}
-		
-		if(keyPressed (' ')) {
 			
-			GameObject old = compass.getPointObject();
-			
-			
-			while (old.equals(compass.getPointObject())){
-				Random rand = new Random ();
-				compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+
+			if (keys != null && keys.contains ("W")) {
+				if (this.goY((int)(this.getY() - speed))) {
+					this.carryRegestersY((((int)speed) * -1) - 1);
+				}
+				lastMove = 0;
 			}
-		}
-		
-		
-		if (keyDown('W')) {
-			if (this.goY((int)(this.getY() - speed))) {
-				this.carryRegestersY((((int)speed) * -1) - 1);
+			if (keys != null && keys.contains ("D")) {
+				if (this.goX((int)(this.getX() + speed))) {
+					this.carryRegestersX((int)speed);
+				}
+				lastMove = 2;
 			}
-			lastMove = 0;
-		}
-		if (keyDown ('D')) {
-			if (this.goX((int)(this.getX() + speed))) {
-				this.carryRegestersX((int)speed);
+			if (keys != null && keys.contains ("A")) {
+				if (this.goX((int)(this.getX() - speed))) {
+					this.carryRegestersX((((int)speed) * -1) - 1);
+				}
+				lastMove = 3;
 			}
-			lastMove = 2;
-		}
-		if (keyDown ('A')) {
-			if (this.goX((int)(this.getX() - speed))) {
-				this.carryRegestersX((((int)speed) * -1) - 1);
+			if (keys != null && keys.contains ("S")) {
+				if (this.goY((int)(this.getY() + speed))) {
+					this.carryRegestersY((int)speed);
+				}
+				lastMove = 1;
 			}
-			lastMove = 3;
-		}
-		if (this.keyDown('S')) {
-			if (this.goY((int)(this.getY() + speed))) {
-				this.carryRegestersY((int)speed);
-			}
-			lastMove = 1;
-		}
-		this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
-		this.setX(this.getX() - 3);
-		this.setY(this.getY() - 3);
-		
-		if (this.isColliding("Register") && keyDown (16)) {
+			this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
+			this.setX(this.getX() - 3);
+			this.setY(this.getY() - 3);
 			
-			regestersBeingCarried = this.getCollisionInfo().getCollidingObjects();
+			if (this.isColliding("Register") && keyDown (16)) {
+				
+				regestersBeingCarried = this.getCollisionInfo().getCollidingObjects();
+				
+				Register reg = (Register) regestersBeingCarried.get(0);
+				
+				compass.setPointObject(reg.getDataSlot() );
+			}
+			this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
+			this.setX(this.getX() + 3);
+			this.setY(this.getY() + 3);
+		} else {
 			
-			Register reg = (Register) regestersBeingCarried.get(0);
-			
-			compass.setPointObject(reg.getDataSlot() );
 		}
-		this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
-		this.setX(this.getX() + 3);
-		this.setY(this.getY() + 3);
-		
 	}
 	private void carryRegestersY (double dist) {
 		if (regestersBeingCarried != null) {
@@ -188,41 +197,46 @@ public class Bit extends GameObject {
 		double x = this.getX();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
 		this.setX(val);
-		if (currentRoom.isColliding(this)) {
-			this.setX(x);
-			return false;
-		}
 		
-		if (this.isColliding("Register")) {
-			ArrayList <GameObject> regesters= this.getCollisionInfo().getCollidingObjects();
-			for (int i = 0; i < regesters.size(); i++) {
-				if (val > x) {
-				if (!regesters.get(i).goX(val + this.hitbox().width)) {
-					for (int j = 0; j < i; j++) {
-						regesters.get(i).setX(val - (val - x));
+		if (NetworkHandler.isHost ()) {
+			if (currentRoom.isColliding(this)) {
+				this.setX(x);
+				return false;
+			}
+			
+			if (this.isColliding("Register")) {
+				ArrayList <GameObject> regesters= this.getCollisionInfo().getCollidingObjects();
+				for (int i = 0; i < regesters.size(); i++) {
+					if (val > x) {
+					if (!regesters.get(i).goX(val + this.hitbox().width)) {
+						for (int j = 0; j < i; j++) {
+							regesters.get(i).setX(val - (val - x));
+						}
+						this.setX(x);
+						return false;
 					}
-					this.setX(x);
-					return false;
-				}
-			} else {
-				if (!regesters.get(i).goX(val - regesters.get(i).hitbox().width)) {
-					for (int j = 0; j < i; j++) {
-						regesters.get(i).setX(val - (val - x));
+				} else {
+					if (!regesters.get(i).goX(val - regesters.get(i).hitbox().width)) {
+						for (int j = 0; j < i; j++) {
+							regesters.get(i).setX(val - (val - x));
+						}
+						this.setX(x);
+						return false;
 					}
-					this.setX(x);
-					return false;
-				}
+					}
 				}
 			}
 		}
 		
-		Rectangle hBox = new Rectangle (this.hitbox());
-		
-
-		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
-		
-		if (!centerRect.contains(hBox)) {
-			GameCode.setView((int)(GameCode.getViewX() + (val - x)), GameCode.getViewY());
+		if (playerNum == NetworkHandler.getPlayerNum ()) {
+			Rectangle hBox = new Rectangle (this.hitbox());
+			
+	
+			Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
+			
+			if (!centerRect.contains(hBox)) {
+				GameCode.setView((int)(GameCode.getViewX() + (val - x)), GameCode.getViewY());
+			}
 		}
 		
 		return true;
@@ -233,45 +247,52 @@ public class Bit extends GameObject {
 	}
 	@Override
 	public boolean goY(double val) {
+		
 		double y = this.getY();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
 		this.setY(val);
-		if (currentRoom.isColliding(this)) {
-			this.setY(y);
-			return false;
-		}
 		
-		if (this.isColliding("Register")) {
-			ArrayList <GameObject> regesters= this.getCollisionInfo().getCollidingObjects();
-			for (int i = 0; i < regesters.size(); i++) {
-				if (val > y) {
-					if (!regesters.get(i).goY(val + this.hitbox().height)) {
-						for (int j = 0; j < i; j++) {
-							regesters.get(i).setY(val - (val - y));
+		if (NetworkHandler.isHost ()) {
+			if (currentRoom.isColliding(this)) {
+				this.setY(y);
+				return false;
+			}
+			
+			if (this.isColliding("Register")) {
+				ArrayList <GameObject> regesters= this.getCollisionInfo().getCollidingObjects();
+				for (int i = 0; i < regesters.size(); i++) {
+					if (val > y) {
+						if (!regesters.get(i).goY(val + this.hitbox().height)) {
+							for (int j = 0; j < i; j++) {
+								regesters.get(i).setY(val - (val - y));
+							}
+							this.setY(y);
+							return false;
 						}
-						this.setY(y);
-						return false;
-					}
-				} else {
-					if (!regesters.get(i).goY(val - regesters.get(i).hitbox().height)) {
-						for (int j = 0; j < i; j++) {
-							regesters.get(i).setY(val - (val - y));
+					} else {
+						if (!regesters.get(i).goY(val - regesters.get(i).hitbox().height)) {
+							for (int j = 0; j < i; j++) {
+								regesters.get(i).setY(val - (val - y));
+							}
+							this.setY(y);
+							return false;
 						}
-						this.setY(y);
-						return false;
 					}
 				}
 			}
 		}
 		
-		Rectangle hBox = new Rectangle (this.hitbox());
-	
-
-		Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
+		if (playerNum == NetworkHandler.getPlayerNum ()) {
+		
+			Rectangle hBox = new Rectangle (this.hitbox());
 		
 	
-		if (!centerRect.contains(hBox)) {
-			GameCode.setView(GameCode.getViewX(), (int)(GameCode.getViewY()  + (val - y)));
+			Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
+			
+		
+			if (!centerRect.contains(hBox)) {
+				GameCode.setView(GameCode.getViewX(), (int)(GameCode.getViewY()  + (val - y)));
+			}
 		}
 		return true;
 	}

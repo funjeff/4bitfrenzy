@@ -31,7 +31,7 @@ public class TitleScreen extends GameObject {
 	boolean connectedMode = false;
 	boolean waitMode = false;
 	
-	public boolean titleClosed = false;
+	public static boolean titleClosed = false;
 	
 	static Server server;
 	static Client client;

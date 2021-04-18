@@ -94,7 +94,7 @@ public class Server extends Thread {
 	}
 	
 	public String getPlayerInputs (int playerNum) {
-		if (playerNum == 0) {
+		if (playerNum == 1) {
 			//Do inputs normally
 			String toSend = "";
 			try {
@@ -110,13 +110,18 @@ public class Server extends Thread {
 				if (GameCode.bit.keyDown ('D')) {
 					toSend += 'D';
 				}
+				//System.out.println (toSend);
 				return toSend;
 			} catch (NullPointerException e) {
 				return ""; //Stuff hasn't been initialized yet
 			}
 		} else {
 			//Do inputs specially
-			return connections.get (playerNum + 1).getInputs ();
+			if (playerNum - 1 <= connections.size ()) {
+				return connections.get (playerNum - 2).getInputs ();
+			} else {
+				return "";
+			}
 		}
 	}
 	

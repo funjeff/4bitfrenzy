@@ -51,15 +51,16 @@ public class ServerConnection extends Thread {
 					}
 					if (str.length () >= 4 && str.substring (0, 4).equals ("KEYS")) {
 						String[] keyData = str.split (":");
-						inputs = keyData[1];
+						if (keyData.length > 1) {
+							inputs = keyData[1];
+						} else {
+							inputs = "";
+						}
 					}
-					RenderLoop.wind.setTitle (str);
-					System.out.println ("Message recieved: " + str);
 				}
 				if (write) {
 					dataOut.writeUTF (message);
 					write = false;
-					RenderLoop.wind.setTitle (message);
 				}
 			}
 			

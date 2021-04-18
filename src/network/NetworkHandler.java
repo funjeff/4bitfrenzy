@@ -2,7 +2,7 @@ package network;
 
 public class NetworkHandler {
 
-	private static int playerNum;
+	private static int playerNum = 1;
 	private static boolean isHost;
 	private static Server server;
 	private static Client client;

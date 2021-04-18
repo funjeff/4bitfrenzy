@@ -65,7 +65,7 @@ public abstract class GameObject extends GameAPI {
 	
 	int renderPriority = 0; 
 	
-	int id;
+	public int id;
 	
 	static int lastID;
 	
@@ -613,5 +613,9 @@ public abstract class GameObject extends GameAPI {
 		} else {
 			variant.setAttributes (attributeData);
 		}
+	}
+	
+	public int getId () {
+		return id;
 	}
 }

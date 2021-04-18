@@ -8,11 +8,17 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 import java.util.UUID;
 
 import engine.GameCode;
+import engine.ObjectHandler;
 import engine.RenderLoop;
+import gameObjects.DataSlot;
+import gameObjects.Register;
 import gameObjects.TitleScreen;
+import engine.GameObject;
 import map.Roome;
 import resources.Hud;
 
@@ -32,12 +38,17 @@ public class Client extends Thread {
 	
 	private static volatile boolean close;
 	
+	private static HashMap<Integer, Register> registerMap;
+	private static HashMap<Integer, DataSlot> slotMap;
+	
 	private String uuid = UUID.randomUUID ().toString ();
 	
 	public Client (String ip) {
 		
 		this.ip = ip.split (":")[0];
 		this.port = Integer.parseInt (ip.split (":")[1]);
+		registerMap = new HashMap<Integer, Register> ();
+		slotMap = new HashMap<Integer, DataSlot> ();
 		
 	}
 	
@@ -60,7 +71,7 @@ public class Client extends Thread {
 					
 					if (dataIn.available () != 0) {
 						String str = dataIn.readUTF ();
-						System.out.println ("Message recieved: " + str);
+						//System.out.println ("Message recieved: " + str);
 						
 						//Parse message, etc.
 						if (str.length () >= 6 && str.substring (0, 6).equals("PLAYER")) {
@@ -72,12 +83,13 @@ public class Client extends Thread {
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
 							String[] data = str.split (":");
 							String room_data = data[1];
+							TitleScreen.titleClosed = true;
 							Roome.loadMap (room_data);
 							GameCode.initGameState ();
 						}
 						
 						if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
-							
+							long dataParseTime = System.currentTimeMillis ();
 							//Get the data
 							String[] data = str.split (":");
 							
@@ -96,12 +108,74 @@ public class Client extends Thread {
 							String[] bit_coords = bit_data.split (",");
 							int bit_x = Integer.parseInt (bit_coords[0]);
 							int bit_y = Integer.parseInt (bit_coords[1]);
-							GameCode.bit.setX (bit_x);
-							GameCode.bit.setY (bit_y);
+							GameCode.bit.goX (bit_x);
+							GameCode.bit.goY (bit_y);
+							//Bit 2
+							bit_data = data[4];
+							bit_coords = bit_data.split (",");
+							bit_x = Integer.parseInt (bit_coords[0]);
+							bit_y = Integer.parseInt (bit_coords[1]);
+							GameCode.bit2.goX (bit_x);
+							GameCode.bit2.goY (bit_y);
+							//Bit 3
+							bit_data = data[5];
+							bit_coords = bit_data.split (",");
+							bit_x = Integer.parseInt (bit_coords[0]);
+							bit_y = Integer.parseInt (bit_coords[1]);
+							GameCode.bit3.goX (bit_x);
+							GameCode.bit3.goY (bit_y);
+							//Bit 4
+							bit_data = data[6];
+							bit_coords = bit_data.split (",");
+							bit_x = Integer.parseInt (bit_coords[0]);
+							bit_y = Integer.parseInt (bit_coords[1]);
+							GameCode.bit4.goX (bit_x);
+							GameCode.bit4.goY (bit_y);
 							
+							//Extract the register data
+							ArrayList<GameObject> regObjs = ObjectHandler.getObjectsByName ("Register");
+							String reg_data = data[7];
+							String[] registers = reg_data.split (",");
+							for (int i = 0; i < registers.length; i++) {
+								Scanner s = new Scanner (registers [i]);
+								if (s.hasNext ()) {
+									int r_id = s.nextInt ();
+									if (registerMap.containsKey (r_id)) {
+										registerMap.get (r_id).refreshRegister (registers [i]);
+									} else {
+										Register reg = new Register (1);
+										reg.declare ();
+										reg.refreshRegister (registers [i]);
+										reg.id = r_id;
+										registerMap.put (r_id, reg);
+									}
+									s.close ();
+								}
+							}
+							
+							//Extract the DataSlot data
+							ArrayList<GameObject> slotObjs = ObjectHandler.getObjectsByName ("DataSlot");
+							String slot_data = data[8];
+							String[] slots = slot_data.split (",");
+							for (int i = 0; i < slots.length; i++) {
+								Scanner s = new Scanner (slots [i]);
+								if (s.hasNext ()) {
+								int r_id = s.nextInt ();
+									if (slotMap.containsKey (r_id)) {
+										slotMap.get (r_id).refreshDataSlot (slots [i]);
+									} else {
+										DataSlot ds = new DataSlot (1);
+										ds.declare ();
+										ds.refreshDataSlot (slots [i]);
+										ds.id = r_id;
+										slotMap.put (r_id, ds);
+									}
+									s.close ();
+								}
+							}
 						}
 						
-						System.out.println ("Message recieved: " + str);
+						//System.out.println ("Message recieved: " + str);
 
 					}
 					
@@ -119,7 +193,7 @@ public class Client extends Thread {
 				//Send message
 				dataOut.writeUTF (message);
 				readyToSend = false;
-				System.out.println ("Message sent: " + message);
+				//System.out.println ("Message sent: " + message);
 				
 			}
 			

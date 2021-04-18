@@ -6,6 +6,7 @@ import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
 import map.Roome;
+import network.NetworkHandler;
 import resources.Textbox;
 
 public class Register extends GameObject {
@@ -20,6 +21,12 @@ public class Register extends GameObject {
 	
 	long spawnTime;
 	
+	int updateTime = 0;
+	
+	boolean modified;
+	
+	String prevEncoding = null;
+	
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
@@ -31,22 +38,21 @@ public class Register extends GameObject {
 	}
 	
 	public void refreshRegister (String info) {
-		
 		String [] infos = info.split(" ");
-		memAddress = Integer.parseInt(infos[0]);
-		display.changeText(infos[0]);
-		if (Integer.parseInt(infos[1]) != -1) {
+		memAddress = Integer.parseInt(infos[1]);
+		display.changeText(infos[1]);
+		if (Integer.parseInt(infos[2]) != -1) {
 			this.setSprite(new Sprite ("resources/sprites/Regester combined.png"));
-			secondAddress = Integer.parseInt(infos[1]);
+			secondAddress = Integer.parseInt(infos[2]);
 		}
 		
-		if (Boolean.parseBoolean(infos[2])) {
+		if (Boolean.parseBoolean(infos[3])) {
 			this.setSprite(new Sprite ("resources/sprites/Regester scrambled.png"));
 		
 		}
-		this.setX(Double.parseDouble(infos[3]));
-		this.setY(Double.parseDouble(infos[4]));
-		
+		this.setX(Double.parseDouble(infos[5]));
+		this.setY(Double.parseDouble(infos[6]));
+		this.updateTime = 0;
 		
 	}
 	@Override 
@@ -111,6 +117,12 @@ public class Register extends GameObject {
 	}
 	
 	@Override
+	public void frameEvent () {
+		super.frameEvent ();
+		
+	}
+	
+	@Override
 	public void draw () {
 		super.draw();
 		if (display != null) {
@@ -128,6 +140,10 @@ public class Register extends GameObject {
 	}
 	@Override
 	public String toString () {
-		return memAddress + " " + secondAddress + " " + scrambled + " " + spawnTime + " " + this.getX() + " " + this.getY();
+		prevEncoding = getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + spawnTime + " " + this.getX() + " " + this.getY();
+		return prevEncoding;
+	}
+	public boolean wasUpdated () {
+		return prevEncoding == null || !prevEncoding.equals (toString ());
 	}
 }

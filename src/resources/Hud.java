@@ -70,6 +70,7 @@ public class Hud extends GameObject {
 	@Override
 	public void draw () {
 		// once we do multiplayer put something here that make this happen only if its the right player
+		try {
 		scoreDisplay.setX(320 + GameCode.getViewX());
 		scoreDisplay.setY(100 + GameCode.getViewY());
 		scoreDisplay.draw();
@@ -105,7 +106,9 @@ public class Hud extends GameObject {
 		
 		timer.changeText(Integer.toString(numMinutes) + ":"+ secondsString + " REMAINING");
 		timer.draw();
-		
+		} catch (NullPointerException e) {
+			//Things aren't set up yet
+		}
 	
 	}
 	
@@ -114,10 +117,12 @@ public class Hud extends GameObject {
 		roundNum = roundNum + 1;
 		waveNum.changeText("WAVE NUMBER " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
-		for (int i = 0; i < slots.size(); i++) {
-			DataSlot currentSlot = (DataSlot) slots.get(i);
-			if (currentSlot.isCleared()) {
-				currentSlot.forget();
+		if (slots != null) {
+			for (int i = 0; i < slots.size(); i++) {
+				DataSlot currentSlot = (DataSlot) slots.get(i);
+				if (currentSlot.isCleared()) {
+					currentSlot.forget();
+				}
 			}
 		}
 		Random rand = new Random ();

@@ -86,18 +86,6 @@ public class Roome extends GameObject {
 			this.setSprite(new Sprite (toUse));
 			
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
-			
-				if (rand.nextInt(20) == 13) {
-				
-				int memNum = rand.nextInt(256);
-				
-				Register r = new Register(memNum);
-				
-				int [] spawnPoint = biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
-				
-				r.declare(spawnPoint[0],spawnPoint[1]);
-				
-				this.r = r;
 				
 				
 				Roome dataRoom = map [rand.nextInt(10)][rand.nextInt(10)];
@@ -105,14 +93,6 @@ public class Roome extends GameObject {
 				if (dataRoom.biatch == null) {
 					dataRoom.init(1, 1); //TODO change this, it NEEDS to be changed
 				}
-				
-				
-				DataSlot ds = new DataSlot (memNum);
-				
-				int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
-				
-				
-				ds.declare(otherPoint[0],otherPoint[1]);
 				
 				dataRoom.ds = ds;
 			}
@@ -216,6 +196,7 @@ public class Roome extends GameObject {
 			
 			for (int i = 0; i < boxes.length; i++) {
 				
+				Random rand = new Random ();
 				String finalMessage = "";
 				while (boxes[i].getSpace()/2 > finalMessage.length()) {
 					int lineNum2 = rand.nextInt(315); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
@@ -234,7 +215,6 @@ public class Roome extends GameObject {
 				
 			}
 		}
-	}
 	
 	
 	public boolean inRoom (double x, double y) {
@@ -346,6 +326,16 @@ public class Roome extends GameObject {
 			r.roomPosX = (i % 10);
 			r.roomPosY = (i / 10);
 			map [i / 10][i % 10] = r;
+		}
+		
+		String[] objsToRemove = new String[] {};
+		for (int i = 0; i < objsToRemove.length; i++) {
+			oldRooms = ObjectHandler.getObjectsByName(objsToRemove[i]);
+			if (oldRooms != null) {
+				while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
+					oldRooms.get(0).forget();
+				}
+			}
 		}
 		
 	}
