@@ -33,6 +33,11 @@ public class GameCode {
 	public static Bit bit3;
 	public static Bit bit4;
 	
+	static int perk1;
+	static int perk2;
+	static int perk3;
+	static int perk4;
+	
 	static int frame = 1;
 	
 	
@@ -40,7 +45,6 @@ public class GameCode {
 		
 		titleScreen = new TitleScreen ();
 		
-		Roome.generateMap();
 		titleScreen.declare (0, 0);
 		titleScreen.setRenderPriority(69);
 		}
@@ -94,31 +98,39 @@ public class GameCode {
 			}
 			NetworkHandler.getServer ().sendMessage (toSend);
 		} else {
-			
-			String toSend = "KEYS:";
-			try {
-				if (bit.keyDown ('W')) {
-					toSend += 'W';
+			if (!NetworkHandler.isHost()) {
+				String toSend = "KEYS:";
+				try {
+					if (bit.keyDown ('W')) {
+						toSend += 'W';
+					}
+					if (bit.keyDown ('A')) {
+						toSend += 'A';
+					}
+					if (bit.keyDown ('S')) {
+						toSend += 'S';
+					}
+					if (bit.keyDown ('D')) {
+						toSend += 'D';
+					}
+					if (bit.keyDown (10)) {
+						toSend += 10;
+					}
+					if (bit.keyDown (13)) {
+						toSend += 13;
+					}
+					if (bit.keyDown (KeyEvent.VK_SHIFT)) {
+						toSend += 'v';
+					}
+				} catch (NullPointerException e) {
+					return; //Stuff hasn't been initialized yet
 				}
-				if (bit.keyDown ('A')) {
-					toSend += 'A';
-				}
-				if (bit.keyDown ('S')) {
-					toSend += 'S';
-				}
-				if (bit.keyDown ('D')) {
-					toSend += 'D';
-				}
-				if (bit.keyDown (KeyEvent.VK_SHIFT)) {
-					toSend += 'v';
-				}
-			} catch (NullPointerException e) {
-				return; //Stuff hasn't been initialized yet
+				NetworkHandler.getClient ().messageServer (toSend);
+				
+			} else {
+				
 			}
-			NetworkHandler.getClient ().messageServer (toSend);
-			
 		}
-		
 	}
 
 	
@@ -131,8 +143,28 @@ public class GameCode {
 		}
 	}
 	
+	public static TitleScreen getTitleScreen () {
+		return titleScreen;
+	}
 	public static void closeTitleScreen () {
 		titleScreen.forget ();
+	}
+	
+	public static void setPerk (int player, int perk) {
+		
+		switch (player) {
+		case 1:
+			perk2 = perk;
+			break;
+		case 2:
+			perk3 = perk;
+			break;
+		case 3:
+			perk4 = perk;
+			break;	
+		}
+		
+		
 	}
 	
 	public static void initGameState () {
@@ -144,12 +176,19 @@ public class GameCode {
 		bit2.playerNum = 2;
 		bit3.playerNum = 3;
 		bit4.playerNum = 4;
+		bit.setPerk(perk1);
+		bit2.setPerk(perk2);
+		bit3.setPerk(perk3);
+		bit4.setPerk(perk4);
 		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
 		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 		int [] spawnCoords2 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 		int [] spawnCoords3 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 		int [] spawnCoords4 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
- 		bit.declare(spawnCoords[0],spawnCoords[1]);
+		Hud hud = new Hud ();
+		Hud.newWave ();
+		hud.declare();
+		bit.declare(spawnCoords[0],spawnCoords[1]);
 		bit2.declare(spawnCoords2[0] + 16,spawnCoords2[1] + 16);
 		bit3.declare(spawnCoords3[0] + 32,spawnCoords3[1] + 32);
 		bit4.declare(spawnCoords4[0] + 48,spawnCoords4[1] + 48);
@@ -157,9 +196,7 @@ public class GameCode {
 		bit2.updateIcon ();
 		bit3.updateIcon ();
 		bit4.updateIcon ();
-		Hud hud = new Hud ();
-		hud.newWave ();
-		hud.declare();
+		
 	}
 	
 }

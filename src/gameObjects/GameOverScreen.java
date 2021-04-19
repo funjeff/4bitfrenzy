@@ -14,7 +14,8 @@ public class GameOverScreen extends GameObject {
 	@Override
 	public void frameEvent () {
 		if (!getKeyEvents().isEmpty()) {
-			RenderLoop.running = false;
+			RenderLoop.wind.dispose();
+			System.exit(0);
 		}
 	}
 

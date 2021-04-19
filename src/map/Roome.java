@@ -58,7 +58,7 @@ public class Roome extends GameObject {
 	
 	public PixelBitch biatch;
 	
-
+	
 	
 	public Roome ()
 	{
@@ -403,6 +403,10 @@ public class Roome extends GameObject {
 			}
 		}
 		String[] roomStrings = mapString.split (",");
+		
+		int [] ids = new int [100];
+		int [] colors = new int [100];
+		
 		for (int i = 0; i < 100; i++) {
 			String curr = roomStrings[i];
 			Roome r = new Roome ();
@@ -411,14 +415,21 @@ public class Roome extends GameObject {
 			r.leftJunction = curr.charAt (1) == 'y' ? true : false;
 			r.rightJunction = curr.charAt (2) == 'y' ? true : false;
 			r.bottomJunction = curr.charAt (3) == 'y' ? true : false;
-			int room_id = Integer.parseInt (curr.substring (4, 6));
-			int room_color = Integer.parseInt (curr.substring (6, 7));
+			ids[i] = Integer.parseInt (curr.substring (4, 6));
+			colors[i] = Integer.parseInt (curr.substring (6, 7));
 			r.setX ((i % 10) * 1080);
 			r.setY ((i / 10) * 720);
-			r.init (room_id, room_color);
+			
+			map [i / 10][i % 10] = r;
+		}
+		
+		for (int i = 0; i < 100; i++) {
+			Roome r = new Roome ();
+			
+			r = map [i / 10][i % 10];
+			r.init (ids[i], colors[i]);
 			r.roomPosX = (i % 10);
 			r.roomPosY = (i / 10);
-			map [i / 10][i % 10] = r;
 		}
 		
 		String[] objsToRemove = new String[] {};

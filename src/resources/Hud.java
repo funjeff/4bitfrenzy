@@ -21,7 +21,7 @@ public class Hud extends GameObject {
 	public static long score = 0;
 	static Textbox scoreDisplay;
 	public static long timeLeft = 60000 * 5;
-	public static int roundNum = 1;
+	public static int roundNum = 0;
 	static Textbox timer;
 	static Textbox waveNum;
 	static Textbox registersRemaining;
@@ -125,30 +125,33 @@ public class Hud extends GameObject {
 		}
 	
 	}
-	public static void newWave() {
+	public static void newWave() {	
+		
 		roundNum = roundNum + 1;
 		waveNum.changeText("WAVE NUMBER " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
-		for (int i = 0; i < slots.size(); i++) {
-			DataSlot currentSlot = (DataSlot) slots.get(i);
-			if (currentSlot.isCleared()) {
-				currentSlot.forget();
-			} else {
-				lives = lives - 1;
-				if (lives <= 0) {
-					GameOverScreen screen = new GameOverScreen();
-					screen.declare(0,0);
-					GameCode.setView(0, 0);
-				}
-			}
-		}
-		if (slots != null) {
+		if (roundNum != 1) {
 			for (int i = 0; i < slots.size(); i++) {
 				DataSlot currentSlot = (DataSlot) slots.get(i);
 				if (currentSlot.isCleared()) {
 					currentSlot.forget();
-
+				} else {
+					lives = lives - 1;
+					if (lives <= 0) {
+						GameOverScreen screen = new GameOverScreen();
+						screen.declare(0,0);
+						GameCode.setView(0, 0);
+					}
+				}
+			}
+			if (slots != null) {
+				for (int i = 0; i < slots.size(); i++) {
+					DataSlot currentSlot = (DataSlot) slots.get(i);
+					if (currentSlot.isCleared()) {
+						currentSlot.forget();
+	
+					}
 				}
 			}
 		}

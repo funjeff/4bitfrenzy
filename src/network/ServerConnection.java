@@ -45,7 +45,9 @@ public class ServerConnection extends Thread {
 				}
 				if (dataIn.available () != 0) {
 					String str = dataIn.readUTF ();
-					if (str.equals ("PING")) {
+					if (str.substring (0, 4).equals ("PING")) {
+						
+						System.out.println(server.getNumPlayers());
 						dataOut.writeUTF ("PLAYER " + (server.getNumPlayers () + 1));
 						TitleScreen.playerJoin ();
 						dataOut.flush ();

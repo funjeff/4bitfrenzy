@@ -15,6 +15,7 @@ import java.util.UUID;
 import engine.GameCode;
 import engine.ObjectHandler;
 import engine.RenderLoop;
+import engine.Sprite;
 import gameObjects.DataSlot;
 import gameObjects.Register;
 import gameObjects.TitleScreen;
@@ -76,16 +77,36 @@ public class Client extends Thread {
 						//Parse message, etc.
 						if (str.length () >= 6 && str.substring (0, 6).equals("PLAYER")) {
 							TitleScreen.connectSuccess ();
+							
 							NetworkHandler.setPlayerNum (str.charAt (7) - '0');
 							RenderLoop.wind.setTitle (str);
+							
 						}
 						
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
 							String[] data = str.split (":");
 							String room_data = data[1];
 							TitleScreen.titleClosed = true;
+							
+							
+							GameCode.getTitleScreen().setSprite(new Sprite ("resources/sprites/now loading.png"));
+							
+							GameCode.getTitleScreen().draw();
+							
+							RenderLoop.pause();
+							RenderLoop.wind.refresh();
+							
 							Roome.loadMap (room_data);
+							
+							RenderLoop.unPause();
+							
+							
 							GameCode.initGameState ();
+							
+							
+							GameCode.closeTitleScreen();
+							
+							
 						}
 						
 						if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
@@ -117,6 +138,7 @@ public class Client extends Thread {
 							bit_y = Integer.parseInt (bit_coords[1]);
 							GameCode.bit2.goX (bit_x);
 							GameCode.bit2.goY (bit_y);
+							
 							//Bit 3
 							bit_data = data[5];
 							bit_coords = bit_data.split (",");
@@ -222,7 +244,7 @@ public class Client extends Thread {
 	}
 	
 	public void joinServer () {
-		this.message = "PING";
+		this.message = "PING " + TitleScreen.perkNum;
 		this.readyToSend = true;
 	}
 	

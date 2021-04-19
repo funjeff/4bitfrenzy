@@ -30,6 +30,19 @@ public class RenderLoop {
 	
 	static public boolean running = true;
 	
+	static boolean paused = false;
+	
+	public static boolean isPaused() {
+		return paused;
+	}
+
+	public static void pause() {
+		paused = true;
+	}
+	public static void unPause () {
+		paused = false;
+	}
+
 	public static void main (String[] args) {
 		//Sets the initial frame time
 		frameTime = System.currentTimeMillis ();
@@ -44,23 +57,26 @@ public class RenderLoop {
 		renderThread = Thread.currentThread ();
 		
 		while (running) {
-			//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
-			long targetNanoseconds = (long)(1000000000 / maxFramerate);
-			//Get the time before refreshing the window
-			long startTime = System.nanoTime ();
-			frameTime = System.currentTimeMillis ();
-			//Render the window
-			GameCode.renderFunc ();
-			ObjectHandler.renderAll ();
-			wind.refresh();
-			//Calculate elapsed time and time to sleep for
-			lastUpdate = System.nanoTime ();
 			
-			long elapsedTime = lastUpdate - startTime;
-			int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
-			if (sleepTime < 0) {
-				sleepTime = 0;
-			}
+				//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
+				long targetNanoseconds = (long)(1000000000 / maxFramerate);
+				//Get the time before refreshing the window
+				long startTime = System.nanoTime ();
+				frameTime = System.currentTimeMillis ();
+				if (!paused) {
+				//Render the window
+				GameCode.renderFunc ();
+				ObjectHandler.renderAll ();
+				wind.refresh();
+				//Calculate elapsed time and time to sleep for
+				lastUpdate = System.nanoTime ();
+				}
+				
+				long elapsedTime = lastUpdate - startTime;
+				int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
+				if (sleepTime < 0) {
+					sleepTime = 0;
+				}
 			//Sleep until ~1ms before it's time to redraw the frame (to account for inaccuracies in Thread.sleep)
 			try {
 				Thread.currentThread ().sleep (sleepTime);

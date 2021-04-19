@@ -587,7 +587,7 @@ public abstract class GameObject extends GameAPI {
 	 * Sets the sprite of this GameObject to the given sprite.
 	 * @param sprite The sprite to use
 	 */
-	protected void setSprite (Sprite sprite) {
+	public void setSprite (Sprite sprite) {
 		animationHandler.resetImage (sprite);
 	}
 	

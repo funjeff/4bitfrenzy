@@ -118,6 +118,8 @@ public class Compass extends GameObject {
 		this.pointObject = pointObject;
 	}
 	
+	
+	
 	@Override
 	public void draw () {
 		this.setX(GameCode.viewX + 50);
