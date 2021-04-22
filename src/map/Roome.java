@@ -182,10 +182,19 @@ public class Roome extends GameObject {
 				
 				DataSlot ds = new DataSlot (memNum);
 				
+				
+				
 				int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
 				
 				
 				ds.declare(otherPoint[0],otherPoint[1]);
+				
+				while (r.isColliding(ds)) {
+					int [] spawnPointredo = biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
+					
+					r.setX(spawnPointredo[0]);
+					r.setY(spawnPointredo[1]);
+				}
 				
 				dataRoom.ds = ds;
 			}

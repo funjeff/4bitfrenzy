@@ -33,10 +33,7 @@ public class GameCode {
 	public static Bit bit3;
 	public static Bit bit4;
 	
-	static int perk1;
-	static int perk2;
-	static int perk3;
-	static int perk4;
+	public static int [] perks = {-1,-1,-1,-1};
 	
 	static int frame = 1;
 	
@@ -64,7 +61,9 @@ public class GameCode {
 	}
 	
 	public static void gameLoopFunc () {
-		
+		if (NetworkHandler.isHost() && !TitleScreen.titleClosed) {
+			NetworkHandler.getServer ().sendMessage ("PERKS " + perks[0] + ":" + perks[1] + ":" + perks[2] + ":" + perks[3]);
+		}
 		frame++;
 		if (NetworkHandler.isHost () && titleScreen.titleClosed) {
 			//Send server stuff out
@@ -119,6 +118,9 @@ public class GameCode {
 					if (bit.keyDown (13)) {
 						toSend += 13;
 					}
+					if (bit.keyDown ('M')) {
+						toSend += 13;
+					}
 					if (bit.keyDown (KeyEvent.VK_SHIFT)) {
 						toSend += 'v';
 					}
@@ -150,19 +152,8 @@ public class GameCode {
 		titleScreen.forget ();
 	}
 	
-	public static void setPerk (int player, int perk) {
-		
-		switch (player) {
-		case 1:
-			perk2 = perk;
-			break;
-		case 2:
-			perk3 = perk;
-			break;
-		case 3:
-			perk4 = perk;
-			break;	
-		}
+	public static void setPerk (int perk, int player) {
+		perks[player] = perk;
 		
 		
 	}
@@ -176,10 +167,6 @@ public class GameCode {
 		bit2.playerNum = 2;
 		bit3.playerNum = 3;
 		bit4.playerNum = 4;
-		bit.setPerk(perk1);
-		bit2.setPerk(perk2);
-		bit3.setPerk(perk3);
-		bit4.setPerk(perk4);
 		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
 		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 		int [] spawnCoords2 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
@@ -192,6 +179,10 @@ public class GameCode {
 		bit2.declare(spawnCoords2[0] + 16,spawnCoords2[1] + 16);
 		bit3.declare(spawnCoords3[0] + 32,spawnCoords3[1] + 32);
 		bit4.declare(spawnCoords4[0] + 48,spawnCoords4[1] + 48);
+		bit.setPerk(perks[0]);
+		bit2.setPerk(perks[1]);
+		bit3.setPerk(perks[2]);
+		bit4.setPerk(perks[3]);
 		bit.updateIcon ();
 		bit2.updateIcon ();
 		bit3.updateIcon ();

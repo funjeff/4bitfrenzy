@@ -72,6 +72,7 @@ public class Client extends Thread {
 					
 					if (dataIn.available () != 0) {
 						String str = dataIn.readUTF ();
+					
 						//System.out.println ("Message recieved: " + str);
 						
 						//Parse message, etc.
@@ -83,6 +84,16 @@ public class Client extends Thread {
 							
 						}
 						
+						if (str.substring (0, 5).equals ("PERKS")) {
+							
+							
+							String [] perks = str.substring(6).split(":");
+							
+							for (int i = 0; i < perks.length;i++) {
+								GameCode.setPerk(Integer.parseInt(perks[i]),i);
+							}
+							
+						}
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
 							String[] data = str.split (":");
 							String room_data = data[1];

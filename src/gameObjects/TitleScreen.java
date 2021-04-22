@@ -8,6 +8,7 @@ import engine.GameObject;
 import engine.ObjectHandler;
 import engine.RenderLoop;
 import engine.Sprite;
+import engine.SpriteParser;
 import map.Roome;
 import network.Client;
 import network.NetworkHandler;
@@ -31,6 +32,10 @@ public class TitleScreen extends GameObject {
 	private Button joinButton;
 	private Button rulesButton;
 	private Button perksButton;
+	
+	private static boolean connected = false;
+	
+	private static Sprite lobbySprite = new Sprite ("resources/sprites/lobby.png");
 	
 	
 	boolean ipMode = false;
@@ -104,7 +109,7 @@ public class TitleScreen extends GameObject {
 							ip = ip.substring (0, ip.length () - 1);
 						}
 					} else if (currEvent.getKeyCode () == KeyEvent.VK_ENTER) {
-						if (!failedMode) {
+						if (!failedMode && !connected) {
 							try {
 								client = new Client (ip);
 								client.start ();
@@ -139,13 +144,16 @@ public class TitleScreen extends GameObject {
 			perksButton.forget();
 			
 			isHost = true;
+			
+			GameCode.setPerk(perkNum, 0);
+			
 			this.setSprite(new Sprite ("resources/sprites/now loading.png"));
 			this.draw();
 			RenderLoop.pause();
 			RenderLoop.wind.refresh();
 			Roome.generateMap();
 			RenderLoop.unPause();
-			this.setSprite(new Sprite ("resources/sprites/lobby.png"));
+			this.setSprite(lobbySprite);
 			
 			NetworkHandler.setHost (true);
 			enterIpMode ();
@@ -240,6 +248,87 @@ public class TitleScreen extends GameObject {
 	@Override
 	public void draw () {
 		super.draw ();
+		
+		if (this.getSprite().equals(lobbySprite)) {
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					Textbox perk = null;
+					
+					ArrayList <String> parserQuantitys = new ArrayList<String> ();
+					parserQuantitys.add("grid 168 128");
+					
+					Sprite bits = null;
+					
+					switch (GameCode.perks[(i*2) + j]) {
+					case 0:
+						perk = new Textbox ("BLAST PROCESSING");
+						perk.setFont("text (blue)");
+						bits = new Sprite ("resources/sprites/bits blue big.png", new SpriteParser (parserQuantitys));
+						break;
+					case 1:
+						perk = new Textbox ("GRIP STRENTH");
+						perk.setFont("text (lime green)");
+						bits = new Sprite ("resources/sprites/bits green big.png", new SpriteParser (parserQuantitys));
+						break;
+					case 2:
+						perk = new Textbox ("NAVIGATION BIT");
+						perk.setFont("text (yellow)");
+						bits = new Sprite ("resources/sprites/bits yellow big.png", new SpriteParser (parserQuantitys));
+						break;
+					case 3:
+						perk = new Textbox ("POWERHOUSE");
+						perk.setFont("text (red)");
+						bits = new Sprite ("resources/sprites/bits red big.png", new SpriteParser (parserQuantitys));
+						break;
+					case 4:
+						perk = new Textbox ("DUPLICATION BIT");
+						perk.setFont("text (purple)");
+						bits = new Sprite ("resources/sprites/bits purple big.png", new SpriteParser (parserQuantitys));
+						break;
+					case 5:
+						perk = new Textbox ("DUEL CORE");
+						perk.setFont("text (rainbow)");
+						bits = new Sprite ("resources/sprites/bits duel 1 big.png", new SpriteParser (parserQuantitys));
+						break;
+					case 15:
+						perk = new Textbox ("NO PERK");
+						bits = new Sprite ("resources/sprites/bits big.png", new SpriteParser (parserQuantitys));
+						switch ((i*2) + j) {
+						case 0:
+							perk.setFont("text (lime green)");
+							break;
+						case 1:
+							perk.setFont("text (red)");
+							break;
+						case 2: 
+							perk.setFont("text (blue)");
+							break;
+						case 3: 
+							perk.setFont("text (purple)");
+							break;
+						}
+						break;
+					}
+					if (perk != null) {
+						
+						String str = perk.getText();
+						
+						int middleNum = str.length()/2;
+						
+				
+						int displace = 96 - (middleNum * 32);
+						
+						
+						perk.changeBoxVisability();
+						perk.setRenderPriority(72);
+						perk.setX((i * 500) + 190 - displace);
+						perk.setY((j * 300) + 75);
+						perk.draw();
+						bits.draw((i * 500) + 165, (j * 300) + 130, (i*2) + j);
+					}
+				}
+			}
+		}
 	}
 	
 	public void enterIpMode () {
@@ -258,10 +347,9 @@ public class TitleScreen extends GameObject {
 	
 	public static void connectSuccess () {
 		ipBox.changeText("CONNECTED: WAITING FOR HOST TO START GAME");
-//		TitleScreen screen = (TitleScreen) ObjectHandler.getObjectsByName("TitleScreen").get(0);
-//		screen.setSprite(new Sprite ("resources/sprites/lobby.png"));
-//		
-		
+		TitleScreen screen = GameCode.getTitleScreen();
+		screen.setSprite(lobbySprite);
+		connected = true;
 		
 	}
 	
