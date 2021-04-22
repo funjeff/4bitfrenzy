@@ -58,7 +58,9 @@ public class Sprite {
 			File imageFile = new File (imagepath);
 			BufferedImage img = null;
 			try {
-				img = ImageIO.read (imageFile);
+				BufferedImage workingImg = ImageIO.read (imageFile);
+				img = new BufferedImage (workingImg.getWidth (), workingImg.getHeight (), BufferedImage.TYPE_4BYTE_ABGR);
+				img.getGraphics ().drawImage (workingImg, 0, 0, null);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -114,7 +116,9 @@ public class Sprite {
 		File imageFile = new File (imagepath);
 		BufferedImage img = null;
 		try {
-			img = ImageIO.read (imageFile);
+			BufferedImage workingImg = ImageIO.read (imageFile);
+			img = new BufferedImage (workingImg.getWidth (), workingImg.getHeight (), BufferedImage.TYPE_4BYTE_ABGR);
+			img.getGraphics ().drawImage (workingImg, 0, 0, null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -149,7 +153,9 @@ public class Sprite {
 				File imageFile = new File (imagepath);
 				BufferedImage img = null;
 				try {
-					img = ImageIO.read (imageFile);
+					BufferedImage workingImg = ImageIO.read (imageFile);
+					img = new BufferedImage (workingImg.getWidth (), workingImg.getHeight (), BufferedImage.TYPE_4BYTE_ABGR);
+					img.getGraphics ().drawImage (workingImg, 0, 0, null);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

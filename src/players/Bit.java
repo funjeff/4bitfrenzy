@@ -9,6 +9,7 @@ import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
 import gameObjects.Compass;
+import gameObjects.DataSlot;
 import gameObjects.Register;
 import items.Item;
 import items.ItemBox;
@@ -63,10 +64,11 @@ public class Bit extends GameObject {
 	public void onDeclare() {
 		
 		if (NetworkHandler.getPlayerNum() == this.playerNum) {
+			System.out.println (NetworkHandler.getPlayerNum () + ", " + this.playerNum);
 			GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
 			compass = new Compass (this);
 			compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
-			
+				
 				compass.declare(0, 0);
 			}
 		
@@ -105,10 +107,12 @@ public class Bit extends GameObject {
 		}
 		if (NetworkHandler.getPlayerNum() == this.playerNum) {
 			if (!ObjectHandler.getObjectsByName("Register").isEmpty() && compass != null){
-				GameObject old = compass.getPointObject();
-				while (old.equals(compass.getPointObject())){
-					Random rand = new Random ();
-					compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+				if (compass.getPointObject () instanceof DataSlot && (regestersBeingCarried == null || regestersBeingCarried.size () == 0)) {
+					GameObject old = compass.getPointObject();
+					while (old.equals(compass.getPointObject())){
+						Random rand = new Random ();
+						compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+					}
 				}
 
 			}
@@ -174,16 +178,31 @@ public class Bit extends GameObject {
 			this.setX(this.getX() - 3);
 			this.setY(this.getY() - 3);
 			
-				if (this.isColliding("Register") && (keys != null && keys.contains ("v"))) {
-					
-					regestersBeingCarried = this.getCollisionInfo().getCollidingObjects();
-					
-					Register reg = (Register) regestersBeingCarried.get(0);
-					
-					//compass = null for client
-					
-					if (NetworkHandler.getPlayerNum() == this.playerNum) {
-						compass.setPointObject(reg.getDataSlot() );
+				if (keys != null && keys.contains ("v")) {
+					if (this.isColliding ("Register")) {
+						
+						if (regestersBeingCarried == null) {
+							regestersBeingCarried = new ArrayList<GameObject> ();
+						}
+						
+						ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();
+						for (int i = 0; i < workingRegisters.size (); i++) {
+							if (!regestersBeingCarried.contains (workingRegisters.get (i))) {
+								regestersBeingCarried.add (workingRegisters.get (i));
+							}
+						}
+						
+						Register reg = (Register) regestersBeingCarried.get(0);
+						
+						//compass = null for client
+						
+						if (NetworkHandler.getPlayerNum() == this.playerNum) {
+							compass.setPointObject(reg.getDataSlot() );
+						}
+					}
+				} else {
+					if (regestersBeingCarried != null) {
+						regestersBeingCarried.clear ();
 					}
 				}
 			
