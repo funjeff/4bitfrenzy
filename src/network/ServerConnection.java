@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import engine.GameCode;
 import engine.RenderLoop;
 import gameObjects.TitleScreen;
 
@@ -46,8 +47,7 @@ public class ServerConnection extends Thread {
 				if (dataIn.available () != 0) {
 					String str = dataIn.readUTF ();
 					if (str.substring (0, 4).equals ("PING")) {
-						
-						System.out.println(server.getNumPlayers());
+						GameCode.setPerk(Integer.parseInt(str.substring(5)), server.getNumPlayers());
 						dataOut.writeUTF ("PLAYER " + (server.getNumPlayers () + 1));
 						TitleScreen.playerJoin ();
 						dataOut.flush ();

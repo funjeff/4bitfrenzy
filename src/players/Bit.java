@@ -8,6 +8,7 @@ import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
+import engine.SpriteParser;
 import gameObjects.Compass;
 import gameObjects.DataSlot;
 import gameObjects.Register;
@@ -342,33 +343,35 @@ public class Bit extends GameObject {
 	}
 	public void setPerk (int perkNum) {
 		perk = perkNum;
-//		if (perk == 69) {
-//			perk = 5;
-//		}
-//		switch (perkNum) {
-//		
-//		case 0:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits blue.txt"));
-//			break;
-//		case 1:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits green.txt"));
-//			break;
-//		case 2:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits yellow.txt"));
-//			break;
-//		case 3:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits red.txt"));
-//			break;
-//		case 4:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits purple.txt"));
-//			break;
-//		case 5:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits duel 1.txt"));
-//			break;
-//		case 69:
-//			this.setSprite(new Sprite ("resources/sprites/config/bits duel 2.txt"));	
-//			break;
-//		}
+		if (perk == 69) {
+			perk = 5;
+		}
+		ArrayList <String> parserQuantitiys = new ArrayList<String>();
+		parserQuantitiys.add("grid 21 16");
+		switch (perkNum) {
+		
+		case 0:
+			this.setSprite(new Sprite ("resources/sprites/bits blue.png", new SpriteParser (parserQuantitiys)));
+			break;
+		case 1:
+			this.setSprite(new Sprite ("resources/sprites/bits green.png", new SpriteParser (parserQuantitiys)));
+			break;
+		case 2:
+			this.setSprite(new Sprite ("resources/sprites/bits yellow.png", new SpriteParser (parserQuantitiys)));
+			break;
+		case 3:
+			this.setSprite(new Sprite ("resources/sprites/bits red.png", new SpriteParser (parserQuantitiys)));
+			break;
+		case 4:
+			this.setSprite(new Sprite ("resources/sprites/bits purple.png", new SpriteParser (parserQuantitiys)));
+			break;
+		case 5:
+			this.setSprite(new Sprite ("resources/sprites/bits duel 1.png", new SpriteParser (parserQuantitiys)));
+			break;
+		case 69:
+			this.setSprite(new Sprite ("resources/sprites/bits duel 2.png", new SpriteParser (parserQuantitiys)));
+			break;
+		}
 		
 	}
 	@Override
