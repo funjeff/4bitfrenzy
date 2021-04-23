@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.UUID;
@@ -94,6 +95,24 @@ public class Client extends Thread {
 							}
 							
 						}
+						if (str.substring (0, 7).equals ("DESTROY")) {
+							String [] toDestroy = str.substring(8).split(":");
+							switch (toDestroy[0]) {
+							case "top":
+								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyTopWall();
+								break;
+							case "bottom":
+								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyBottomWall();
+								break;
+							case "left":
+								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyLeftWall();
+								break;
+							case "right":
+								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyRightWall();
+								break;
+							}
+						}
+						
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
 							String[] data = str.split (":");
 							String room_data = data[1];
@@ -102,9 +121,12 @@ public class Client extends Thread {
 							
 							GameCode.getTitleScreen().setSprite(new Sprite ("resources/sprites/now loading.png"));
 							
-							GameCode.getTitleScreen().draw();
+							
 							
 							RenderLoop.pause();
+							
+							GameCode.getTitleScreen().draw();
+							
 							RenderLoop.wind.refresh();
 							
 							Roome.loadMap (room_data);
@@ -124,7 +146,6 @@ public class Client extends Thread {
 							long dataParseTime = System.currentTimeMillis ();
 							//Get the data
 							String[] data = str.split (":");
-							
 							//Extract the timer
 							String timer_data = data[1];
 							int timer_amt = Integer.parseInt (timer_data);
@@ -135,39 +156,20 @@ public class Client extends Thread {
 							int score_amt = Integer.parseInt (score_data);
 							Hud.score = score_amt;
 							
-							//Extract the bit positions
-							String bit_data = data[3];
-							String[] bit_coords = bit_data.split (",");
-							int bit_x = Integer.parseInt (bit_coords[0]);
-							int bit_y = Integer.parseInt (bit_coords[1]);
-							GameCode.bit.goX (bit_x);
-							GameCode.bit.goY (bit_y);
-							//Bit 2
-							bit_data = data[4];
-							bit_coords = bit_data.split (",");
-							bit_x = Integer.parseInt (bit_coords[0]);
-							bit_y = Integer.parseInt (bit_coords[1]);
-							GameCode.bit2.goX (bit_x);
-							GameCode.bit2.goY (bit_y);
-							
-							//Bit 3
-							bit_data = data[5];
-							bit_coords = bit_data.split (",");
-							bit_x = Integer.parseInt (bit_coords[0]);
-							bit_y = Integer.parseInt (bit_coords[1]);
-							GameCode.bit3.goX (bit_x);
-							GameCode.bit3.goY (bit_y);
-							//Bit 4
-							bit_data = data[6];
-							bit_coords = bit_data.split (",");
-							bit_x = Integer.parseInt (bit_coords[0]);
-							bit_y = Integer.parseInt (bit_coords[1]);
-							GameCode.bit4.goX (bit_x);
-							GameCode.bit4.goY (bit_y);
-							
+							int next = 3;
+							for (int i = 0; i < GameCode.bits.size(); i++) { 
+								//Extract the bit positions
+								String bit_data = data[3 + i];
+								String[] bit_coords = bit_data.split (",");
+								int bit_x = Integer.parseInt (bit_coords[0]);
+								int bit_y = Integer.parseInt (bit_coords[1]);
+								GameCode.bits.get(i).goX (bit_x);
+								GameCode.bits.get(i).goY (bit_y);
+								next = next + 1;
+							}
 							//Extract the register data
 							ArrayList<GameObject> regObjs = ObjectHandler.getObjectsByName ("Register");
-							String reg_data = data[7];
+							String reg_data = data[next];
 							String[] registers = reg_data.split (",");
 							for (int i = 0; i < registers.length; i++) {
 								Scanner s = new Scanner (registers [i]);
@@ -188,7 +190,7 @@ public class Client extends Thread {
 							
 							//Extract the DataSlot data
 							ArrayList<GameObject> slotObjs = ObjectHandler.getObjectsByName ("DataSlot");
-							String slot_data = data[8];
+							String slot_data = data[next + 1];
 							String[] slots = slot_data.split (",");
 							for (int i = 0; i < slots.length; i++) {
 								Scanner s = new Scanner (slots [i]);

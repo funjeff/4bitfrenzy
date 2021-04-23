@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 
 import map.Roome;
+import players.Bit;
 
 /**
  * Represents an in-game object that can be interacted with in some way
@@ -68,6 +69,8 @@ public abstract class GameObject extends GameAPI {
 	public int id;
 	
 	static int lastID;
+	
+	private boolean visable = true;
 	
 	/**
 	 * Container and utility class for GameObject variants
@@ -291,14 +294,15 @@ public abstract class GameObject extends GameAPI {
 			Rectangle thisRect = new Rectangle ((int)this.getX(), (int)this.getY(), this.getSprite().getFrame(0).getWidth(), this.getSprite().getFrame(0).getHeight());
 			
 			Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), 1080, 720);
-			if (thisRect.intersects(veiwport)) {	
+		
+			
+			if (thisRect.intersects(veiwport) && visable) {	
 				animationHandler.draw (x - GameCode.getViewX(), y - GameCode.getViewY());
 			}
 		}
 	}
 	
 	/**
-	 * Draws this GameObject at its x and y coordinates relative to the screen.
 	 */
 	public void drawAbsolute () {
 		animationHandler.draw (x, y);
@@ -617,5 +621,14 @@ public abstract class GameObject extends GameAPI {
 	
 	public int getId () {
 		return id;
+	}
+
+	public boolean isVisable() {
+		return visable;
+	}
+
+	public void setVisability(boolean visable) {
+	
+		this.visable = visable;
 	}
 }

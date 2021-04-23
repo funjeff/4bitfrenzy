@@ -28,10 +28,7 @@ public class GameCode {
 	
 	private static TitleScreen titleScreen;
 	
-	public static Bit bit;
-	public static Bit bit2;
-	public static Bit bit3;
-	public static Bit bit4;
+	public static ArrayList <Bit> bits = new ArrayList <Bit> ();
 	
 	public static int [] perks = {-1,-1,-1,-1};
 	
@@ -61,21 +58,25 @@ public class GameCode {
 	}
 	
 	public static void gameLoopFunc () {
-		if (NetworkHandler.isHost() && !TitleScreen.titleClosed) {
+	
+		if (NetworkHandler.isHost() && !gameStarted) {
 			NetworkHandler.getServer ().sendMessage ("PERKS " + perks[0] + ":" + perks[1] + ":" + perks[2] + ":" + perks[3]);
 		}
 		frame++;
-		if (NetworkHandler.isHost () && titleScreen.titleClosed) {
+		if (NetworkHandler.isHost () && gameStarted) {
+		
 			//Send server stuff out
 			String toSend = "DATA:";
 			try {
 				toSend += Hud.timeLeft;
 				toSend += ":" + Hud.score;
-				toSend += ":" + (int)bit.getX () + "," + (int)bit.getY ();
-				toSend += ":" + (int)bit2.getX () + "," + (int)bit2.getY ();
-				toSend += ":" + (int)bit3.getX () + "," + (int)bit3.getY ();
-				toSend += ":" + (int)bit4.getX () + "," + (int)bit4.getY () + ":";
-				
+			//	System.out.print("big");
+				for (int i = 0; i < bits.size(); i++) {
+					toSend += ":" + (int)bits.get(i).getX () + "," + (int)bits.get(i).getY ();
+					//System.out.print("nbm");
+				}
+				//System.out.print("chungus");
+				toSend = toSend + ":";
 				ArrayList<GameObject> regObjs = ObjectHandler.getObjectsByName ("Register");
 				for (int i = 0; i < regObjs.size (); i++) {
 					toSend += regObjs.get (i).toString ();
@@ -92,6 +93,7 @@ public class GameCode {
 						toSend += ",";
 					}
 				}
+//			System.out.println(toSend);
 			} catch (NullPointerException e) {
 				return;
 			}
@@ -100,31 +102,49 @@ public class GameCode {
 			if (!NetworkHandler.isHost()) {
 				String toSend = "KEYS:";
 				try {
-					if (bit.keyDown ('W')) {
+					if (bits.get(0).keyDown ('W')) {
 						toSend += 'W';
 					}
-					if (bit.keyDown ('A')) {
+					if (bits.get(0).keyDown ('A')) {
 						toSend += 'A';
 					}
-					if (bit.keyDown ('S')) {
+					if (bits.get(0).keyDown ('S')) {
 						toSend += 'S';
 					}
-					if (bit.keyDown ('D')) {
+					if (bits.get(0).keyDown ('D')) {
 						toSend += 'D';
 					}
-					if (bit.keyDown (10)) {
+					if (bits.get(0).keyDown (KeyEvent.VK_UP)) {
+						toSend += KeyEvent.VK_UP;
+					}
+					if (bits.get(0).keyDown (KeyEvent.VK_LEFT)) {
+						toSend += KeyEvent.VK_LEFT;
+					}
+					if (bits.get(0).keyDown (KeyEvent.VK_DOWN)) {
+						toSend += KeyEvent.VK_DOWN;
+					}
+					if (bits.get(0).keyDown (KeyEvent.VK_RIGHT)) {
+						toSend += KeyEvent.VK_RIGHT;
+					}
+					if (bits.get(0).keyDown(KeyEvent.VK_CONTROL)) {
+						toSend += KeyEvent.VK_CONTROL;
+					}
+					if (bits.get(0).keyDown (10)) {
 						toSend += 10;
 					}
-					if (bit.keyDown (13)) {
+					if (bits.get(0).keyDown (13)) {
 						toSend += 13;
 					}
-					if (bit.keyDown ('M')) {
-						toSend += 13;
+					if (bits.get(0).keyDown('E')) {
+						toSend += 'E';
 					}
-					if (bit.keyDown (KeyEvent.VK_SHIFT)) {
+					if (bits.get(0).keyDown ('M')) {
+						toSend += 'M';
+					}
+					if (bits.get(0).keyDown (KeyEvent.VK_SHIFT)) {
 						toSend += 'v';
 					}
-				} catch (NullPointerException e) {
+				} catch (IndexOutOfBoundsException e) {
 					return; //Stuff hasn't been initialized yet
 				}
 				NetworkHandler.getClient ().messageServer (toSend);
@@ -139,9 +159,9 @@ public class GameCode {
 	public static void renderFunc () {
 		
 		if (titleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted) {
+			initGameState ();
 			gameStarted = true;
 			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
-			initGameState ();
 		}
 	}
 	
@@ -159,35 +179,45 @@ public class GameCode {
 	}
 	
 	public static void initGameState () {
-		bit = new Bit ();
-		bit2 = new Bit ();
-		bit3 = new Bit ();
-		bit4 = new Bit ();
-		bit.playerNum = 1;
-		bit2.playerNum = 2;
-		bit3.playerNum = 3;
-		bit4.playerNum = 4;
-		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
-		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-		int [] spawnCoords2 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-		int [] spawnCoords3 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-		int [] spawnCoords4 = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 		Hud hud = new Hud ();
-		Hud.newWave ();
+		if (NetworkHandler.isHost()) {
+			Hud.newWave ();
+		}
 		hud.declare();
-		bit.declare(spawnCoords[0],spawnCoords[1]);
-		bit2.declare(spawnCoords2[0] + 16,spawnCoords2[1] + 16);
-		bit3.declare(spawnCoords3[0] + 32,spawnCoords3[1] + 32);
-		bit4.declare(spawnCoords4[0] + 48,spawnCoords4[1] + 48);
-		bit.setPerk(perks[0]);
-		bit2.setPerk(perks[1]);
-		bit3.setPerk(perks[2]);
-		bit4.setPerk(perks[3]);
-		bit.updateIcon ();
-		bit2.updateIcon ();
-		bit3.updateIcon ();
-		bit4.updateIcon ();
+		int i = 0;
+		while (true) {
+			try {
+				if (perks[i] == -1) {
+					break;
+				}
+			} catch (IndexOutOfBoundsException e) {
+				break;
+			}
+			Bit bit = new Bit ();
+			bit.playerNum = i + 1;
+			PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
+			int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+			if (perks[i] == 5) {
+				Bit bit1dot5 = new Bit();
+				bit1dot5.playerNum = i + 1;
+				bit1dot5.setPerk(69);
+				bit1dot5.setActive(false);
+				bit1dot5.makeSecondaryBit();
+				bit1dot5.updateIcon();
+				bit1dot5.declare(spawnCoords[0], spawnCoords[1]);
+			}
+			bit.declare(spawnCoords[0],spawnCoords[1]);
+			bit.setPerk(perks[i]);
+			bit.updateIcon ();
+			bits.add(bit);
+			i = i + 1;
+		}
 		
+		Bombs b = new Bombs ();
+		
+		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
+		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(b.hitbox().width, b.hitbox().height);
+
+		b.declare(spawnCoords[0], spawnCoords[1]);
 	}
-	
 }

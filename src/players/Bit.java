@@ -1,6 +1,7 @@
 package players;
 
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,6 +36,19 @@ public class Bit extends GameObject {
 	
 	long speedUpTimer = 0;
 	
+	boolean active = true;
+	
+	boolean switching = false;
+	
+	boolean secondaryBit = false;
+	
+	public boolean isSecondaryBit() {
+		return secondaryBit;
+	}
+
+	public void makeSecondaryBit() {
+		this.secondaryBit = true;
+	}
 	Map map = new Map ();
 	
 	public int perk = 6; 
@@ -65,152 +79,194 @@ public class Bit extends GameObject {
 	public void onDeclare() {
 		
 		if (NetworkHandler.getPlayerNum() == this.playerNum) {
-			System.out.println (NetworkHandler.getPlayerNum () + ", " + this.playerNum);
 			GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
 			compass = new Compass (this);
-			compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
-				
-				compass.declare(0, 0);
+			try {
+				compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
+			} catch (NullPointerException e) {
+				compass.setPointObject(this);
 			}
-		
+				compass.declare(0, 0);
+			} else {
+				inventory.setVisability(false);
+			}
 		
 	}
 	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	@Override
-	public void frameEvent () {
-		String keys;
-		try {
-			keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
-		} catch (NullPointerException e) {
-			keys = null;
-		}
-		if (keyPressed (10)) {
-			if (inventory.getItem() != null) {
-				inventory.useItem(this);
-			}
-		}
-		if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
-			speedUpTimer = 0;
-			speed = speed - 2;
-		}
-		if (this.isCollidingChildren("Item")) {
-			Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
-			if (toUse.pickupablity) {
-				if (inventory.getItem() != null) {
-					Item it = inventory.getItem();
-					Roome romm = Roome.getRoom(this.getX(), this.getY());
-					int [] spawnCoords = romm.biatch.getPosibleCoords(it.hitbox().width, it.hitbox().height);
-					it.declare(spawnCoords[0], spawnCoords[1]);
-				}
-				inventory.setItem(toUse);
-				toUse.forget();
-			}
-		}
-		if (NetworkHandler.getPlayerNum() == this.playerNum) {
-			if (!ObjectHandler.getObjectsByName("Register").isEmpty() && compass != null){
-				if (compass.getPointObject () instanceof DataSlot && (regestersBeingCarried == null || regestersBeingCarried.size () == 0)) {
-					GameObject old = compass.getPointObject();
-					while (old.equals(compass.getPointObject())){
-						Random rand = new Random ();
-						compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
-					}
-				}
-
-			}
-		}
+	public void frameEvent () {	
+			String keys;
+			try {
 		
-			double resistance = 1;
-			if (perk != 1) {
-				if (regestersBeingCarried != null) {
-					if (keys != null && !keys.contains ("v")) {
-						regestersBeingCarried = null;
-					} else {
-						resistance = 0.5/regestersBeingCarried.size();
+				keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
+			} catch (NullPointerException e) {
+				keys = null;
+			}
+		
+			if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
+				speedUpTimer = 0;
+				speed = speed - 2;
+			}
+		
+			if (this.isCollidingChildren("Item")) {
+				Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
+				if (toUse.pickupablity) {
+					if (inventory.getItem() != null) {
+						Item it = inventory.getItem();
+						Roome romm = Roome.getRoom(this.getX(), this.getY());
+						int [] spawnCoords = romm.biatch.getPosibleCoords(it.hitbox().width, it.hitbox().height);
+						it.declare(spawnCoords[0], spawnCoords[1]);
 					}
-					
+					inventory.setItem(toUse);
+					toUse.forget();
 				}
 			}
-			
-			double speed = this.speed * resistance;
-			
-			if (perk == 0) {
-				speed = speed + 2;
+			if (keyPressed (10) && this.isActive()) {
+				if (inventory.getItem() != null) {
+					inventory.useItem(this);
+				}
 			}
-			
+			if (!this.isActive()) {
+				if (compass != null) {
+					compass.setVisability(false);
+				}
+				inventory.setVisability(false);
+			} else {
+				if (perk == 5) {
+					if (compass != null) {
+						compass.setVisability(true);
+					}
+					inventory.setVisability(true);
+				}
+			}
+			if (!this.isActive() && keys != null && keys.contains(Integer.toString(KeyEvent.VK_CONTROL)) && !switching) {
+				active = true;
+				switching = true;
+				GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
+				ArrayList <GameObject> bits = ObjectHandler.getObjectsByName("Bit");
+				for (int i = 0; i < bits.size(); i++) {
+					Bit working = (Bit)bits.get(i);
+					if (!working.equals(this) && working.playerNum == this.playerNum) {
+						working.setActive(false);
+						working.switching = true;
+					}
+				}
+			}
+			if (keys != null && !keys.contains(Integer.toString(KeyEvent.VK_CONTROL))) {
+				this.switching = false;
+			}
 			if (NetworkHandler.getPlayerNum() == this.playerNum) {
-				if(keyPressed (' ') && compass != null) {
-					
-					GameObject old = compass.getPointObject();
-					
-					
-					while (old.equals(compass.getPointObject())){
-						Random rand = new Random ();
-						compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+				if (ObjectHandler.getObjectsByName("Register") != null && !ObjectHandler.getObjectsByName("Register").isEmpty() && compass != null){
+					if (compass.getPointObject () instanceof DataSlot && (regestersBeingCarried == null || regestersBeingCarried.size () == 0)) {
+						GameObject old = compass.getPointObject();
+						while (old.equals(compass.getPointObject())){
+							Random rand = new Random ();
+							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+						}
 					}
 				}
 			}
 			
-
-			if (keys != null && keys.contains ("W")) {
-				if (this.goY((int)(this.getY() - speed))) {
-					this.carryRegestersY((((int)speed) * -1) - 1);
-				}
-				lastMove = 0;
-			}
-			if (keys != null && keys.contains ("D")) {
-				if (this.goX((int)(this.getX() + speed))) {
-					this.carryRegestersX((int)speed);
-				}
-				lastMove = 2;
-			}
-			if (keys != null && keys.contains ("A")) {
-				if (this.goX((int)(this.getX() - speed))) {
-					this.carryRegestersX((((int)speed) * -1) - 1);
-				}
-				lastMove = 3;
-			}
-			if (keys != null && keys.contains ("S")) {
-				if (this.goY((int)(this.getY() + speed))) {
-					this.carryRegestersY((int)speed);
-				}
-				lastMove = 1;
-			}
-			this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
-			this.setX(this.getX() - 3);
-			this.setY(this.getY() - 3);
-			
-				if (keys != null && keys.contains ("v")) {
-					if (this.isColliding ("Register")) {
-						
-						if (regestersBeingCarried == null) {
-							regestersBeingCarried = new ArrayList<GameObject> ();
+				double resistance = 1;
+				if (perk != 1) {
+					if (regestersBeingCarried != null) {
+						if (keys != null && !keys.contains ("v")) {
+							regestersBeingCarried = null;
+						} else {
+							resistance = 0.5/regestersBeingCarried.size();
 						}
 						
-						ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();
-						for (int i = 0; i < workingRegisters.size (); i++) {
-							if (!regestersBeingCarried.contains (workingRegisters.get (i))) {
-								regestersBeingCarried.add (workingRegisters.get (i));
+					}
+				}
+				
+				double speed = this.speed * resistance;
+				
+				if (perk == 0) {
+					speed = speed + 2;
+				}
+				
+				if (NetworkHandler.getPlayerNum() == this.playerNum) {
+					if(keyPressed (' ') && compass != null) {
+						
+						GameObject old = compass.getPointObject();
+						
+						
+						while (old.equals(compass.getPointObject())){
+							Random rand = new Random ();
+							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+						}
+					}
+				}
+				
+	
+				if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_UP)) && this.isSecondaryBit()))) {
+					if (this.goY((int)(this.getY() - speed))) {
+						this.carryRegestersY((((int)speed) * -1) - 1);
+					}
+					lastMove = 0;
+				}
+				if (keys != null && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_RIGHT)) && this.isSecondaryBit()))) {
+					if (this.goX((int)(this.getX() + speed))) {
+						this.carryRegestersX((int)speed);
+					}
+					lastMove = 2;
+				}
+				if (keys != null && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_LEFT)) && this.isSecondaryBit()))) {
+					if (this.goX((int)(this.getX() - speed))) {
+						this.carryRegestersX((((int)speed) * -1) - 1);
+					}
+					lastMove = 3;
+				}
+				if (keys != null && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_DOWN)) && this.isSecondaryBit()))) {
+					if (this.goY((int)(this.getY() + speed))) {
+						this.carryRegestersY((int)speed);
+					}
+					lastMove = 1;
+				}
+				this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
+				this.setX(this.getX() - 3);
+				this.setY(this.getY() - 3);
+				
+					if (keys != null && keys.contains ("v")) {
+						if (this.isColliding ("Register")) {
+							
+							if (regestersBeingCarried == null) {
+								regestersBeingCarried = new ArrayList<GameObject> ();
+							}
+							
+							ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();
+							for (int i = 0; i < workingRegisters.size (); i++) {
+								if (!regestersBeingCarried.contains (workingRegisters.get (i))) {
+									regestersBeingCarried.add (workingRegisters.get (i));
+								}
+							}
+							
+							Register reg = (Register) regestersBeingCarried.get(0);
+							
+							//compass = null for client
+							
+							if (NetworkHandler.getPlayerNum() == this.playerNum) {
+								compass.setPointObject(reg.getDataSlot() );
 							}
 						}
-						
-						Register reg = (Register) regestersBeingCarried.get(0);
-						
-						//compass = null for client
-						
-						if (NetworkHandler.getPlayerNum() == this.playerNum) {
-							compass.setPointObject(reg.getDataSlot() );
+					} else {
+						if (regestersBeingCarried != null) {
+							regestersBeingCarried.clear ();
 						}
 					}
-				} else {
-					if (regestersBeingCarried != null) {
-						regestersBeingCarried.clear ();
-					}
-				}
-			
-			this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
-			this.setX(this.getX() + 3);
-			this.setY(this.getY() + 3);
-		}
+				
+				this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
+				this.setX(this.getX() + 3);
+				this.setY(this.getY() + 3);
+			}
 	private void carryRegestersY (double dist) {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
@@ -273,7 +329,7 @@ public class Bit extends GameObject {
 			}
 		}
 		
-		if (playerNum == NetworkHandler.getPlayerNum ()) {
+		if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
 			Rectangle hBox = new Rectangle (this.hitbox());
 			
 	
@@ -327,7 +383,7 @@ public class Bit extends GameObject {
 			}
 		}
 		
-		if (playerNum == NetworkHandler.getPlayerNum ()) {
+		if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
 		
 			Rectangle hBox = new Rectangle (this.hitbox());
 		

@@ -99,28 +99,56 @@ public class Server extends Thread {
 			//Do inputs normally
 			String toSend = "";
 			try {
-				if (GameCode.bit.keyDown ('W')) {
+				if (GameCode.bits.get(0).keyDown ('W')) {
 					toSend += 'W';
 				}
-				if (GameCode.bit.keyDown ('A')) {
+				if (GameCode.bits.get(0).keyDown ('A')) {
 					toSend += 'A';
 				}
-				if (GameCode.bit.keyDown ('S')) {
+				if (GameCode.bits.get(0).keyDown ('S')) {
 					toSend += 'S';
 				}
-				if (GameCode.bit.keyDown ('D')) {
+				if (GameCode.bits.get(0).keyDown ('D')) {
 					toSend += 'D';
 				}
-				if (GameCode.bit.keyDown (KeyEvent.VK_SHIFT)) {
+				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_UP)) {
+					toSend += KeyEvent.VK_UP;
+				}
+				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_LEFT)) {
+					toSend += KeyEvent.VK_LEFT;
+				}
+				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_DOWN)) {
+					toSend += KeyEvent.VK_DOWN;
+				}
+				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_RIGHT)) {
+					toSend += KeyEvent.VK_RIGHT;
+				}
+				if (GameCode.bits.get(0).keyDown(KeyEvent.VK_CONTROL)) {
+					toSend += KeyEvent.VK_CONTROL;
+				}
+				if (GameCode.bits.get(0).keyDown (10)) {
+					toSend += 10;
+				}
+				if (GameCode.bits.get(0).keyDown (13)) {
+					toSend += 13;
+				}
+				if (GameCode.bits.get(0).keyDown('E')) {
+					toSend += 'E';
+				}
+				if (GameCode.bits.get(0).keyDown ('M')) {
+					toSend += 'M';
+				}
+				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_SHIFT)) {
 					toSend += 'v';
 				}
 				//System.out.println (toSend);
 				return toSend;
-			} catch (NullPointerException e) {
+			} catch (IndexOutOfBoundsException e) {
 				return ""; //Stuff hasn't been initialized yet
 			}
 		} else {
 			//Do inputs specially
+			
 			if (playerNum - 1 <= connections.size ()) {
 				return connections.get (playerNum - 2).getInputs ();
 			} else {

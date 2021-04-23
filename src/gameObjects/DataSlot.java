@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
+import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
@@ -83,6 +84,7 @@ public class DataSlot extends GameObject {
 				if (working.getMemAddress() == memAddress || working.scrambled || working.secondAddress == memAddress) {
 					this.awardPoints(working);
 					working.forget();
+					Roome.getRoom(this.getX(), this.getY()).ds = null;
 					if (working.scrambled) {
 						Register OG = this.getRegester();
 						if (OG != null) {
@@ -150,7 +152,7 @@ public class DataSlot extends GameObject {
 	@Override
 	public String toString () {
 		if (reward == null) {
-			return getId () + " " + memAddress  + " " + cleared + " " + null + " " + this.getX() + " " + this.getY();
+			return getId () + " " + memAddress  + " " + cleared + " " + "null" + " " + this.getX() + " " + this.getY();
 		} else {
 			return getId () + " " + memAddress  + " " + cleared + " " + reward.getText() + " " + this.getX() + " " + this.getY();
 		}
@@ -160,13 +162,14 @@ public class DataSlot extends GameObject {
 		
 		String [] infos = info.split(" ");
 		if (display != null) {
-			int val = Integer.parseInt (infos[1]);
-			display.changeText(Integer.toHexString (val).toUpperCase ());
+			
+			memAddress = Integer.parseInt (infos[1]);
+			display.changeText(Integer.toHexString (memAddress).toUpperCase ());
 		}
 		if (Boolean.parseBoolean(infos[2])) {
 			this.getAnimationHandler().setAnimationFrame(1);
 		}
-		if (infos[3] != null && reward == null) {
+		if (!infos[3].equals("null") && reward == null) {
 			reward = new Textbox (infos[3]);
 			reward.changeBoxVisability();
 			reward.setFont("text (lime green)");
@@ -175,7 +178,7 @@ public class DataSlot extends GameObject {
 		this.setX(Double.parseDouble(infos[4]));
 		this.setY(Double.parseDouble(infos[5]));
 		updateTime = 0;
-		
+		Roome.getRoom(this.getX(), this.getY()).ds = this;
 	}
 	
 }

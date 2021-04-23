@@ -49,8 +49,10 @@ public class Register extends GameObject {
 			this.setSprite(new Sprite ("resources/sprites/Regester scrambled.png"));
 		
 		}
-		this.setX(Double.parseDouble(infos[5]));
-		this.setY(Double.parseDouble(infos[6]));
+		
+		this.goX(Double.parseDouble(infos[5]));
+		this.goY(Double.parseDouble(infos[6]));
+		
 		this.updateTime = 0;
 		
 	}
@@ -68,22 +70,37 @@ public class Register extends GameObject {
 	public boolean goX (double val) {
 		double x = this.getX();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
+		if (currentRoom.r == null) {
+			currentRoom.r = this;
+		}
 		this.setX(val);
 		if (currentRoom.isColliding(this) || this.isColliding("Register")) {
 			this.setX(x);
 			return false;
+		}
+		if (!currentRoom.equals(Roome.getRoom(this.getX(), this.getY()))) {
+			currentRoom.r = null;
 		}
 		return true;
 	}
 	@Override
 	public boolean goY (double val) {
 		double y = this.getY();
-		this.setY(val);
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
+		if (currentRoom.r == null) {
+			currentRoom.r = this;
+		}
+		this.setY(val);
+		
 		if (currentRoom.isColliding(this) || this.isColliding("Register")) {
 			this.setY(y);
 			return false;
 		}
+		
+		if (!currentRoom.equals(Roome.getRoom(this.getX(), this.getY()))) {
+			currentRoom.r = null;
+		}
+		
 		return true;
 	}
 	

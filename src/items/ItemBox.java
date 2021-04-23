@@ -46,8 +46,7 @@ public class ItemBox extends GameObject {
 		this.setY(GameCode.getViewY() + 100);
 		
 		super.draw();
-		if (item != null) {
-
+		if (item != null && isVisable()) {
 			item.setX(this.getX());
 			item.setY(this.getY());
 			item.draw();

@@ -125,81 +125,6 @@ public class Roome extends GameObject {
 				}
 			
 			
-				if (rand.nextInt(20) == 13) {
-				
-				int memNum = rand.nextInt(256);
-				
-				Register r = new Register(memNum);
-				
-				int [] spawnPoint = biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
-				
-				r.declare(spawnPoint[0],spawnPoint[1]);
-				
-				this.r = r;
-				
-				
-				
-				int xCoord = rand.nextInt(3);
-				
-				if (rand.nextBoolean()) {
-					xCoord = xCoord * -1;
-				}
-				
-				xCoord = roomPosX + xCoord;
-				
-				
-				int yCoord = rand.nextInt(3);
-				
-				if (rand.nextBoolean()) {
-					yCoord = yCoord * -1;
-				}
-				
-				yCoord = roomPosY + yCoord;
-				
-				if (xCoord > 9) {
-					xCoord = 9;
-				}
-				
-				if (xCoord < 0) {
-					xCoord = 0;
-				}
-				if (yCoord > 9) {
-					yCoord = 9;
-				}
-				
-				if (yCoord < 0) {
-					yCoord = 0;
-				}
-				
-				Roome dataRoom = map [xCoord][yCoord];
-				
-	
-				
-				if (dataRoom.biatch == null) {
-					dataRoom.init(1, 1); //TODO change this! it NEEDS to be changed
-				}
-				
-				
-				DataSlot ds = new DataSlot (memNum);
-				
-				
-				
-				int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
-				
-				
-				ds.declare(otherPoint[0],otherPoint[1]);
-				
-				while (r.isColliding(ds)) {
-					int [] spawnPointredo = biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
-					
-					r.setX(spawnPointredo[0]);
-					r.setY(spawnPointredo[1]);
-				}
-				
-				dataRoom.ds = ds;
-			}
-			
-			
 			
 			boxes[0] = new Textbox("");
 			boxes[0].changeBoxVisability();
@@ -398,19 +323,6 @@ public class Roome extends GameObject {
 	}
 	
 	public static void loadMap (String mapString) {
-		
-		ArrayList <GameObject> oldRooms = ObjectHandler.getObjectsByName("Roome");
-		if (oldRooms != null) {
-			while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
-				oldRooms.get(0).forget();
-			}
-		}
-		oldRooms = ObjectHandler.getObjectsByName("Textbox");
-		if (oldRooms != null) {
-			while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
-				oldRooms.get(0).forget();
-			}
-		}
 		String[] roomStrings = mapString.split (",");
 		
 		int [] ids = new int [100];
@@ -441,15 +353,6 @@ public class Roome extends GameObject {
 			r.roomPosY = (i / 10);
 		}
 		
-		String[] objsToRemove = new String[] {};
-		for (int i = 0; i < objsToRemove.length; i++) {
-			oldRooms = ObjectHandler.getObjectsByName(objsToRemove[i]);
-			if (oldRooms != null) {
-				while (!oldRooms.isEmpty() && (oldRooms.get (0) != null)) {
-					oldRooms.get(0).forget();
-				}
-			}
-		}
 		
 	}
 	
@@ -615,7 +518,7 @@ public class Roome extends GameObject {
 		boxes[8].forget();
 		
 		if (NetworkHandler.isHost()) {
-			NetworkHandler.getServer().sendMessage("destroy top: " + roomPosX + " " + roomPosY);
+			NetworkHandler.getServer().sendMessage("DESTROY:top:" + roomPosX + ":" + roomPosY);
 		}
 	}
 	public void destroyBottomWall() {
@@ -632,7 +535,7 @@ public class Roome extends GameObject {
 		bottomJunction = true;
 		boxes[11].forget();
 		if (NetworkHandler.isHost()) {
-			NetworkHandler.getServer().sendMessage("destroy bottom: " + roomPosX + " " + roomPosY);
+			NetworkHandler.getServer().sendMessage("DESTROY:bottom:" + roomPosX + ":" + roomPosY);
 		}
 	}
 	public void destroyRightWall() {
@@ -649,7 +552,7 @@ public class Roome extends GameObject {
 		rightJunction = true;
 		boxes[10].forget();
 		if (NetworkHandler.isHost()) {
-			NetworkHandler.getServer().sendMessage("destroy right: " + roomPosX + " " + roomPosY);
+			NetworkHandler.getServer().sendMessage("DESTROY:right:" + roomPosX + ":" + roomPosY);
 		}
 	}
 	public void destroyLeftWall() {
@@ -667,7 +570,7 @@ public class Roome extends GameObject {
 		leftJunction = true;
 		boxes[9].forget();
 		if (NetworkHandler.isHost()) {
-			NetworkHandler.getServer().sendMessage("destroy left: " + roomPosX + " " + roomPosY);
+			NetworkHandler.getServer().sendMessage("DESTROY:left:" + roomPosX + ":" + roomPosY);
 		}
 	}
 	

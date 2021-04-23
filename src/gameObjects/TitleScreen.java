@@ -148,9 +148,12 @@ public class TitleScreen extends GameObject {
 			GameCode.setPerk(perkNum, 0);
 			
 			this.setSprite(new Sprite ("resources/sprites/now loading.png"));
-			this.draw();
+			
 			RenderLoop.pause();
+			
+			this.draw();
 			RenderLoop.wind.refresh();
+			
 			Roome.generateMap();
 			RenderLoop.unPause();
 			this.setSprite(lobbySprite);
@@ -258,7 +261,7 @@ public class TitleScreen extends GameObject {
 					parserQuantitys.add("grid 168 128");
 					
 					Sprite bits = null;
-					
+			
 					switch (GameCode.perks[(i*2) + j]) {
 					case 0:
 						perk = new Textbox ("BLAST PROCESSING");
@@ -287,7 +290,7 @@ public class TitleScreen extends GameObject {
 						break;
 					case 5:
 						perk = new Textbox ("DUEL CORE");
-						perk.setFont("text (rainbow)");
+						perk.setFont("text (red)");
 						bits = new Sprite ("resources/sprites/bits duel 1 big.png", new SpriteParser (parserQuantitys));
 						break;
 					case 15:
@@ -315,13 +318,16 @@ public class TitleScreen extends GameObject {
 						
 						int middleNum = str.length()/2;
 						
-				
-						int displace = 96 - (middleNum * 32);
+						int middlePos = (middleNum * 16) + 8;
+						
+						int middlePosTarget = bits.getWidth()/2;
+						
+						int displace = middlePosTarget - middlePos;
 						
 						
 						perk.changeBoxVisability();
 						perk.setRenderPriority(72);
-						perk.setX((i * 500) + 190 - displace);
+						perk.setX((i * 500) + 165 + displace);
 						perk.setY((j * 300) + 75);
 						perk.draw();
 						bits.draw((i * 500) + 165, (j * 300) + 130, (i*2) + j);

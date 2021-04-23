@@ -6,6 +6,7 @@ import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
+import players.Bit;
 import resources.Textbox;
 
 public class Map extends GameObject  {
@@ -59,8 +60,9 @@ public class Map extends GameObject  {
 		}
 		ArrayList <GameObject> toMark = ObjectHandler.getObjectsByName("Bit");
 		for (int i = 0; i < toMark.size(); i++) {
+			Bit working = (Bit) toMark.get(i);
 			Roome playerRoom = Roome.getRoom(toMark.get(i).getX(), toMark.get(i).getY());
-			toMark.get(i).getSprite().draw(playerRoom.roomPosX * 32 + 346, playerRoom.roomPosY * 32 + 240);
+			toMark.get(i).getSprite().draw(playerRoom.roomPosX * 32 + 346, playerRoom.roomPosY * 32 + 240,working.playerNum - 1);
 		}	
 	}
 }
