@@ -39,7 +39,9 @@ public class Register extends GameObject {
 		String [] infos = info.split(" ");
 		memAddress = Integer.parseInt(infos[1]);
 		int num = Integer.parseInt (infos[1]);
-		display.changeText(Integer.toHexString (num).toUpperCase ());
+		if (display != null) {
+			display.changeText(Integer.toHexString (num).toUpperCase ());
+		}
 		if (Integer.parseInt(infos[2]) != -1) {
 			this.setSprite(new Sprite ("resources/sprites/Regester combined.png"));
 			secondAddress = Integer.parseInt(infos[2]);
@@ -47,6 +49,7 @@ public class Register extends GameObject {
 		
 		if (Boolean.parseBoolean(infos[3])) {
 			this.setSprite(new Sprite ("resources/sprites/Regester scrambled.png"));
+			display = null;
 		
 		}
 		

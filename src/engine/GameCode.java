@@ -93,6 +93,27 @@ public class GameCode {
 						toSend += ",";
 					}
 				}
+				toSend += ":";
+				ArrayList<ArrayList<GameObject>> items = ObjectHandler.getChildrenByName("Item");
+				for (int i = 0; i < items.size (); i++) {
+					for (int j = 0; j < items.get(i).size();j++) {
+						toSend += items.get (i).get(j).toString ();
+						toSend += ",";
+					}
+				}
+				for (int i = 0; i < bits.size(); i++) {
+					if (bits.get(i).inventory.getItem() != null) {
+						toSend += bits.get(i).inventory.getItem().toString ();
+						if (i != bits.size() -1) {
+							toSend += ",";
+						}
+					} else {
+						toSend += "null";
+						if (i != bits.size() -1) {
+							toSend += ",";
+						}
+					}
+				}
 //			System.out.println(toSend);
 			} catch (NullPointerException e) {
 				return;
@@ -213,11 +234,12 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-		Bombs b = new Bombs ();
+		DataScrambler b = new DataScrambler ();
 		
 		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
 		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(b.hitbox().width, b.hitbox().height);
 
 		b.declare(spawnCoords[0], spawnCoords[1]);
+		
 	}
 }

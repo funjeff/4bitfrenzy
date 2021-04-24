@@ -20,4 +20,19 @@ public class Item extends GameObject {
 		return true;
 	
 	}
+	
+
+	public void refreshItem (String str) {
+		String [] args = str.split(" ");
+		this.setX(Integer.parseInt(args[2]));
+
+		this.setY(Integer.parseInt(args[3]));
+		
+		uses = Integer.parseInt(args[4]);
+	}
+	
+	@Override
+	public String toString () {
+		return getId () + " " + this.getClass().getName() + " " + (int)this.getX() + " " + (int)this.getY() + " " + uses;
+	}
 }

@@ -6,6 +6,7 @@ import engine.ObjectHandler;
 import engine.Sprite;
 import network.NetworkHandler;
 import players.Bit;
+import resources.Textbox;
 
 public class Compass extends GameObject {
 	
@@ -108,6 +109,18 @@ public class Compass extends GameObject {
 				this.getAnimationHandler().setFlipHorizontal(false);
 			}
 		}
+		
+		try {
+			DataSlot ds = (DataSlot) pointObject;
+			if (ds.cleared) {
+				if (ObjectHandler.getObjectsByName("Register") != null && ObjectHandler.getObjectsByName("Register").size() != 0) {
+					this.pointObject = ObjectHandler.getObjectsByName("Register").get(0);
+					owner.regNum = 0;
+				}
+			}
+		} catch (ClassCastException e) {
+			
+		}
 	}
 
 	public GameObject getPointObject() {
@@ -124,6 +137,42 @@ public class Compass extends GameObject {
 	public void draw () {
 		this.setX(GameCode.viewX + 50);
 		this.setY(GameCode.viewY + 50);
+		
+		String memAdress = "";
+		boolean regOrDs = false; //true for reg false for ds
+		try {
+			Register reg = (Register) pointObject;
+			memAdress = Integer.toHexString(reg.memAddress).toUpperCase();
+			regOrDs = true;
+		} catch (ClassCastException e) {
+			
+		}
+		try {
+			DataSlot ds = (DataSlot) pointObject;
+			memAdress = Integer.toHexString(ds.memAddress).toUpperCase();
+			regOrDs = false;
+		} catch (ClassCastException e) {
+			
+		}
+		
+		Textbox t = new Textbox ("   " + memAdress);
+		
+		if (regOrDs) {
+			t.setFont("text (lime green)");
+		} else {
+			t.setFont("text (red)");
+		}
+		t.changeWidth(144);
+		t.changeHeight(32);
+		
+		t.setX(this.getX());
+		try {
+			t.setY(this.getY() + this.getSprite().getHeight());
+		} catch (NullPointerException e) {
+			
+		}
+		t.draw();
+		
 		super.draw();
 	}
 }

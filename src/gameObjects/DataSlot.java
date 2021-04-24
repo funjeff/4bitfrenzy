@@ -1,6 +1,7 @@
 package gameObjects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import engine.GameObject;
 import engine.ObjectHandler;
@@ -60,12 +61,14 @@ public class DataSlot extends GameObject {
 		return null;
 	}
 	
-	public DataSlot getDataSlot(int memAddress) {
+	public static DataSlot getDataSlot(int memAddress) {
+		
 		ArrayList <GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 		for (int i = 0; i < slots.size(); i++) {
 			DataSlot working = (DataSlot)slots.get(i);
 			
 			if (working.memAddress == memAddress) {
+			
 				return working;
 			}
 			
@@ -94,7 +97,7 @@ public class DataSlot extends GameObject {
 					}
 					if (working.secondAddress != -1) {
 						if (working.memAddress == memAddress) {
-							this.getDataSlot(working.secondAddress).forget();
+							DataSlot.getDataSlot(working.secondAddress).forget();
 						} else {
 							working.getDataSlot().forget();
 						}
@@ -154,7 +157,7 @@ public class DataSlot extends GameObject {
 		if (reward == null) {
 			return getId () + " " + memAddress  + " " + cleared + " " + "null" + " " + this.getX() + " " + this.getY();
 		} else {
-			return getId () + " " + memAddress  + " " + cleared + " " + reward.getText() + " " + this.getX() + " " + this.getY();
+			return getId () + " " + memAddress  + " " + cleared + " " + reward.getText().substring(2) + " " + this.getX() + " " + this.getY();
 		}
 	}
 	
@@ -170,7 +173,7 @@ public class DataSlot extends GameObject {
 			this.getAnimationHandler().setAnimationFrame(1);
 		}
 		if (!infos[3].equals("null") && reward == null) {
-			reward = new Textbox (infos[3]);
+			reward = new Textbox ("+ " + infos[3]);
 			reward.changeBoxVisability();
 			reward.setFont("text (lime green)");
 			display = null;

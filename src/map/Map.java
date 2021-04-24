@@ -16,7 +16,7 @@ public class Map extends GameObject  {
 	public final Sprite bridge = new Sprite ("resources/sprites/green square.png");
 	
 	public Map () {
-	
+		this.setRenderPriority(700);
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class Map extends GameObject  {
 					tx.setX(drawPosX + j*32 + 6 + GameCode.getViewX());
 					tx.setY(drawPosY + i*32 + 6 + GameCode.getViewY());
 					tx.changeBoxVisability();
-					tx.setRenderPriority(10);
+					tx.setRenderPriority(700);
 					tx.draw();
 				}
 				if (Roome.map[i][j].ds != null) {
@@ -53,7 +53,7 @@ public class Map extends GameObject  {
 					tx.setX(drawPosX + j*32 + 6 + GameCode.getViewX());
 					tx.setY(drawPosY + i*32 + 6 + GameCode.getViewY());
 					tx.changeBoxVisability();
-					tx.setRenderPriority(10);
+					tx.setRenderPriority(700);
 					tx.draw();
 				}
 			}

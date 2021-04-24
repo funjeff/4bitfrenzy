@@ -12,11 +12,7 @@ public class Teleporter extends Item {
 		this.setSprite(new Sprite ("resources/sprites/teleporter.png"));
 		this.setHitboxAttributes(32, 32);
 	}
-	public void refresh(String info) {
-		String [] infos = info.split(" ");
-		this.setX(Double.parseDouble(infos[0]));
-		this.setY(Double.parseDouble(infos[1]));
-	}
+	
 	/**
 	 * returns true if item use was succsefully false otherwise
 	 */
@@ -28,8 +24,4 @@ public class Teleporter extends Item {
 		user.goY(telportCoords[1]);
 		return true;
 	}
-	@Override
-	public String toString () {
-		return this.getX() + " " + this.getY();
-	}	
 }

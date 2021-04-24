@@ -10,11 +10,6 @@ public class Glue extends Item {
 		this.setSprite(new Sprite ("resources/sprites/glue kinda.png"));
 		this.setHitboxAttributes(32, 32);
 	}
-	public void refresh(String info) {
-		String [] infos = info.split(" ");
-		this.setX(Double.parseDouble(infos[0]));
-		this.setY(Double.parseDouble(infos[1]));
-	}
 	/**
 	 * returns true if item use was succsefull false otherwise
 	 */
@@ -32,10 +27,5 @@ public class Glue extends Item {
 				return true;
 			}
 		}
-	}
-	
-	@Override
-	public String toString () {
-		return this.getX() + " " + this.getY();
 	}
 }

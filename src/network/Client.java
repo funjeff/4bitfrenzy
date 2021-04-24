@@ -5,12 +5,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 
 import engine.GameCode;
@@ -20,8 +22,10 @@ import engine.Sprite;
 import gameObjects.DataSlot;
 import gameObjects.Register;
 import gameObjects.TitleScreen;
+import items.Item;
 import engine.GameObject;
 import map.Roome;
+import players.Bit;
 import resources.Hud;
 
 public class Client extends Thread {
@@ -42,6 +46,7 @@ public class Client extends Thread {
 	
 	private static HashMap<Integer, Register> registerMap;
 	private static HashMap<Integer, DataSlot> slotMap;
+	private static HashMap<Integer, Item> itemMap;
 	
 	private String uuid = UUID.randomUUID ().toString ();
 	
@@ -51,6 +56,7 @@ public class Client extends Thread {
 		this.port = Integer.parseInt (ip.split (":")[1]);
 		registerMap = new HashMap<Integer, Register> ();
 		slotMap = new HashMap<Integer, DataSlot> ();
+		itemMap = new HashMap <Integer, Item> ();
 		
 	}
 	
@@ -70,6 +76,7 @@ public class Client extends Thread {
 			while (true) {
 				//Wait until there's data to send
 				while (!readyToSend && !close) {
+					
 					
 					if (dataIn.available () != 0) {
 						String str = dataIn.readUTF ();
@@ -95,6 +102,16 @@ public class Client extends Thread {
 							}
 							
 						}
+						if (str.substring (0, 5).equals ("POINT")) {
+							
+							String [] data = str.substring(6).split(":");
+
+							if (NetworkHandler.getPlayerNum() == Integer.parseInt(data[0])) {
+								if (DataSlot.getDataSlot(Integer.parseInt(data[1])) != null) { // I don't want to try to figure this out right now this will fix it in like 99% of cases
+									GameCode.bits.get(NetworkHandler.getPlayerNum() - 1).compass.setPointObject(DataSlot.getDataSlot(Integer.parseInt(data[1])));
+								}
+							}
+						}
 						if (str.substring (0, 7).equals ("DESTROY")) {
 							String [] toDestroy = str.substring(8).split(":");
 							switch (toDestroy[0]) {
@@ -118,6 +135,7 @@ public class Client extends Thread {
 							String room_data = data[1];
 							TitleScreen.titleClosed = true;
 							
+						
 							
 							GameCode.getTitleScreen().setSprite(new Sprite ("resources/sprites/now loading.png"));
 							
@@ -143,6 +161,9 @@ public class Client extends Thread {
 						}
 						
 						if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
+							
+							ArrayList<Integer> toKeep = new ArrayList <Integer> ();
+							
 							long dataParseTime = System.currentTimeMillis ();
 							//Get the data
 							String[] data = str.split (":");
@@ -168,7 +189,6 @@ public class Client extends Thread {
 								next = next + 1;
 							}
 							//Extract the register data
-							ArrayList<GameObject> regObjs = ObjectHandler.getObjectsByName ("Register");
 							String reg_data = data[next];
 							String[] registers = reg_data.split (",");
 							for (int i = 0; i < registers.length; i++) {
@@ -177,11 +197,13 @@ public class Client extends Thread {
 									int r_id = s.nextInt ();
 									if (registerMap.containsKey (r_id)) {
 										registerMap.get (r_id).refreshRegister (registers [i]);
+										toKeep.add(r_id);
 									} else {
 										Register reg = new Register (1);
 										reg.declare ();
 										reg.refreshRegister (registers [i]);
 										reg.id = r_id;
+										toKeep.add(r_id);
 										registerMap.put (r_id, reg);
 									}
 									s.close ();
@@ -189,7 +211,6 @@ public class Client extends Thread {
 							}
 							
 							//Extract the DataSlot data
-							ArrayList<GameObject> slotObjs = ObjectHandler.getObjectsByName ("DataSlot");
 							String slot_data = data[next + 1];
 							String[] slots = slot_data.split (",");
 							for (int i = 0; i < slots.length; i++) {
@@ -197,19 +218,126 @@ public class Client extends Thread {
 								if (s.hasNext ()) {
 								int r_id = s.nextInt ();
 									if (slotMap.containsKey (r_id)) {
+										toKeep.add(r_id);
 										slotMap.get (r_id).refreshDataSlot (slots [i]);
 									} else {
 										DataSlot ds = new DataSlot (1);
 										ds.declare ();
 										ds.refreshDataSlot (slots [i]);
 										ds.id = r_id;
+										toKeep.add(r_id);
 										slotMap.put (r_id, ds);
 									}
 									s.close ();
 								}
 							}
+							//Extract the DataSlot data
+							String item_data = data[next + 2];
+							String[] items = item_data.split (",");
+							for (int i = 0; i < items.length; i++) {
+								if (i < items.length - GameCode.bits.size()) {
+									Scanner s = new Scanner (items [i]);
+									if (s.hasNext ()) {
+									int r_id = s.nextInt ();
+										if (itemMap.containsKey (r_id)) {
+											toKeep.add(r_id);
+											itemMap.get (r_id).refreshItem (items [i]);
+										} else {
+											Class<?> itemToUse = null;
+											try {
+												itemToUse = Class.forName(s.next());
+											} catch (ClassNotFoundException e) {
+												e.printStackTrace();
+											}
+											
+											Item it = null;
+											try {
+												it = (Item)itemToUse.getConstructor().newInstance();
+											} catch (InstantiationException | IllegalAccessException
+													| IllegalArgumentException | InvocationTargetException
+													| NoSuchMethodException | SecurityException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+											it.declare ();
+											it.refreshItem (items [i]);
+											it.id = r_id;
+											toKeep.add(r_id);
+											itemMap.put (r_id, it);
+										}
+										s.close ();
+									}
+								} else {
+									Bit b = GameCode.bits.get(i - (items.length - GameCode.bits.size()));
+									if (!items[i].equals("null")) {
+										Scanner s2 = new Scanner (items [i]);
+										s2.next();
+										if (b.inventory.getItem() != null && b.inventory.getItem().getClass().toString().equals(s2.next())) {
+											b.inventory.getItem().refreshItem(items[i]);
+										} else {
+											Class<?> itemToUse = null;
+											try {
+												Scanner s = new Scanner (items [i]);
+												s.next();
+												itemToUse = Class.forName(s.next());
+												s.close();
+											} catch (ClassNotFoundException e) {
+												e.printStackTrace();
+											}
+											
+											Item it = null;
+											try {
+												it = (Item)itemToUse.getConstructor().newInstance();
+											} catch (InstantiationException | IllegalAccessException
+													| IllegalArgumentException | InvocationTargetException
+													| NoSuchMethodException | SecurityException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+											b.inventory.setItem(it);
+										}
+										s2.close();
+									} else {
+										b.inventory.setItem(null);
+									}
+								}
+							}
+							
+							Set<Integer> itemSet = itemMap.keySet(); 
+					         
+							ArrayList<Integer> itemIds = new ArrayList<Integer>(itemSet);
+							
+							for (int i = 0; i <itemIds.size();i++) {
+								if (!toKeep.contains(itemIds.get(i))) {
+									itemMap.get(itemIds.get(i)).forget();
+									itemMap.remove(itemIds.get(i));
+								}
+							}
+							
+							Set<Integer> regSet = registerMap.keySet(); 
+					         
+							ArrayList<Integer> regIds = new ArrayList<Integer>(regSet);
+							
+							for (int i = 0; i <regIds.size();i++) {
+								if (!toKeep.contains(regIds.get(i))) {
+									registerMap.get(regIds.get(i)).forget();
+									registerMap.remove(regIds.get(i));
+								}
+							}
+							
+							Set<Integer> slotSet = slotMap.keySet(); 
+					         
+							ArrayList<Integer> slotIds = new ArrayList<Integer>(slotSet);
+							
+							for (int i = 0; i <slotIds.size();i++) {
+								if (!toKeep.contains(slotIds.get(i))) {
+									slotMap.get(slotIds.get(i)).forget();
+									slotMap.remove(slotIds.get(i));
+								}
+							}
+							
+							
 						}
-						
 						//System.out.println ("Message recieved: " + str);
 
 					}

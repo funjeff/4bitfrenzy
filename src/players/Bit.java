@@ -26,9 +26,9 @@ public class Bit extends GameObject {
 	
 	public ArrayList<GameObject> regestersBeingCarried = null;
 	
-	Compass compass;
+	public Compass compass;
 	
-	ItemBox inventory = new ItemBox ();
+	public ItemBox inventory = new ItemBox ();
 	
 	public int lastMove = 0; // 0 for up 1 for down 2 for right 3 for left
 	
@@ -41,6 +41,8 @@ public class Bit extends GameObject {
 	boolean switching = false;
 	
 	boolean secondaryBit = false;
+	
+	public int regNum = 0;
 	
 	public boolean isSecondaryBit() {
 		return secondaryBit;
@@ -115,8 +117,14 @@ public class Bit extends GameObject {
 				speedUpTimer = 0;
 				speed = speed - 2;
 			}
-		
-			if (this.isCollidingChildren("Item")) {
+			if (compass != null && compass.getPointObject().equals(this)) {
+				try {
+					compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
+				} catch (NullPointerException e) {
+					compass.setPointObject(this);
+				}
+			}
+			if (this.isCollidingChildren("Item") && NetworkHandler.isHost()) {
 				Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
 				if (toUse.pickupablity) {
 					if (inventory.getItem() != null) {
@@ -129,7 +137,7 @@ public class Bit extends GameObject {
 					toUse.forget();
 				}
 			}
-			if (keyPressed (10) && this.isActive()) {
+			if (keys != null && keys.contains("10") && this.isActive() && NetworkHandler.isHost()) {
 				if (inventory.getItem() != null) {
 					inventory.useItem(this);
 				}
@@ -163,17 +171,6 @@ public class Bit extends GameObject {
 			if (keys != null && !keys.contains(Integer.toString(KeyEvent.VK_CONTROL))) {
 				this.switching = false;
 			}
-			if (NetworkHandler.getPlayerNum() == this.playerNum) {
-				if (ObjectHandler.getObjectsByName("Register") != null && !ObjectHandler.getObjectsByName("Register").isEmpty() && compass != null){
-					if (compass.getPointObject () instanceof DataSlot && (regestersBeingCarried == null || regestersBeingCarried.size () == 0)) {
-						GameObject old = compass.getPointObject();
-						while (old.equals(compass.getPointObject())){
-							Random rand = new Random ();
-							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
-						}
-					}
-				}
-			}
 			
 				double resistance = 1;
 				if (perk != 1) {
@@ -195,13 +192,12 @@ public class Bit extends GameObject {
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
 					if(keyPressed (' ') && compass != null) {
-						
-						GameObject old = compass.getPointObject();
-						
-						
-						while (old.equals(compass.getPointObject())){
-							Random rand = new Random ();
-							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(rand.nextInt(ObjectHandler.getObjectsByName("Register").size())));
+						try {
+							regNum = regNum + 1;
+							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(regNum));
+						} catch (IndexOutOfBoundsException e) {
+							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
+							regNum = 0;
 						}
 					}
 				}
@@ -234,12 +230,13 @@ public class Bit extends GameObject {
 				this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
 				this.setX(this.getX() - 3);
 				this.setY(this.getY() - 3);
-				
 					if (keys != null && keys.contains ("v")) {
+						
 						if (this.isColliding ("Register")) {
-							
+							boolean startedCarring = false;
 							if (regestersBeingCarried == null) {
 								regestersBeingCarried = new ArrayList<GameObject> ();
+								startedCarring = true;
 							}
 							
 							ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();
@@ -252,9 +249,13 @@ public class Bit extends GameObject {
 							Register reg = (Register) regestersBeingCarried.get(0);
 							
 							//compass = null for client
-							
-							if (NetworkHandler.getPlayerNum() == this.playerNum) {
+							if (this.playerNum == 1) {
+								
 								compass.setPointObject(reg.getDataSlot() );
+							} else {
+								if(startedCarring) {
+									NetworkHandler.getServer().sendMessage("POINT:" + this.playerNum + ":" + reg.getMemAddress());
+								}
 							}
 						}
 					} else {

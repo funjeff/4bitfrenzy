@@ -93,38 +93,6 @@ public class Roome extends GameObject {
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
 			
 			
-				if (rand.nextInt(10) == 4) {
-					
-					int [] spawnCoords = biatch.getPosibleCoords(32, 32);
-					
-					switch (rand.nextInt(5)) {
-					case 0:
-						Glue glue = new Glue ();
-						glue.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 1:
-						Bombs bombs = new Bombs ();
-						bombs.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 2:
-						Speed speed = new Speed ();
-						speed.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 3:
-						Teleporter tele = new Teleporter ();
-						tele.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 4:
-						DataScrambler scrambler = new DataScrambler ();
-						scrambler.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					}
-							
-					
-					
-				}
-			
-			
 			
 			boxes[0] = new Textbox("");
 			boxes[0].changeBoxVisability();
