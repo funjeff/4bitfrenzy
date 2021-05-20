@@ -201,8 +201,6 @@ public class Bit extends GameObject {
 						}
 					}
 				}
-				
-	
 				if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_UP)) && this.isSecondaryBit()))) {
 					if (this.goY((int)(this.getY() - speed))) {
 						this.carryRegestersY((((int)speed) * -1) - 1);

@@ -34,6 +34,7 @@ public class GameCode {
 	
 	static int frame = 1;
 	
+	private static boolean devMode = false;
 	
 	public static void testBitch () {
 		
@@ -59,6 +60,9 @@ public class GameCode {
 	
 	public static void gameLoopFunc () {
 	
+		if (titleScreen.keyPressed ('Q')) {
+			devMode = true;
+		}
 		if (NetworkHandler.isHost() && !gameStarted) {
 			NetworkHandler.getServer ().sendMessage ("PERKS " + perks[0] + ":" + perks[1] + ":" + perks[2] + ":" + perks[3]);
 		}
@@ -241,5 +245,9 @@ public class GameCode {
 
 		b.declare(spawnCoords[0], spawnCoords[1]);
 		
+	}
+	
+	public static boolean devMode () {
+		return devMode;
 	}
 }
