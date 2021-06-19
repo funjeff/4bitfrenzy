@@ -187,15 +187,16 @@ public class Roome extends GameObject {
 				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
 				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
 				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
+				//Startpoints/endpoints are arranged in counter-clockwise order
 				//Top
 				if (!topJunction) {
 					walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
-					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 864, (int)getY () + 144);
+					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
 				} else {
-					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
-					new Ribbon ((int)getX () + 648, (int)getY () + 144, (int)getX () + 864, (int)getY () + 144);
+					new Ribbon ((int)getX () + 432, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
+					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 648, (int)getY () + 144);
 					new Ribbon ((int)getX () + 432, (int)getY () + 0, (int)getX () + 432, (int)getY () + 144);
-					new Ribbon ((int)getX () + 648, (int)getY () + 0, (int)getX () + 648, (int)getY () + 144);
+					new Ribbon ((int)getX () + 648, (int)getY () + 144, (int)getX () + 648, (int)getY () + 0);
 				}
 				//Left
 				if (!leftJunction) {
@@ -204,17 +205,17 @@ public class Roome extends GameObject {
 				} else {
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 252);
 					new Ribbon ((int)getX () + 216, (int)getY () + 468, (int)getX () + 216, (int)getY () + 576);
-					new Ribbon ((int)getX () + 0, (int)getY () + 252, (int)getX () + 216, (int)getY () + 252);
+					new Ribbon ((int)getX () + 216, (int)getY () + 252, (int)getX () + 0, (int)getY () + 252);
 					new Ribbon ((int)getX () + 0, (int)getY () + 468, (int)getX () + 216, (int)getY () + 468);
 				}
 				//Right
 				if (!rightJunction) {
 					walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
-					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 864, (int)getY () + 576);
+					new Ribbon ((int)getX () + 864, (int)getY () + 576, (int)getX () + 864, (int)getY () + 144);
 				} else {
-					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 864, (int)getY () + 252);
-					new Ribbon ((int)getX () + 864, (int)getY () + 468, (int)getX () + 864, (int)getY () + 576);
-					new Ribbon ((int)getX () + 864, (int)getY () + 252, (int)getX () + 1080, (int)getY () + 252);
+					new Ribbon ((int)getX () + 864, (int)getY () + 252, (int)getX () + 864, (int)getY () + 144);
+					new Ribbon ((int)getX () + 864, (int)getY () + 576, (int)getX () + 864, (int)getY () + 468);
+					new Ribbon ((int)getX () + 1080, (int)getY () + 252, (int)getX () + 864, (int)getY () + 252);
 					new Ribbon ((int)getX () + 864, (int)getY () + 468, (int)getX () + 1080, (int)getY () + 468);
 				}
 				//Bottom
@@ -225,7 +226,7 @@ public class Roome extends GameObject {
 					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 432, (int)getY () + 576);
 					new Ribbon ((int)getX () + 648, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
 					new Ribbon ((int)getX () + 432, (int)getY () + 576, (int)getX () + 432, (int)getY () + 720);
-					new Ribbon ((int)getX () + 648, (int)getY () + 576, (int)getX () + 648, (int)getY () + 720);
+					new Ribbon ((int)getX () + 648, (int)getY () + 720, (int)getX () + 648, (int)getY () + 576);
 				}
 			}
 			
@@ -342,6 +343,10 @@ public class Roome extends GameObject {
 			}
 		}
 
+		if (GameCode.devMode ()) {
+			Ribbon.constructPath ();
+		}
+		
 	}
 	
 	public static void loadMap (String mapString) {
