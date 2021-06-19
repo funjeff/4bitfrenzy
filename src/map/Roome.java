@@ -93,89 +93,140 @@ public class Roome extends GameObject {
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
 			
 			
-			
-			walls[0] = new Textbox("");
-			((Textbox)walls[0]).changeBoxVisability();
-			((Textbox)walls[0]).changeWidth(432/16);
-			((Textbox)walls[0]).changeHeight(144/16);
-			((Textbox)walls[0]).declare((int)this.getX(), (int)this.getY());
-			
-			walls[1] = new Textbox("");
-			((Textbox)walls[1]).changeBoxVisability();
-			((Textbox)walls[1]).changeWidth(216/16);
-			((Textbox)walls[1]).changeHeight(108/16);
-			((Textbox)walls[1]).declare((int)this.getX(), (int)this.getY() + 144);
-			
-			
-			walls[2] = new Textbox("");
-			((Textbox)walls[2]).changeBoxVisability();
-			((Textbox)walls[2]).changeWidth(432/16);
-			((Textbox)walls[2]).changeHeight(144/16);
-			((Textbox)walls[2]).declare((int)this.getX() + 648, (int)this.getY());
-			
-			walls[3] = new Textbox("");
-			((Textbox)walls[3]).changeBoxVisability();
-			((Textbox)walls[3]).changeWidth(216/16);
-			((Textbox)walls[3]).changeHeight(108/16);
-			((Textbox)walls[3]).declare((int)this.getX() + 864, (int)this.getY() + 144);
-			
-			walls[4] = new Textbox("");
-			((Textbox)walls[4]).changeBoxVisability();
-			((Textbox)walls[4]).changeWidth(216/16);
-			((Textbox)walls[4]).changeHeight(108/16);
-			((Textbox)walls[4]).declare((int)this.getX(), (int)this.getY() + 468);
-			
-			walls[5] = new Textbox("");
-			((Textbox)walls[5]).changeBoxVisability();
-			((Textbox)walls[5]).changeWidth(432/16);
-			((Textbox)walls[5]).changeHeight(144/16);
-			((Textbox)walls[5]).declare((int)this.getX(), (int)this.getY() + 576);
-			
-			walls[6] = new Textbox("");
-			((Textbox)walls[6]).changeBoxVisability();
-			((Textbox)walls[6]).changeWidth(216/16);
-			((Textbox)walls[6]).changeHeight(108/16);
-			((Textbox)walls[6]).declare((int)this.getX() + 864, (int)this.getY() + 468);
-			
-			walls[7] = new Textbox("");
-			((Textbox)walls[7]).changeBoxVisability();
-			((Textbox)walls[7]).changeWidth(432/16);
-			((Textbox)walls[7]).changeHeight(144/16);
-			((Textbox)walls[7]).declare((int)this.getX() + 648, (int)this.getY() + 576);
-			
-			walls[8] = new Textbox("");
-			((Textbox)walls[8]).changeBoxVisability();
-			((Textbox)walls[8]).changeWidth(216/16);
-			((Textbox)walls[8]).changeHeight(144/16);
-			
-			
-			if (!topJunction) {
-				((Textbox)walls[8]).declare((int)this.getX() + 432, (int)this.getY());
-			}
-			
-			walls[9] = new Textbox("");
-			((Textbox)walls[9]).changeBoxVisability();
-			((Textbox)walls[9]).changeWidth(216/16);
-			((Textbox)walls[9]).changeHeight(216/16);
-			
-			if (!leftJunction) {
-				((Textbox)walls[9]).declare((int)this.getX(), (int)this.getY() + 252);
-			}
-			
-			walls[10] = new Textbox("");
-			((Textbox)walls[10]).changeBoxVisability();
-			((Textbox)walls[10]).changeWidth(216/16);
-			((Textbox)walls[10]).changeHeight(216/16);
-			if (!rightJunction) {
-				((Textbox)walls[10]).declare((int)this.getX() + 864, (int)this.getY() + 252);
-			}
-			
-			walls[11] = new Textbox("");
-			((Textbox)walls[11]).changeBoxVisability();
-			((Textbox)walls[11]).changeWidth(216/16);
-			((Textbox)walls[11]).changeHeight(144/16);
-			if (!bottomJunction) {
-				((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
+			if (!GameCode.devMode ()) {
+				walls[0] = new Textbox("");
+				((Textbox)walls[0]).changeBoxVisability();
+				((Textbox)walls[0]).changeWidth(432/16);
+				((Textbox)walls[0]).changeHeight(144/16);
+				((Textbox)walls[0]).declare((int)this.getX(), (int)this.getY());
+				
+				walls[1] = new Textbox("");
+				((Textbox)walls[1]).changeBoxVisability();
+				((Textbox)walls[1]).changeWidth(216/16);
+				((Textbox)walls[1]).changeHeight(108/16);
+				((Textbox)walls[1]).declare((int)this.getX(), (int)this.getY() + 144);
+				
+				
+				walls[2] = new Textbox("");
+				((Textbox)walls[2]).changeBoxVisability();
+				((Textbox)walls[2]).changeWidth(432/16);
+				((Textbox)walls[2]).changeHeight(144/16);
+				((Textbox)walls[2]).declare((int)this.getX() + 648, (int)this.getY());
+				
+				walls[3] = new Textbox("");
+				((Textbox)walls[3]).changeBoxVisability();
+				((Textbox)walls[3]).changeWidth(216/16);
+				((Textbox)walls[3]).changeHeight(108/16);
+				((Textbox)walls[3]).declare((int)this.getX() + 864, (int)this.getY() + 144);
+				
+				walls[4] = new Textbox("");
+				((Textbox)walls[4]).changeBoxVisability();
+				((Textbox)walls[4]).changeWidth(216/16);
+				((Textbox)walls[4]).changeHeight(108/16);
+				((Textbox)walls[4]).declare((int)this.getX(), (int)this.getY() + 468);
+				
+				walls[5] = new Textbox("");
+				((Textbox)walls[5]).changeBoxVisability();
+				((Textbox)walls[5]).changeWidth(432/16);
+				((Textbox)walls[5]).changeHeight(144/16);
+				((Textbox)walls[5]).declare((int)this.getX(), (int)this.getY() + 576);
+				
+				walls[6] = new Textbox("");
+				((Textbox)walls[6]).changeBoxVisability();
+				((Textbox)walls[6]).changeWidth(216/16);
+				((Textbox)walls[6]).changeHeight(108/16);
+				((Textbox)walls[6]).declare((int)this.getX() + 864, (int)this.getY() + 468);
+				
+				walls[7] = new Textbox("");
+				((Textbox)walls[7]).changeBoxVisability();
+				((Textbox)walls[7]).changeWidth(432/16);
+				((Textbox)walls[7]).changeHeight(144/16);
+				((Textbox)walls[7]).declare((int)this.getX() + 648, (int)this.getY() + 576);
+				
+				walls[8] = new Textbox("");
+				((Textbox)walls[8]).changeBoxVisability();
+				((Textbox)walls[8]).changeWidth(216/16);
+				((Textbox)walls[8]).changeHeight(144/16);
+				
+				
+				if (!topJunction) {
+					((Textbox)walls[8]).declare((int)this.getX() + 432, (int)this.getY());
+				}
+				
+				walls[9] = new Textbox("");
+				((Textbox)walls[9]).changeBoxVisability();
+				((Textbox)walls[9]).changeWidth(216/16);
+				((Textbox)walls[9]).changeHeight(216/16);
+				
+				if (!leftJunction) {
+					((Textbox)walls[9]).declare((int)this.getX(), (int)this.getY() + 252);
+				}
+				
+				walls[10] = new Textbox("");
+				((Textbox)walls[10]).changeBoxVisability();
+				((Textbox)walls[10]).changeWidth(216/16);
+				((Textbox)walls[10]).changeHeight(216/16);
+				if (!rightJunction) {
+					((Textbox)walls[10]).declare((int)this.getX() + 864, (int)this.getY() + 252);
+				}
+				
+				walls[11] = new Textbox("");
+				((Textbox)walls[11]).changeBoxVisability();
+				((Textbox)walls[11]).changeWidth(216/16);
+				((Textbox)walls[11]).changeHeight(144/16);
+				if (!bottomJunction) {
+					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
+				}
+			} else {
+				walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
+				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
+				walls[1] = new WallBox ((int)this.getX (), (int)this.getY () + 144, 216, 108);
+				walls[2] = new WallBox ((int)this.getX () + 648, (int)this.getY (), 432, 144);
+				walls[3] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 144, 216, 108);
+				walls[4] = new WallBox ((int)this.getX (), (int)this.getY () + 468, 216, 108);
+				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
+				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
+				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
+				//Top
+				if (!topJunction) {
+					walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
+					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 864, (int)getY () + 144);
+				} else {
+					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
+					new Ribbon ((int)getX () + 648, (int)getY () + 144, (int)getX () + 864, (int)getY () + 144);
+					new Ribbon ((int)getX () + 432, (int)getY () + 0, (int)getX () + 432, (int)getY () + 144);
+					new Ribbon ((int)getX () + 648, (int)getY () + 0, (int)getX () + 648, (int)getY () + 144);
+				}
+				//Left
+				if (!leftJunction) {
+					walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
+					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 576);
+				} else {
+					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 252);
+					new Ribbon ((int)getX () + 216, (int)getY () + 468, (int)getX () + 216, (int)getY () + 576);
+					new Ribbon ((int)getX () + 0, (int)getY () + 252, (int)getX () + 216, (int)getY () + 252);
+					new Ribbon ((int)getX () + 0, (int)getY () + 468, (int)getX () + 216, (int)getY () + 468);
+				}
+				//Right
+				if (!rightJunction) {
+					walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
+					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 864, (int)getY () + 576);
+				} else {
+					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 864, (int)getY () + 252);
+					new Ribbon ((int)getX () + 864, (int)getY () + 468, (int)getX () + 864, (int)getY () + 576);
+					new Ribbon ((int)getX () + 864, (int)getY () + 252, (int)getX () + 1080, (int)getY () + 252);
+					new Ribbon ((int)getX () + 864, (int)getY () + 468, (int)getX () + 1080, (int)getY () + 468);
+				}
+				//Bottom
+				if (!bottomJunction) {
+					walls[11] = new WallBox ((int)this.getX () + 432, (int)this.getY () + 576, 216, 216);
+					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
+				} else {
+					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 432, (int)getY () + 576);
+					new Ribbon ((int)getX () + 648, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
+					new Ribbon ((int)getX () + 432, (int)getY () + 576, (int)getX () + 432, (int)getY () + 720);
+					new Ribbon ((int)getX () + 648, (int)getY () + 576, (int)getX () + 648, (int)getY () + 720);
+				}
 			}
 			
 			color = colorNum;
