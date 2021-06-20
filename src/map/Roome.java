@@ -412,7 +412,7 @@ public class Roome extends GameObject {
 		
 		HashMap<Point, Integer> accessables = new HashMap<Point, Integer> ();
 		fillDistMap (5, 5, accessables);
-		if (accessables.size () == 100) {
+		if (accessables.size () == map.length * map[0].length) {
 			distMap = accessables;
 			return true;
 		}
@@ -437,7 +437,7 @@ public class Roome extends GameObject {
 				int px = cx + xoffs [i];
 				int py = cy + yoffs [i];
 				Roome r = map [cy][cx];
-				if (px < 0 || py < 0 || px >= 10 || py >= 10) {
+				if (px < 0 || py < 0 || px >= map[0].length || py >= map.length) {
 					//
 				} else {
 					boolean canVisit = false;
