@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,6 +13,8 @@ import items.DataScrambler;
 import items.Glue;
 import items.Speed;
 import gameObjects.TitleScreen;
+import map.Ribbon;
+import map.RibbonPulse;
 import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
@@ -34,7 +37,11 @@ public class GameCode {
 	
 	static int frame = 1;
 	
+<<<<<<< HEAD
 	public static float volume = 6F;
+=======
+	private static boolean devMode = false;
+>>>>>>> 92da650652a7779d2dcfb05d22ce8719adafda29
 	
 	public static void testBitch () {
 		
@@ -60,12 +67,23 @@ public class GameCode {
 	
 	public static void gameLoopFunc () {
 	
+		if (titleScreen.keyPressed ('Q')) {
+			devMode = true;
+		}
 		if (NetworkHandler.isHost() && !gameStarted) {
 			NetworkHandler.getServer ().sendMessage ("PERKS " + perks[0] + ":" + perks[1] + ":" + perks[2] + ":" + perks[3]);
 		}
 		frame++;
 		if (NetworkHandler.isHost () && gameStarted) {
 		
+			int mouseX = bits.get (0).getCursorX () + getViewX ();
+			int mouseY = bits.get (0).getCursorY () + getViewY ();
+			Point pt = Ribbon.getRibbonFromPoint (new Point (mouseX, mouseY));
+			if (pt != null) {
+				System.out.println (pt);
+				new RibbonPulse (pt.x, pt.y).declare (0, 0);
+			}
+			
 			//Send server stuff out
 			String toSend = "DATA:";
 			try {
@@ -243,5 +261,9 @@ public class GameCode {
 
 		b.declare(spawnCoords[0], spawnCoords[1]);
 		
+	}
+	
+	public static boolean devMode () {
+		return devMode;
 	}
 }

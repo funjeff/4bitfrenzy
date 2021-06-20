@@ -51,7 +51,7 @@ public class Roome extends GameObject {
 	
 	boolean inRoomcollsions;
 	
-	Textbox [] boxes = new Textbox [12];
+	GameObject [] walls = new GameObject [12];
 	
 	public Register r = null;
 	public DataSlot ds = null;
@@ -93,89 +93,141 @@ public class Roome extends GameObject {
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
 			
 			
-			
-			boxes[0] = new Textbox("");
-			boxes[0].changeBoxVisability();
-			boxes[0].changeWidth(432/16);
-			boxes[0].changeHeight(144/16);
-			boxes[0].declare((int)this.getX(), (int)this.getY());
-			
-			boxes[1] = new Textbox("");
-			boxes[1].changeBoxVisability();
-			boxes[1].changeWidth(216/16);
-			boxes[1].changeHeight(108/16);
-			boxes[1].declare((int)this.getX(), (int)this.getY() + 144);
-			
-			
-			boxes[2] = new Textbox("");
-			boxes[2].changeBoxVisability();
-			boxes[2].changeWidth(432/16);
-			boxes[2].changeHeight(144/16);
-			boxes[2].declare((int)this.getX() + 648, (int)this.getY());
-			
-			boxes[3] = new Textbox("");
-			boxes[3].changeBoxVisability();
-			boxes[3].changeWidth(216/16);
-			boxes[3].changeHeight(108/16);
-			boxes[3].declare((int)this.getX() + 864, (int)this.getY() + 144);
-			
-			boxes[4] = new Textbox("");
-			boxes[4].changeBoxVisability();
-			boxes[4].changeWidth(216/16);
-			boxes[4].changeHeight(108/16);
-			boxes[4].declare((int)this.getX(), (int)this.getY() + 468);
-			
-			boxes[5] = new Textbox("");
-			boxes[5].changeBoxVisability();
-			boxes[5].changeWidth(432/16);
-			boxes[5].changeHeight(144/16);
-			boxes[5].declare((int)this.getX(), (int)this.getY() + 576);
-			
-			boxes[6] = new Textbox("");
-			boxes[6].changeBoxVisability();
-			boxes[6].changeWidth(216/16);
-			boxes[6].changeHeight(108/16);
-			boxes[6].declare((int)this.getX() + 864, (int)this.getY() + 468);
-			
-			boxes[7] = new Textbox("");
-			boxes[7].changeBoxVisability();
-			boxes[7].changeWidth(432/16);
-			boxes[7].changeHeight(144/16);
-			boxes[7].declare((int)this.getX() + 648, (int)this.getY() + 576);
-			
-			boxes[8] = new Textbox("");
-			boxes[8].changeBoxVisability();
-			boxes[8].changeWidth(216/16);
-			boxes[8].changeHeight(144/16);
-			
-			
-			if (!topJunction) {
-				boxes[8].declare((int)this.getX() + 432, (int)this.getY());
-			}
-			
-			boxes[9] = new Textbox("");
-			boxes[9].changeBoxVisability();
-			boxes[9].changeWidth(216/16);
-			boxes[9].changeHeight(216/16);
-			
-			if (!leftJunction) {
-				boxes[9].declare((int)this.getX(), (int)this.getY() + 252);
-			}
-			
-			boxes[10] = new Textbox("");
-			boxes[10].changeBoxVisability();
-			boxes[10].changeWidth(216/16);
-			boxes[10].changeHeight(216/16);
-			if (!rightJunction) {
-				boxes[10].declare((int)this.getX() + 864, (int)this.getY() + 252);
-			}
-			
-			boxes[11] = new Textbox("");
-			boxes[11].changeBoxVisability();
-			boxes[11].changeWidth(216/16);
-			boxes[11].changeHeight(144/16);
-			if (!bottomJunction) {
-				boxes[11].declare((int)this.getX() + 432, (int)this.getY() + 576);
+			if (!GameCode.devMode ()) {
+				walls[0] = new Textbox("");
+				((Textbox)walls[0]).changeBoxVisability();
+				((Textbox)walls[0]).changeWidth(432/16);
+				((Textbox)walls[0]).changeHeight(144/16);
+				((Textbox)walls[0]).declare((int)this.getX(), (int)this.getY());
+				
+				walls[1] = new Textbox("");
+				((Textbox)walls[1]).changeBoxVisability();
+				((Textbox)walls[1]).changeWidth(216/16);
+				((Textbox)walls[1]).changeHeight(108/16);
+				((Textbox)walls[1]).declare((int)this.getX(), (int)this.getY() + 144);
+				
+				
+				walls[2] = new Textbox("");
+				((Textbox)walls[2]).changeBoxVisability();
+				((Textbox)walls[2]).changeWidth(432/16);
+				((Textbox)walls[2]).changeHeight(144/16);
+				((Textbox)walls[2]).declare((int)this.getX() + 648, (int)this.getY());
+				
+				walls[3] = new Textbox("");
+				((Textbox)walls[3]).changeBoxVisability();
+				((Textbox)walls[3]).changeWidth(216/16);
+				((Textbox)walls[3]).changeHeight(108/16);
+				((Textbox)walls[3]).declare((int)this.getX() + 864, (int)this.getY() + 144);
+				
+				walls[4] = new Textbox("");
+				((Textbox)walls[4]).changeBoxVisability();
+				((Textbox)walls[4]).changeWidth(216/16);
+				((Textbox)walls[4]).changeHeight(108/16);
+				((Textbox)walls[4]).declare((int)this.getX(), (int)this.getY() + 468);
+				
+				walls[5] = new Textbox("");
+				((Textbox)walls[5]).changeBoxVisability();
+				((Textbox)walls[5]).changeWidth(432/16);
+				((Textbox)walls[5]).changeHeight(144/16);
+				((Textbox)walls[5]).declare((int)this.getX(), (int)this.getY() + 576);
+				
+				walls[6] = new Textbox("");
+				((Textbox)walls[6]).changeBoxVisability();
+				((Textbox)walls[6]).changeWidth(216/16);
+				((Textbox)walls[6]).changeHeight(108/16);
+				((Textbox)walls[6]).declare((int)this.getX() + 864, (int)this.getY() + 468);
+				
+				walls[7] = new Textbox("");
+				((Textbox)walls[7]).changeBoxVisability();
+				((Textbox)walls[7]).changeWidth(432/16);
+				((Textbox)walls[7]).changeHeight(144/16);
+				((Textbox)walls[7]).declare((int)this.getX() + 648, (int)this.getY() + 576);
+				
+				walls[8] = new Textbox("");
+				((Textbox)walls[8]).changeBoxVisability();
+				((Textbox)walls[8]).changeWidth(216/16);
+				((Textbox)walls[8]).changeHeight(144/16);
+				
+				
+				if (!topJunction) {
+					((Textbox)walls[8]).declare((int)this.getX() + 432, (int)this.getY());
+				}
+				
+				walls[9] = new Textbox("");
+				((Textbox)walls[9]).changeBoxVisability();
+				((Textbox)walls[9]).changeWidth(216/16);
+				((Textbox)walls[9]).changeHeight(216/16);
+				
+				if (!leftJunction) {
+					((Textbox)walls[9]).declare((int)this.getX(), (int)this.getY() + 252);
+				}
+				
+				walls[10] = new Textbox("");
+				((Textbox)walls[10]).changeBoxVisability();
+				((Textbox)walls[10]).changeWidth(216/16);
+				((Textbox)walls[10]).changeHeight(216/16);
+				if (!rightJunction) {
+					((Textbox)walls[10]).declare((int)this.getX() + 864, (int)this.getY() + 252);
+				}
+				
+				walls[11] = new Textbox("");
+				((Textbox)walls[11]).changeBoxVisability();
+				((Textbox)walls[11]).changeWidth(216/16);
+				((Textbox)walls[11]).changeHeight(144/16);
+				if (!bottomJunction) {
+					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
+				}
+			} else {
+				walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
+				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
+				walls[1] = new WallBox ((int)this.getX (), (int)this.getY () + 144, 216, 108);
+				walls[2] = new WallBox ((int)this.getX () + 648, (int)this.getY (), 432, 144);
+				walls[3] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 144, 216, 108);
+				walls[4] = new WallBox ((int)this.getX (), (int)this.getY () + 468, 216, 108);
+				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
+				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
+				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
+				//Startpoints/endpoints are arranged in counter-clockwise order
+				//Top
+				if (!topJunction) {
+					walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
+					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
+				} else {
+					new Ribbon ((int)getX () + 432, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
+					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 648, (int)getY () + 144);
+					new Ribbon ((int)getX () + 432, (int)getY () + 0, (int)getX () + 432, (int)getY () + 144);
+					new Ribbon ((int)getX () + 648, (int)getY () + 144, (int)getX () + 648, (int)getY () + 0);
+				}
+				//Left
+				if (!leftJunction) {
+					walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
+					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 576);
+				} else {
+					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 252);
+					new Ribbon ((int)getX () + 216, (int)getY () + 468, (int)getX () + 216, (int)getY () + 576);
+					new Ribbon ((int)getX () + 216, (int)getY () + 252, (int)getX () + 0, (int)getY () + 252);
+					new Ribbon ((int)getX () + 0, (int)getY () + 468, (int)getX () + 216, (int)getY () + 468);
+				}
+				//Right
+				if (!rightJunction) {
+					walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
+					new Ribbon ((int)getX () + 864, (int)getY () + 576, (int)getX () + 864, (int)getY () + 144);
+				} else {
+					new Ribbon ((int)getX () + 864, (int)getY () + 252, (int)getX () + 864, (int)getY () + 144);
+					new Ribbon ((int)getX () + 864, (int)getY () + 576, (int)getX () + 864, (int)getY () + 468);
+					new Ribbon ((int)getX () + 1080, (int)getY () + 252, (int)getX () + 864, (int)getY () + 252);
+					new Ribbon ((int)getX () + 864, (int)getY () + 468, (int)getX () + 1080, (int)getY () + 468);
+				}
+				//Bottom
+				if (!bottomJunction) {
+					walls[11] = new WallBox ((int)this.getX () + 432, (int)this.getY () + 576, 216, 216);
+					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
+				} else {
+					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 432, (int)getY () + 576);
+					new Ribbon ((int)getX () + 648, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
+					new Ribbon ((int)getX () + 432, (int)getY () + 576, (int)getX () + 432, (int)getY () + 720);
+					new Ribbon ((int)getX () + 648, (int)getY () + 720, (int)getX () + 648, (int)getY () + 576);
+				}
 			}
 			
 			color = colorNum;
@@ -189,23 +241,26 @@ public class Roome extends GameObject {
 				e.printStackTrace();
 			}
 			
-			for (int i = 0; i < boxes.length; i++) {
+			for (int i = 0; i < walls.length; i++) {
 				
 				String finalMessage = "";
-				while (boxes[i].getSpace()/2 > finalMessage.length()) {
-					int lineNum2 = rand.nextInt(315); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
-					
-					//thanks stack overflow :)
-					try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/code.txt"))) {
-					    finalMessage = finalMessage + " " + lines.skip(lineNum2).findFirst().get();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				if (walls[i] instanceof Textbox) { //Only relevant for testing
+					Textbox working = (Textbox)walls[i];
+					while (working.getSpace()/2 > finalMessage.length()) {
+						int lineNum2 = rand.nextInt(315); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+						
+						//thanks stack overflow :)
+						try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/code.txt"))) {
+						    finalMessage = finalMessage + " " + lines.skip(lineNum2).findFirst().get();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
+					
+					working.changeText(finalMessage.toUpperCase());
+					working.setFont(color);
 				}
-				
-				boxes[i].changeText(finalMessage.toUpperCase());
-				boxes[i].setFont(color);
 				
 			}
 		}
@@ -288,6 +343,10 @@ public class Roome extends GameObject {
 			}
 		}
 
+		if (GameCode.devMode ()) {
+			Ribbon.constructPath ();
+		}
+		
 	}
 	
 	public static void loadMap (String mapString) {
@@ -353,7 +412,7 @@ public class Roome extends GameObject {
 		
 		HashMap<Point, Integer> accessables = new HashMap<Point, Integer> ();
 		fillDistMap (5, 5, accessables);
-		if (accessables.size () == 100) {
+		if (accessables.size () == map.length * map[0].length) {
 			distMap = accessables;
 			return true;
 		}
@@ -378,7 +437,7 @@ public class Roome extends GameObject {
 				int px = cx + xoffs [i];
 				int py = cy + yoffs [i];
 				Roome r = map [cy][cx];
-				if (px < 0 || py < 0 || px >= 10 || py >= 10) {
+				if (px < 0 || py < 0 || px >= map[0].length || py >= map.length) {
 					//
 				} else {
 					boolean canVisit = false;
@@ -475,7 +534,7 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY - 1][roomPosX];
 			nextRoom.bottomJunction = true;
-			nextRoom.boxes[11].forget();
+			nextRoom.walls[11].forget();
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -483,7 +542,7 @@ public class Roome extends GameObject {
 			
 		}
 		topJunction = true;
-		boxes[8].forget();
+		walls[8].forget();
 		
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:top:" + roomPosX + ":" + roomPosY);
@@ -493,7 +552,7 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY + 1][roomPosX];
 			nextRoom.topJunction = true;
-			nextRoom.boxes[8].forget();
+			nextRoom.walls[8].forget();
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -501,7 +560,7 @@ public class Roome extends GameObject {
 			
 		}
 		bottomJunction = true;
-		boxes[11].forget();
+		walls[11].forget();
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:bottom:" + roomPosX + ":" + roomPosY);
 		}
@@ -510,7 +569,7 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY][roomPosX + 1];
 			nextRoom.leftJunction = true;
-			nextRoom.boxes[9].forget();
+			nextRoom.walls[9].forget();
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -518,7 +577,7 @@ public class Roome extends GameObject {
 			
 		}
 		rightJunction = true;
-		boxes[10].forget();
+		walls[10].forget();
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:right:" + roomPosX + ":" + roomPosY);
 		}
@@ -527,7 +586,7 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY][roomPosX - 1];
 			nextRoom.rightJunction = true;
-			nextRoom.boxes[10].forget();
+			nextRoom.walls[10].forget();
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -536,7 +595,7 @@ public class Roome extends GameObject {
 		}
 		
 		leftJunction = true;
-		boxes[9].forget();
+		walls[9].forget();
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:left:" + roomPosX + ":" + roomPosY);
 		}
