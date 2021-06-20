@@ -19,6 +19,7 @@ import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
+import resources.SoundPlayer;
 import resources.Textbox;
 
 public class GameCode {
@@ -37,11 +38,13 @@ public class GameCode {
 	
 	static int frame = 1;
 	
-<<<<<<< HEAD
+
 	public static float volume = 6F;
-=======
+	
+	public static SoundPlayer musicHandler = new SoundPlayer ();
+
 	private static boolean devMode = false;
->>>>>>> 92da650652a7779d2dcfb05d22ce8719adafda29
+
 	
 	public static void testBitch () {
 		
@@ -253,14 +256,14 @@ public class GameCode {
 			bits.add(bit);
 			i = i + 1;
 		}
-		
-		Bombs b = new Bombs ();
-		
-		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
-		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(b.hitbox().width, b.hitbox().height);
-
-		b.declare(spawnCoords[0], spawnCoords[1]);
-		
+	
+	}
+	
+	public static void changeMusic (String songPath) {
+		musicHandler.play(songPath, volume);
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("MUSIC:" + songPath);
+		}
 	}
 	
 	public static boolean devMode () {

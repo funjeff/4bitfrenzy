@@ -142,6 +142,10 @@ public class Client extends Thread {
 								clientPlayer.playSoundEffect(GameCode.volume, filePath);
 							}
 						}
+						if (str.length () >= 5 && str.substring (0, 5).equals ("MUSIC")) {
+							String filePath = str.split(":")[1];
+							GameCode.changeMusic(filePath);
+						}
 						
 						if (str.length () >= 15 && str.substring (0, 15).equals ("FORGET REGISTER")) {
 							int forgetableReg = Integer.parseInt(str.split(":")[1]);

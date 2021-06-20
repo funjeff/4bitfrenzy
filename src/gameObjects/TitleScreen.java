@@ -89,7 +89,7 @@ public class TitleScreen extends GameObject {
 		ipBox.changeBoxVisability ();
 		
 		ipBox.setRenderPriority(99);
-		
+
 	}
 	
 	@Override
