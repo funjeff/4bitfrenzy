@@ -5,11 +5,15 @@ import java.awt.Rectangle;
 import engine.GameCode;
 import engine.Sprite;
 import map.Roome;
+import network.NetworkHandler;
 import players.Bit;
+import resources.SoundPlayer;
 
 public class Bombs extends Item {
 
 	boolean thrown = false;
+	
+	Bit user;
 	
 	int direction = 0;
 	public Bombs () {
@@ -24,6 +28,7 @@ public class Bombs extends Item {
 	public boolean useItem (Bit user) {
 		this.declare((int)user.getX(),(int)user.getY());
 		thrown = true;
+		this.user = user;
 		direction = user.lastMove;
 		pickupablity = false;
 		return true;
@@ -43,6 +48,12 @@ public class Bombs extends Item {
 						Roome.getRoom(this.getX(), this.getY()).destroyTopWall();
 					}
 					this.forget();
+					if (NetworkHandler.isHost()) {
+						SoundPlayer play = new SoundPlayer ();
+						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");
+					} else {
+						NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/bomb.wav");
+					}
 				}
 				break;
 			case 1:
@@ -53,6 +64,12 @@ public class Bombs extends Item {
 						Roome.getRoom(this.getX(), this.getY()).destroyBottomWall();
 					}
 					this.forget();
+					if (NetworkHandler.isHost()) {
+						SoundPlayer play = new SoundPlayer ();
+						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");
+					} else {
+						NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/bomb.wav");
+					}
 				}
 				break;
 			case 2:
@@ -63,6 +80,12 @@ public class Bombs extends Item {
 						Roome.getRoom(this.getX(), this.getY()).destroyRightWall();
 					}
 					this.forget();
+					if (NetworkHandler.isHost()) {
+						SoundPlayer play = new SoundPlayer ();
+						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");
+					} else {
+						NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/bomb.wav");
+					}
 				}
 				break;
 			case 3:
@@ -73,6 +96,12 @@ public class Bombs extends Item {
 						Roome.getRoom(this.getX(), this.getY()).destroyLeftWall();
 					}
 					this.forget();
+					if (NetworkHandler.isHost()) {
+						SoundPlayer play = new SoundPlayer ();
+						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");
+					} else {
+						NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/bomb.wav");
+					}
 				}
 				break;
 			}

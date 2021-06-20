@@ -136,14 +136,11 @@ public class Register extends GameObject {
 	}
 	
 	@Override
-	public void frameEvent () {
-		super.frameEvent ();
-		if (TitleScreen.titleClosed) {
-			this.updateTime++;
-			if (this.updateTime > 15 && !NetworkHandler.isHost ()) {
-				forget ();
-			}
+	public void forget () {
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("FORGET REGISTER:" + this.id);
 		}
+		super.forget();
 	}
 	
 	@Override

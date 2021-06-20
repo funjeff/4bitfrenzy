@@ -27,6 +27,7 @@ import engine.GameObject;
 import map.Roome;
 import players.Bit;
 import resources.Hud;
+import resources.SoundPlayer;
 
 public class Client extends Thread {
 
@@ -49,6 +50,8 @@ public class Client extends Thread {
 	private static HashMap<Integer, Item> itemMap;
 	
 	private String uuid = UUID.randomUUID ().toString ();
+	
+	public SoundPlayer clientPlayer = new SoundPlayer ();
 	
 	public Client (String ip) {
 		
@@ -102,6 +105,8 @@ public class Client extends Thread {
 							}
 							
 						}
+						
+						
 						if (str.substring (0, 5).equals ("POINT")) {
 							
 							String [] data = str.substring(6).split(":");
@@ -129,6 +134,38 @@ public class Client extends Thread {
 								break;
 							}
 						}
+						
+						if (str.length () >= 5 && str.substring (0, 5).equals ("SOUND")) {
+							String targetedPlayer = str.split(":")[1];
+							String filePath = str.split(":")[2];
+							if (targetedPlayer.equals(Integer.toString(NetworkHandler.getPlayerNum())) || targetedPlayer.equals("ALL")) {
+								clientPlayer.playSoundEffect(GameCode.volume, filePath);
+							}
+						}
+						
+						if (str.length () >= 15 && str.substring (0, 15).equals ("FORGET REGISTER")) {
+							int forgetableReg = Integer.parseInt(str.split(":")[1]);
+							if (ObjectHandler.getObjectsByName("Register") != null) { //obligatory null check
+								for (int i = 0; i < ObjectHandler.getObjectsByName("Register").size(); i++) {
+									Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(i);
+									if (reg.id == forgetableReg) {
+										reg.forget();
+									}
+								}
+							}
+						}
+						
+						
+						if (str.length () >= 9 && str.substring (0, 9).equals ("FORGET DS")) {
+							int forgetableDS = Integer.parseInt(str.split(":")[1]);
+							for (int i = 0; i < ObjectHandler.getObjectsByName("DataSlot").size(); i++) {
+								DataSlot ds = (DataSlot)ObjectHandler.getObjectsByName("DataSlot").get(i);
+								if (ds.id == forgetableDS) {
+									ds.forget();
+								}
+							}
+						}
+						
 						
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
 							String[] data = str.split (":");

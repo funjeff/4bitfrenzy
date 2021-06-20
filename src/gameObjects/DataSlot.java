@@ -3,6 +3,7 @@ package gameObjects;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
@@ -10,6 +11,7 @@ import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
+import resources.SoundPlayer;
 import resources.Textbox;
 
 public class DataSlot extends GameObject {
@@ -79,7 +81,7 @@ public class DataSlot extends GameObject {
 	@Override
 	public void frameEvent () {
 		
-		if (this.isColliding("Register") && !this.cleared) {
+		if (this.isColliding("Register") && !this.cleared && NetworkHandler.isHost()) {
 			ArrayList <GameObject> collidingRegesters = this.getCollisionInfo().getCollidingObjects();
 			for (int i = 0; i < collidingRegesters.size(); i++) {
 				
@@ -88,6 +90,14 @@ public class DataSlot extends GameObject {
 					this.awardPoints(working);
 					working.forget();
 					Roome.getRoom(this.getX(), this.getY()).ds = null;
+					
+					//play a sound effect TODO make it only play for the player who put it in
+
+						SoundPlayer play = new SoundPlayer ();
+						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/regester in.wav");
+						NetworkHandler.getServer().sendMessage("SOUND:"  + "ALL" + ":resources/sounds/effects/regester in.wav");
+					
+					
 					if (working.scrambled) {
 						Register OG = this.getRegester();
 						if (OG != null) {
@@ -108,14 +118,6 @@ public class DataSlot extends GameObject {
 				}
 			}
 		}
-		
-		if (TitleScreen.titleClosed) {
-			this.updateTime++;
-			if (this.updateTime > 15 && !NetworkHandler.isHost ()) {
-				forget ();
-			}
-		}
-		
 	}
 	public void draw () {
 		super.draw();
@@ -153,6 +155,14 @@ public class DataSlot extends GameObject {
 	}
 	
 	@Override
+	public void forget () {
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("FORGET DS:" + this.id);
+		}
+		super.forget();
+	}
+	
+	@Override
 	public String toString () {
 		if (reward == null) {
 			return getId () + " " + memAddress  + " " + cleared + " " + "null" + " " + this.getX() + " " + this.getY();
@@ -171,6 +181,9 @@ public class DataSlot extends GameObject {
 		}
 		if (Boolean.parseBoolean(infos[2])) {
 			this.getAnimationHandler().setAnimationFrame(1);
+			cleared = true;
+		} else {
+			cleared = false;
 		}
 		if (!infos[3].equals("null") && reward == null) {
 			reward = new Textbox ("+ " + infos[3]);

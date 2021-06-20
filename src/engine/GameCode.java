@@ -34,6 +34,7 @@ public class GameCode {
 	
 	static int frame = 1;
 	
+	public static float volume = 6F;
 	
 	public static void testBitch () {
 		
@@ -198,6 +199,7 @@ public class GameCode {
 		
 		
 	}
+
 	
 	public static void initGameState () {
 		Hud hud = new Hud ();
@@ -234,7 +236,7 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-		DataScrambler b = new DataScrambler ();
+		Bombs b = new Bombs ();
 		
 		PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
 		int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(b.hitbox().width, b.hitbox().height);

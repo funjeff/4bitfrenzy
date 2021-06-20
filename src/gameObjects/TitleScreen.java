@@ -13,6 +13,7 @@ import map.Roome;
 import network.Client;
 import network.NetworkHandler;
 import network.Server;
+import resources.SoundPlayer;
 import resources.Textbox;
 
 public class TitleScreen extends GameObject {
@@ -48,6 +49,8 @@ public class TitleScreen extends GameObject {
 	
 	static Server server;
 	static Client client;
+	
+	
 	
 	@Override
 	public void onDeclare () {

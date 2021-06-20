@@ -1,8 +1,11 @@
 package items;
 
+import engine.GameCode;
 import engine.Sprite;
 import gameObjects.Register;
+import network.NetworkHandler;
 import players.Bit;
+import resources.SoundPlayer;
 
 public class Glue extends Item {
 	
@@ -24,6 +27,12 @@ public class Glue extends Item {
 				Register reg1 = (Register) user.regestersBeingCarried.get(0);
 				Register reg2 = (Register) user.regestersBeingCarried.get(1);
 				reg1.combine(reg2);
+				if (NetworkHandler.isHost()) {
+					SoundPlayer play = new SoundPlayer ();
+					play.playSoundEffect(GameCode.volume,"resources/sounds/effects/glue.wav");
+				} else {
+					NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/glue.wav");
+				}
 				return true;
 			}
 		}

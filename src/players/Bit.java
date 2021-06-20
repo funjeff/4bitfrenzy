@@ -18,6 +18,7 @@ import items.ItemBox;
 import map.Map;
 import map.Roome;
 import network.NetworkHandler;
+import resources.SoundPlayer;
 import resources.Textbox;
 
 public class Bit extends GameObject {
@@ -191,13 +192,29 @@ public class Bit extends GameObject {
 				}
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
-					if(keyPressed (' ') && compass != null) {
+					if(compass != null && ObjectHandler.getObjectsByName("Register") != null &&ObjectHandler.getObjectsByName("Register").size() != 0) {
 						try {
-							regNum = regNum + 1;
-							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(regNum));
-						} catch (IndexOutOfBoundsException e) {
-							compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
-							regNum = 0;
+						DataSlot ds = (DataSlot) compass.getPointObject();
+						if (ds.isCleared() || keyPressed (' ')) {
+							System.out.println("debg");
+							try {
+								regNum = regNum + 1;
+								compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(regNum));
+							} catch (IndexOutOfBoundsException e) {
+								compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
+								regNum = 0;
+							}
+						}
+						} catch (ClassCastException e) {
+							if (keyPressed (' ')) {
+								try {
+									regNum = regNum + 1;
+									compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(regNum));
+								} catch (IndexOutOfBoundsException g) {
+									compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(0));
+									regNum = 0;
+								}
+							}
 						}
 					}
 				}
@@ -237,6 +254,12 @@ public class Bit extends GameObject {
 							if (regestersBeingCarried == null) {
 								regestersBeingCarried = new ArrayList<GameObject> ();
 								startedCarring = true;
+								if (NetworkHandler.isHost()) {
+									SoundPlayer play = new SoundPlayer ();
+									play.playSoundEffect(GameCode.volume,"resources/sounds/effects/pickup.wav");
+								} else {
+									NetworkHandler.getServer().sendMessage("SOUND:"  + this.playerNum + ":resources/sounds/effects/pickup.wav");
+								}
 							}
 							
 							ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();

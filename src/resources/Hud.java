@@ -190,6 +190,24 @@ public class Hud extends GameObject {
 				if (rand.nextInt(20) < roundNum) {
 					int memNum = rand.nextInt(256);
 					
+					if (ObjectHandler.getObjectsByName("Register") != null) {
+						while (true) {
+							
+							boolean broken = false;
+							
+							for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
+								Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
+								if (reg.getMemAddress() == memNum) {
+									broken = true;
+									break;
+								}
+							}
+								if (!broken) {
+									break;
+								}
+								memNum = rand.nextInt(256);
+						}
+					}
 					Register r = new Register(memNum);
 					
 					int [] spawnPoint = Roome.map[i][j].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);

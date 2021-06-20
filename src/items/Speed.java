@@ -2,10 +2,13 @@ package items;
 
 import java.util.ArrayList;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
+import network.NetworkHandler;
 import players.Bit;
+import resources.SoundPlayer;
 
 public class Speed extends Item {
 	
@@ -18,11 +21,13 @@ public class Speed extends Item {
 	 */
 	@Override
 	public boolean useItem (Bit user) {
-		ArrayList <GameObject> bits = ObjectHandler.getObjectsByName("Bit");
-		for (int i = 0; i < bits.size(); i++) {
-			Bit bit = (Bit) bits.get(i);
-			bit.speedUpTemporarly();
+		if (NetworkHandler.isHost()) {
+			SoundPlayer play = new SoundPlayer ();
+			play.playSoundEffect(GameCode.volume,"resources/sounds/effects/speed.wav");
+		} else {
+			NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/speed.wav");
 		}
+		user.speedUpTemporarly();
 		return true;
 	}
 }
