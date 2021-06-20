@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,6 +13,8 @@ import items.DataScrambler;
 import items.Glue;
 import items.Speed;
 import gameObjects.TitleScreen;
+import map.Ribbon;
+import map.RibbonPulse;
 import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
@@ -69,6 +72,14 @@ public class GameCode {
 		frame++;
 		if (NetworkHandler.isHost () && gameStarted) {
 		
+			int mouseX = bits.get (0).getCursorX () + getViewX ();
+			int mouseY = bits.get (0).getCursorY () + getViewY ();
+			Point pt = Ribbon.getRibbonFromPoint (new Point (mouseX, mouseY));
+			if (pt != null) {
+				System.out.println (pt);
+				new RibbonPulse (pt.x, pt.y).declare (0, 0);
+			}
+			
 			//Send server stuff out
 			String toSend = "DATA:";
 			try {
