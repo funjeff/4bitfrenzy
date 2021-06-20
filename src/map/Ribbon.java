@@ -15,7 +15,7 @@ import engine.RenderLoop;
 
 public class Ribbon extends GameObject {
 
-	Color defaultColor = new Color (0x157F41);
+	public static final Color defaultColor = new Color (0x157F41);
 	
 	int xFrom;
 	int yFrom;
