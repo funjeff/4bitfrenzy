@@ -7,7 +7,9 @@ import engine.ObjectHandler;
 import engine.Sprite;
 import map.Roome;
 import network.NetworkHandler;
+import players.Bit;
 import resources.Textbox;
+import util.Vector2D;
 
 public class Register extends GameObject {
 	
@@ -19,15 +21,21 @@ public class Register extends GameObject {
 	
 	public boolean scrambled = false;
 	
+	public boolean isLargeRegister = false;
+	
 	long spawnTime;
 	
 	int updateTime = 0;
+	
+	ArrayList<Bit> bitsPushing = new ArrayList<Bit> ();
+	Vector2D trajectory;
 	
 	boolean modified;
 	
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
+		if (Math.random () < .25) {this.makeLarge ();} //TODO change this to allow small registers
 		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
 		display.setFont("text (lime green)");
@@ -53,8 +61,13 @@ public class Register extends GameObject {
 		
 		}
 		
-		this.goX(Double.parseDouble(infos[5]));
-		this.goY(Double.parseDouble(infos[6]));
+		this.isLargeRegister = Boolean.parseBoolean (infos[4]);
+		if (isLargeRegister) {
+			this.setSprite (new Sprite ("resources/sprites/Register large.png"));
+		}
+		
+		this.goX(Double.parseDouble(infos[6]));
+		this.goY(Double.parseDouble(infos[7]));
 		
 		this.updateTime = 0;
 		
@@ -135,6 +148,45 @@ public class Register extends GameObject {
 		this.setSprite(new Sprite ("resources/sprites/Regester combined.png"));
 	}
 	
+	public void makeLarge () {
+		this.isLargeRegister = true;
+		this.setSprite(new Sprite ("resources/sprites/Register large.png"));
+	}
+	
+	public void push (Bit bit, double x, double y) {
+		if (!bitsPushing.contains (bit)) {
+			bitsPushing.add (bit);
+		}
+		if (trajectory == null) {
+			trajectory = new Vector2D (x, y);
+		} else {
+			trajectory.add (new Vector2D (x, y));
+		}
+	}
+	
+	@Override
+	public void frameEvent () {
+		if (!(isLargeRegister && bitsPushing.size () == 1)) {
+			if (trajectory != null) {
+				trajectory.scale ((double)1 / bitsPushing.size ());
+				if (goX (getX () + trajectory.x)) {
+					for (int i = 0; i < bitsPushing.size (); i++) {
+						Bit b = bitsPushing.get (i);
+						b.setX (b.getX () + trajectory.x);
+					}
+				}
+				if (goY (getY () + trajectory.y)) {
+					for (int i = 0; i < bitsPushing.size (); i++) {
+						Bit b = bitsPushing.get (i);
+						b.setY (b.getY () + trajectory.y);
+					}
+				}
+			}
+		}
+		bitsPushing = new ArrayList<Bit> ();
+		trajectory = null;
+	}
+	
 	@Override
 	public void forget () {
 		if (NetworkHandler.isHost()) {
@@ -161,6 +213,6 @@ public class Register extends GameObject {
 	}
 	@Override
 	public String toString () {
-		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + spawnTime + " " + this.getX() + " " + this.getY();
+		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + isLargeRegister + " " + spawnTime + " " + this.getX() + " " + this.getY();
 	}
 }

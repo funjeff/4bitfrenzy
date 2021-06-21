@@ -218,6 +218,8 @@ public class Bit extends GameObject {
 						}
 					}
 				}
+				double xStart = getX ();
+				double yStart = getY ();
 				if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_UP)) && this.isSecondaryBit()))) {
 					if (this.goY((int)(this.getY() - speed))) {
 						this.carryRegestersY((((int)speed) * -1) - 1);
@@ -242,9 +244,9 @@ public class Bit extends GameObject {
 					}
 					lastMove = 1;
 				}
-				this.setHitboxAttributes(this.hitbox().width + 6, this.hitbox().height + 6);
-				this.setX(this.getX() - 3);
-				this.setY(this.getY() - 3);
+				this.setHitboxAttributes(this.hitbox().width + (speed + 1) * 2, this.hitbox().height + (speed + 1) * 2);
+				this.setX(this.getX() - (speed + 1));
+				this.setY(this.getY() - (speed + 1));
 					if (keys != null && keys.contains ("v")) {
 						
 						if (this.isColliding ("Register")) {
@@ -284,18 +286,23 @@ public class Bit extends GameObject {
 							regestersBeingCarried.clear ();
 						}
 					}
+					if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {
+						setX (xStart - (speed + 1));
+						setY (yStart - (speed + 1)); //-(speed + 1) to account for earlier offset
+					}
 				
-				this.setHitboxAttributes(this.hitbox().width - 6, this.hitbox().height - 6);
-				this.setX(this.getX() + 3);
-				this.setY(this.getY() + 3);
+				this.setHitboxAttributes(this.hitbox().width - (speed + 1) * 2, this.hitbox().height - (speed + 1) * 2);
+				this.setX(this.getX() + (speed + 1));
+				this.setY(this.getY() + (speed + 1));
 			}
 	private void carryRegestersY (double dist) {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
-				if (!regestersBeingCarried.get(i).goY(regestersBeingCarried.get(i).getY() + dist)) {
+				((Register)regestersBeingCarried.get (i)).push (this, 0, dist);
+				/*if (!regestersBeingCarried.get(i).goY(regestersBeingCarried.get(i).getY() + dist)) {
 					regestersBeingCarried.remove(i);
 					i = i -1;
-				}
+				}*/
 			}
 			if (regestersBeingCarried.isEmpty()) {
 				regestersBeingCarried = null;
@@ -305,10 +312,11 @@ public class Bit extends GameObject {
 	private void carryRegestersX (double dist) {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
-				if (!regestersBeingCarried.get(i).goX(regestersBeingCarried.get(i).getX() + dist)) {
+				((Register)regestersBeingCarried.get (i)).push (this, dist, 0);
+				/*if (!regestersBeingCarried.get(i).goX(regestersBeingCarried.get(i).getX() + dist)) {
 					regestersBeingCarried.remove(i);
 					i = i -1;
-				}
+				}*/
 			}
 			if (regestersBeingCarried.isEmpty()) {
 				regestersBeingCarried = null;
@@ -328,24 +336,11 @@ public class Bit extends GameObject {
 			}
 			
 			if (this.isColliding("Register")) {
-				ArrayList <GameObject> regesters= this.getCollisionInfo().getCollidingObjects();
+				ArrayList <GameObject> regesters = this.getCollisionInfo().getCollidingObjects();
 				for (int i = 0; i < regesters.size(); i++) {
-					if (val > x) {
-					if (!regesters.get(i).goX(val + this.hitbox().width)) {
-						for (int j = 0; j < i; j++) {
-							regesters.get(i).setX(val - (val - x));
-						}
-						this.setX(x);
-						return false;
-					}
-				} else {
-					if (!regesters.get(i).goX(val - regesters.get(i).hitbox().width)) {
-						for (int j = 0; j < i; j++) {
-							regesters.get(i).setX(val - (val - x));
-						}
-						this.setX(x);
-						return false;
-					}
+					if (regestersBeingCarried == null || !regestersBeingCarried.contains (regesters.get (i))) {
+						setX (x);
+						((Register)regesters.get (i)).push (this, val - x, 0);
 					}
 				}
 			}
@@ -382,24 +377,11 @@ public class Bit extends GameObject {
 			}
 			
 			if (this.isColliding("Register")) {
-				ArrayList <GameObject> regesters= this.getCollisionInfo().getCollidingObjects();
+				ArrayList <GameObject> regesters = this.getCollisionInfo().getCollidingObjects();
 				for (int i = 0; i < regesters.size(); i++) {
-					if (val > y) {
-						if (!regesters.get(i).goY(val + this.hitbox().height)) {
-							for (int j = 0; j < i; j++) {
-								regesters.get(i).setY(val - (val - y));
-							}
-							this.setY(y);
-							return false;
-						}
-					} else {
-						if (!regesters.get(i).goY(val - regesters.get(i).hitbox().height)) {
-							for (int j = 0; j < i; j++) {
-								regesters.get(i).setY(val - (val - y));
-							}
-							this.setY(y);
-							return false;
-						}
+					if (regestersBeingCarried == null || !regestersBeingCarried.contains (regesters.get (i))) {
+						setY (y);
+						((Register)regesters.get (i)).push (this, 0, val - y);
 					}
 				}
 			}
