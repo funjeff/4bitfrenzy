@@ -294,6 +294,9 @@ public class Bit extends GameObject {
 				this.setHitboxAttributes(this.hitbox().width - (speed + 1) * 2, this.hitbox().height - (speed + 1) * 2);
 				this.setX(this.getX() + (speed + 1));
 				this.setY(this.getY() + (speed + 1));
+				if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
+					updateScroll ();
+				}
 			}
 	private void carryRegestersY (double dist) {
 		if (regestersBeingCarried != null) {
@@ -346,6 +349,7 @@ public class Bit extends GameObject {
 			}
 		}
 		
+		/*
 		if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
 			Rectangle hBox = new Rectangle (this.hitbox());
 			
@@ -355,7 +359,7 @@ public class Bit extends GameObject {
 			if (!centerRect.contains(hBox)) {
 				GameCode.setView((int)(GameCode.getViewX() + (val - x)), GameCode.getViewY());
 			}
-		}
+		}*/
 		
 		return true;
 	}
@@ -387,7 +391,7 @@ public class Bit extends GameObject {
 			}
 		}
 		
-		if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
+		/*if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
 		
 			Rectangle hBox = new Rectangle (this.hitbox());
 		
@@ -398,7 +402,7 @@ public class Bit extends GameObject {
 			if (!centerRect.contains(hBox)) {
 				GameCode.setView(GameCode.getViewX(), (int)(GameCode.getViewY()  + (val - y)));
 			}
-		}
+		}*/
 		return true;
 	}
 	public void setPerk (int perkNum) {
@@ -434,6 +438,34 @@ public class Bit extends GameObject {
 		}
 		
 	}
+	
+	public void updateScroll () {
+		
+		//216, 200, 864, 550
+		int SCROLL_BOUND_LEFT = 216;
+		int SCROLL_BOUND_TOP = 200;
+		int SCROLL_BOUND_RIGHT = SCROLL_BOUND_LEFT + 648;
+		int SCROLL_BOUND_BOTTOM = SCROLL_BOUND_TOP + 350;
+		int SCREEN_WIDTH = 1080;
+		int SCREEN_HEIGHT = 720;
+		
+		double relX = getX () - GameCode.getViewX ();
+		double relY = getY () - GameCode.getViewY ();
+		if (relX < SCROLL_BOUND_LEFT) {
+			GameCode.setView ((int)getX () - SCROLL_BOUND_LEFT, GameCode.getViewY ());
+		}
+		if (relX > SCROLL_BOUND_RIGHT) {
+			GameCode.setView ((int)getX () - SCROLL_BOUND_RIGHT, GameCode.getViewY ());
+		}
+		if (relY < SCROLL_BOUND_TOP) {
+			GameCode.setView (GameCode.getViewX (), (int)getY () - SCROLL_BOUND_TOP);
+		}
+		if (relY > SCROLL_BOUND_BOTTOM) {
+			GameCode.setView (GameCode.getViewX (), (int)getY () - SCROLL_BOUND_BOTTOM);
+		}
+		
+	}
+	
 	@Override
 	public void draw () {
 		super.draw();
