@@ -35,7 +35,7 @@ public class Register extends GameObject {
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
-		if (Math.random () < .25) {this.makeLarge ();} //TODO change this to allow small registers
+		if (Math.random () < .25) {this.makeLarge ();} //TODO account for one player case
 		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
 		display.setFont("text (lime green)");
@@ -166,25 +166,53 @@ public class Register extends GameObject {
 	
 	@Override
 	public void frameEvent () {
-		if (!(isLargeRegister && bitsPushing.size () == 1)) {
+		
+		//Scale the trajectory by the number of bits
+		if (trajectory != null) {
+			trajectory.scale ((double)1 / bitsPushing.size ());
+		}
+		
+		//Check if this register can be pushed
+		boolean canPush = isLargeRegister ? false : true; //Defaults to false for large registers
+		//Check for powerhouse perk
+		for (int i = 0; i < bitsPushing.size (); i++) {
+			if (bitsPushing.get (i).perk == 3) {
+				canPush = true; //Only one bit needs to have powerhouse
+			}
+		}
+		//Check for 2 or more bits
+		if (bitsPushing.size () > 1) {
+			canPush = true;
+			//Apply speed boost for multiple bits pulling
+			if (!isLargeRegister && trajectory != null && trajectory.getLength () < 5 /*Default bit speed is 5*/) {
+				trajectory.normalize ();
+				trajectory.scale (5);
+			}
+		}
+		
+		//Move the register
+		if (canPush) {
 			if (trajectory != null) {
-				trajectory.scale ((double)1 / bitsPushing.size ());
+				
 				if (goX (getX () + trajectory.x)) {
 					for (int i = 0; i < bitsPushing.size (); i++) {
 						Bit b = bitsPushing.get (i);
-						b.setX (b.getX () + trajectory.x);
+						b.setX (b.getX () + trajectory.x); //Move the bits with the register
 					}
 				}
 				if (goY (getY () + trajectory.y)) {
 					for (int i = 0; i < bitsPushing.size (); i++) {
 						Bit b = bitsPushing.get (i);
-						b.setY (b.getY () + trajectory.y);
+						b.setY (b.getY () + trajectory.y); //Move the bits with the register
 					}
 				}
 			}
 		}
+		
+		//Reset variables for next frame
 		bitsPushing = new ArrayList<Bit> ();
 		trajectory = null;
+		
 	}
 	
 	@Override

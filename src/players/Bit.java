@@ -302,10 +302,7 @@ public class Bit extends GameObject {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
 				((Register)regestersBeingCarried.get (i)).push (this, 0, dist);
-				/*if (!regestersBeingCarried.get(i).goY(regestersBeingCarried.get(i).getY() + dist)) {
-					regestersBeingCarried.remove(i);
-					i = i -1;
-				}*/
+
 			}
 			if (regestersBeingCarried.isEmpty()) {
 				regestersBeingCarried = null;
@@ -316,10 +313,6 @@ public class Bit extends GameObject {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
 				((Register)regestersBeingCarried.get (i)).push (this, dist, 0);
-				/*if (!regestersBeingCarried.get(i).goX(regestersBeingCarried.get(i).getX() + dist)) {
-					regestersBeingCarried.remove(i);
-					i = i -1;
-				}*/
 			}
 			if (regestersBeingCarried.isEmpty()) {
 				regestersBeingCarried = null;
@@ -348,18 +341,6 @@ public class Bit extends GameObject {
 				}
 			}
 		}
-		
-		/*
-		if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
-			Rectangle hBox = new Rectangle (this.hitbox());
-			
-	
-			Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
-			
-			if (!centerRect.contains(hBox)) {
-				GameCode.setView((int)(GameCode.getViewX() + (val - x)), GameCode.getViewY());
-			}
-		}*/
 		
 		return true;
 	}
@@ -390,19 +371,7 @@ public class Bit extends GameObject {
 				}
 			}
 		}
-		
-		/*if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
-		
-			Rectangle hBox = new Rectangle (this.hitbox());
-		
-	
-			Rectangle centerRect = new Rectangle (216 + GameCode.getViewX(),200 + GameCode.getViewY(),648,350);
-			
-		
-			if (!centerRect.contains(hBox)) {
-				GameCode.setView(GameCode.getViewX(), (int)(GameCode.getViewY()  + (val - y)));
-			}
-		}*/
+
 		return true;
 	}
 	public void setPerk (int perkNum) {
