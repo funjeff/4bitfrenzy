@@ -228,6 +228,7 @@ public class Client extends Thread {
 								GameCode.bits.get(i).goX (bit_x);
 								GameCode.bits.get(i).goY (bit_y);
 								next = next + 1;
+								System.out.println(bit_data);
 							}
 							//Extract the register data
 							String reg_data = data[next];

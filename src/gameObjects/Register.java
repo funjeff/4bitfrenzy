@@ -23,6 +23,8 @@ public class Register extends GameObject {
 	
 	public boolean isLargeRegister = false;
 	
+	public boolean isBlue = false;
+	
 	long spawnTime;
 	
 	int updateTime = 0;
@@ -35,7 +37,10 @@ public class Register extends GameObject {
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
-		if (Math.random () < .25) {this.makeLarge ();} //TODO account for one player case
+		if (NetworkHandler.isHost ()) {
+			if (Math.random () < .25) {this.makeLarge ();} //TODO account for one player case
+			else if (Math.random () < .5) {this.makeBlue ();}
+		}
 		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
 		display.setFont("text (lime green)");
@@ -66,8 +71,13 @@ public class Register extends GameObject {
 			this.setSprite (new Sprite ("resources/sprites/Register large.png"));
 		}
 		
-		this.goX(Double.parseDouble(infos[6]));
-		this.goY(Double.parseDouble(infos[7]));
+		this.isBlue = Boolean.parseBoolean(infos[5]);
+		if (isBlue) {
+			this.setSprite (new Sprite ("resources/sprites/Regester blue.png"));
+		}
+		
+		this.goX(Double.parseDouble(infos[7]));
+		this.goY(Double.parseDouble(infos[8]));
 		
 		this.updateTime = 0;
 		
@@ -151,6 +161,11 @@ public class Register extends GameObject {
 	public void makeLarge () {
 		this.isLargeRegister = true;
 		this.setSprite(new Sprite ("resources/sprites/Register large.png"));
+	}
+	
+	public void makeBlue () {
+		this.isBlue = true;
+		this.setSprite(new Sprite ("resources/sprites/Regester blue.png"));
 	}
 	
 	public void push (Bit bit, double x, double y) {
@@ -241,6 +256,6 @@ public class Register extends GameObject {
 	}
 	@Override
 	public String toString () {
-		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + isLargeRegister + " " + spawnTime + " " + this.getX() + " " + this.getY();
+		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + isLargeRegister + " " + isBlue + " " + spawnTime + " " + this.getX() + " " + this.getY();
 	}
 }
