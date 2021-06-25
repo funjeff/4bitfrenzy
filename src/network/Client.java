@@ -275,72 +275,74 @@ public class Client extends Thread {
 							}
 							//Extract the DataSlot data
 							String item_data = data[next + 2];
-							String[] items = item_data.split (",");
-							for (int i = 0; i < items.length; i++) {
-								if (i < items.length - GameCode.bits.size()) {
-									Scanner s = new Scanner (items [i]);
-									if (s.hasNext ()) {
-									int r_id = s.nextInt ();
-										if (itemMap.containsKey (r_id)) {
-											toKeep.add(r_id);
-											itemMap.get (r_id).refreshItem (items [i]);
-										} else {
-											Class<?> itemToUse = null;
-											try {
-												itemToUse = Class.forName(s.next());
-											} catch (ClassNotFoundException e) {
-												e.printStackTrace();
+							if (!item_data.equals ("")) {
+								String[] items = item_data.split (",");
+								for (int i = 0; i < items.length; i++) {
+									if (i < items.length - GameCode.bits.size()) {
+										Scanner s = new Scanner (items [i]);
+										if (s.hasNext ()) {
+										int r_id = s.nextInt ();
+											if (itemMap.containsKey (r_id)) {
+												toKeep.add(r_id);
+												itemMap.get (r_id).refreshItem (items [i]);
+											} else {
+												Class<?> itemToUse = null;
+												try {
+													itemToUse = Class.forName(s.next());
+												} catch (ClassNotFoundException e) {
+													e.printStackTrace();
+												}
+												
+												Item it = null;
+												try {
+													it = (Item)itemToUse.getConstructor().newInstance();
+												} catch (InstantiationException | IllegalAccessException
+														| IllegalArgumentException | InvocationTargetException
+														| NoSuchMethodException | SecurityException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+												it.declare ();
+												it.refreshItem (items [i]);
+												it.id = r_id;
+												toKeep.add(r_id);
+												itemMap.put (r_id, it);
 											}
-											
-											Item it = null;
-											try {
-												it = (Item)itemToUse.getConstructor().newInstance();
-											} catch (InstantiationException | IllegalAccessException
-													| IllegalArgumentException | InvocationTargetException
-													| NoSuchMethodException | SecurityException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-											it.declare ();
-											it.refreshItem (items [i]);
-											it.id = r_id;
-											toKeep.add(r_id);
-											itemMap.put (r_id, it);
+											s.close ();
 										}
-										s.close ();
-									}
-								} else {
-									Bit b = GameCode.bits.get(i - (items.length - GameCode.bits.size()));
-									if (!items[i].equals("null")) {
-										Scanner s2 = new Scanner (items [i]);
-										s2.next();
-										if (b.inventory.getItem() != null && b.inventory.getItem().getClass().toString().equals(s2.next())) {
-											b.inventory.getItem().refreshItem(items[i]);
-										} else {
-											Class<?> itemToUse = null;
-											try {
-												Scanner s = new Scanner (items [i]);
-												s.next();
-												itemToUse = Class.forName(s.next());
-												s.close();
-											} catch (ClassNotFoundException e) {
-												e.printStackTrace();
-											}
-											
-											Item it = null;
-											try {
-												it = (Item)itemToUse.getConstructor().newInstance();
-											} catch (InstantiationException | IllegalAccessException
-													| IllegalArgumentException | InvocationTargetException
-													| NoSuchMethodException | SecurityException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-											b.inventory.setItem(it);
-										}
-										s2.close();
 									} else {
-										b.inventory.setItem(null);
+										Bit b = GameCode.bits.get(i - (items.length - GameCode.bits.size()));
+										if (!items[i].equals("null")) {
+											Scanner s2 = new Scanner (items [i]);
+											s2.next();
+											if (b.inventory.getItem() != null && b.inventory.getItem().getClass().toString().equals(s2.next())) {
+												b.inventory.getItem().refreshItem(items[i]);
+											} else {
+												Class<?> itemToUse = null;
+												try {
+													Scanner s = new Scanner (items [i]);
+													s.next();
+													itemToUse = Class.forName(s.next());
+													s.close();
+												} catch (ClassNotFoundException e) {
+													e.printStackTrace();
+												}
+												
+												Item it = null;
+												try {
+													it = (Item)itemToUse.getConstructor().newInstance();
+												} catch (InstantiationException | IllegalAccessException
+														| IllegalArgumentException | InvocationTargetException
+														| NoSuchMethodException | SecurityException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+												b.inventory.setItem(it);
+											}
+											s2.close();
+										} else {
+											b.inventory.setItem(null);
+										}
 									}
 								}
 							}

@@ -239,7 +239,7 @@ public class GameCode {
 			}
 			Bit bit = new Bit ();
 			bit.playerNum = i + 1;
-			PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[5][5].biatch;
+			PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[0][0].biatch;
 			int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 			if (perks[i] == 5) {
 				Bit bit1dot5 = new Bit();

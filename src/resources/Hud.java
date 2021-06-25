@@ -156,107 +156,110 @@ public class Hud extends GameObject {
 			}
 		}
 		Random rand = new Random ();
-		for (int i = 0; i < Roome.map.length; i++) {
-			for (int j = 0; j < Roome.map[i].length; j++) {
-				if (rand.nextInt(10) < roundNum) {
-					
-					int [] spawnCoords = Roome.map[i][j].biatch.getPosibleCoords(32, 32);
-					
-					switch (rand.nextInt(5)) {
-					case 0:
-						Glue glue = new Glue ();
-						glue.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 1:
-						Bombs bombs = new Bombs ();
-						bombs.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 2:
-						Speed speed = new Speed ();
-						speed.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 3:
-						Teleporter tele = new Teleporter ();
-						tele.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					case 4:
-						DataScrambler scrambler = new DataScrambler ();
-						scrambler.declare(spawnCoords[0], spawnCoords[1]);
-						break;
-					}
-							
-				}
-				
-				if (rand.nextInt(20) < roundNum) {
-					int memNum = rand.nextInt(256);
-					
-					if (ObjectHandler.getObjectsByName("Register") != null) {
-						while (true) {
-							
-							boolean broken = false;
-							
-							for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
-								Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
-								if (reg.getMemAddress() == memNum) {
-									broken = true;
-									break;
-								}
-							}
-								if (!broken) {
-									break;
-								}
-								memNum = rand.nextInt(256);
+		while (ObjectHandler.getObjectsByName ("Register") == null) {
+			for (int i = 0; i < Roome.map.length; i++) {
+				for (int j = 0; j < Roome.map[i].length; j++) {
+					if (rand.nextInt(10) < roundNum) {
+						
+						int [] spawnCoords = Roome.map[i][j].biatch.getPosibleCoords(32, 32);
+						
+						//IMPORTANT client is unresponsive if there are no items
+						switch (rand.nextInt(5)) {
+						case 0:
+							Glue glue = new Glue ();
+							glue.declare(spawnCoords[0], spawnCoords[1]);
+							break;
+						case 1:
+							Bombs bombs = new Bombs ();
+							bombs.declare(spawnCoords[0], spawnCoords[1]);
+							break;
+						case 2:
+							Speed speed = new Speed ();
+							speed.declare(spawnCoords[0], spawnCoords[1]);
+							break;
+						case 3:
+							Teleporter tele = new Teleporter ();
+							tele.declare(spawnCoords[0], spawnCoords[1]);
+							break;
+						case 4:
+							DataScrambler scrambler = new DataScrambler ();
+							scrambler.declare(spawnCoords[0], spawnCoords[1]);
+							break;
 						}
-					}
-					Register r = new Register(memNum);
-					
-					int [] spawnPoint = Roome.map[i][j].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
-					
-					r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
-					
-					Roome.map[i][j].r = r;
-					
-					int xCoord = rand.nextInt(3);
-					
-					if (rand.nextBoolean()) {
-						xCoord = xCoord * -1;
+								
 					}
 					
-					xCoord = i + xCoord;
-					
-					
-					int yCoord = rand.nextInt(3);
-					
-					if (rand.nextBoolean()) {
-						yCoord = yCoord * -1;
+					if (rand.nextInt(20) < roundNum) {
+						int memNum = rand.nextInt(256);
+						
+						if (ObjectHandler.getObjectsByName("Register") != null) {
+							while (true) {
+								
+								boolean broken = false;
+								
+								for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
+									Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
+									if (reg.getMemAddress() == memNum) {
+										broken = true;
+										break;
+									}
+								}
+									if (!broken) {
+										break;
+									}
+									memNum = rand.nextInt(256);
+							}
+						}
+						Register r = new Register(memNum);
+						
+						int [] spawnPoint = Roome.map[i][j].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
+						
+						r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
+						
+						Roome.map[i][j].r = r;
+						
+						int xCoord = rand.nextInt(3);
+						
+						if (rand.nextBoolean()) {
+							xCoord = xCoord * -1;
+						}
+						
+						xCoord = i + xCoord;
+						
+						
+						int yCoord = rand.nextInt(3);
+						
+						if (rand.nextBoolean()) {
+							yCoord = yCoord * -1;
+						}
+						
+						yCoord = j + yCoord;
+						
+						if (xCoord > Roome.getMapWidth () - 1) {
+							xCoord = Roome.getMapWidth () - 1;
+						}
+						
+						if (xCoord < 0) {
+							xCoord = 0;
+						}
+						if (yCoord > Roome.getMapHeight () - 1) {
+							yCoord = Roome.getMapHeight () - 1;
+						}
+						
+						if (yCoord < 0) {
+							yCoord = 0;
+						}
+						
+						Roome dataRoom = Roome.map [xCoord][yCoord];
+						DataSlot ds = new DataSlot (memNum);
+						
+						int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
+						
+						
+						ds.declare((int)otherPoint[0],(int) otherPoint[1]);
+						
+						dataRoom.ds = ds;
 					}
-					
-					yCoord = j + yCoord;
-					
-					if (xCoord > 9) {
-						xCoord = 9;
-					}
-					
-					if (xCoord < 0) {
-						xCoord = 0;
-					}
-					if (yCoord > 9) {
-						yCoord = 9;
-					}
-					
-					if (yCoord < 0) {
-						yCoord = 0;
-					}
-					
-					Roome dataRoom = Roome.map [xCoord][yCoord];
-					DataSlot ds = new DataSlot (memNum);
-					
-					int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
-					
-					
-					ds.declare((int)otherPoint[0],(int) otherPoint[1]);
-					
-					dataRoom.ds = ds;
 				}
 			}
 		}

@@ -33,8 +33,11 @@ import network.NetworkHandler;
 import resources.Textbox;
 
 public class Roome extends GameObject {
-	public static Roome [][] map = new Roome [10][10];
+	public static Roome [][] map;
 	public static HashMap<Point, Integer> distMap;
+	
+	private static int mapWidth;
+	private static int mapHeight;
 	
 	
 	//true = open false = closed
@@ -284,6 +287,11 @@ public class Roome extends GameObject {
 		return map [(int)(y/720)][(int) (x/1080)];
 	}
 	public static void generateMap () {
+		//For some reason, this hangs on differing width-height
+		//It also fails for relatively large maps (as small as 12x12)
+		mapWidth = 10;
+		mapHeight = 10;
+		map = new Roome[mapHeight][mapWidth];
 		do {
 			ArrayList <GameObject> oldRooms = ObjectHandler.getObjectsByName("Roome");
 			if (oldRooms != null) {
@@ -293,8 +301,8 @@ public class Roome extends GameObject {
 			}
 
 			
-			for (int wy = 0; wy < map.length; wy++) {
-				for (int wx = 0; wx < map[0].length; wx++) {
+			for (int wy = 0; wy < mapHeight; wy++) {
+				for (int wx = 0; wx < mapWidth; wx++) {
 					Roome working = new Roome ();
 					
 					Random rand = new Random ();
@@ -350,12 +358,21 @@ public class Roome extends GameObject {
 	}
 	
 	public static void loadMap (String mapString) {
-		String[] roomStrings = mapString.split (",");
+		String[] mapStrings = mapString.split (";");
+		String[] roomStrings = mapStrings[1].split (",");
 		
-		int [] ids = new int [100];
-		int [] colors = new int [100];
+		String[] dims = mapStrings[0].split (",");
+		mapWidth = Integer.parseInt (dims[0]);
+		mapHeight = Integer.parseInt (dims[1]);
 		
-		for (int i = 0; i < 100; i++) {
+		if (map == null) {
+			map = new Roome[mapHeight][mapWidth];
+		}
+		
+		int [] ids = new int [mapWidth * mapHeight];
+		int [] colors = new int [mapWidth * mapHeight];
+		
+		for (int i = 0; i < mapWidth * mapHeight; i++) {
 			String curr = roomStrings[i];
 			Roome r = new Roome ();
 			r.declare ();
@@ -363,21 +380,21 @@ public class Roome extends GameObject {
 			r.leftJunction = curr.charAt (1) == 'y' ? true : false;
 			r.rightJunction = curr.charAt (2) == 'y' ? true : false;
 			r.bottomJunction = curr.charAt (3) == 'y' ? true : false;
-			ids[i] = Integer.parseInt (curr.substring (4, 6));
-			colors[i] = Integer.parseInt (curr.substring (6, 7));
-			r.setX ((i % 10) * 1080);
-			r.setY ((i / 10) * 720);
+			ids[i] = Integer.parseInt (curr.substring (4, 7));
+			colors[i] = Integer.parseInt (curr.substring (7, 8));
+			r.setX ((i % mapWidth) * 1080);
+			r.setY ((i / mapHeight) * 720);
 			
-			map [i / 10][i % 10] = r;
+			map [i / mapHeight][i % mapWidth] = r;
 		}
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < mapWidth * mapHeight; i++) {
 			Roome r = new Roome ();
 			
-			r = map [i / 10][i % 10];
+			r = map [i / mapHeight][i % mapWidth];
 			r.init (ids[i], colors[i]);
-			r.roomPosX = (i % 10);
-			r.roomPosY = (i / 10);
+			r.roomPosX = (i % mapWidth);
+			r.roomPosY = (i / mapHeight);
 		}
 		
 		
@@ -385,9 +402,10 @@ public class Roome extends GameObject {
 	
 	public static String saveMap () {
 		String val = "";
-		for (int i = 0; i < 100; i++) {
-			Roome r = map [i / 10][i % 10];
-			if (i != 99) {
+		val += mapWidth + "," + mapHeight + ";";
+		for (int i = 0; i < mapWidth * mapHeight; i++) {
+			Roome r = map [i / mapHeight][i % mapWidth];
+			if (i != mapWidth * mapHeight - 1) {
 				val += r.toString () + ",";
 			} else {
 				val += r.toString ();
@@ -403,7 +421,13 @@ public class Roome extends GameObject {
 		val += leftJunction ? 'y' : 'n';
 		val += rightJunction ? 'y' : 'n';
 		val += bottomJunction ? 'y' : 'n';
-		val += id >= 10 ? String.valueOf (id) : "0" + String.valueOf (id);
+		if (id >= 100) {
+			val += id;
+		} else if (id >= 10) {
+			val += "0" + id;
+		} else {
+			val += "00" + id;
+		}
 		val += String.valueOf (color);
 		return val;
 	}
@@ -411,8 +435,8 @@ public class Roome extends GameObject {
 	public static boolean areAllAccessable () {
 		
 		HashMap<Point, Integer> accessables = new HashMap<Point, Integer> ();
-		fillDistMap (5, 5, accessables);
-		if (accessables.size () == map.length * map[0].length) {
+		fillDistMap (mapWidth / 2, mapHeight / 2, accessables);
+		if (accessables.size () == mapWidth * mapHeight) {
 			distMap = accessables;
 			return true;
 		}
@@ -599,6 +623,14 @@ public class Roome extends GameObject {
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:left:" + roomPosX + ":" + roomPosY);
 		}
+	}
+	
+	public static int getMapWidth () {
+		return mapWidth;
+	}
+	
+	public static int getMapHeight () {
+		return mapHeight;
 	}
 	
 	@Override
