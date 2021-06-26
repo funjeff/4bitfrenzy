@@ -39,6 +39,7 @@ public class Roome extends GameObject {
 	private static int mapWidth;
 	private static int mapHeight;
 	
+	private static HashMap<Point, HashMap<Point, Integer>> distMaps;
 	
 	//true = open false = closed
 	boolean topJunction;
@@ -269,6 +270,33 @@ public class Roome extends GameObject {
 		}
 	}
 	
+	public static void fillDistMaps () {
+		
+		//Make the distance maps
+		distMaps = new HashMap<Point, HashMap<Point, Integer>> ();
+		
+		//Fill all the maps
+		for (int wy = 0; wy < mapHeight; wy++) {
+			for (int wx = 0; wx < mapWidth; wx++) {
+				HashMap<Point, Integer> working = new HashMap<Point, Integer> ();
+				fillDistMap (wx, wy, working);
+				distMaps.put (new Point (wx, wy), working);
+			}
+		}
+		
+	}
+	
+	public static int distBetween (Point from, Point to) {
+		
+		//Fill the dist maps if needed
+		if (distMaps == null) {
+			fillDistMaps ();
+		}
+		
+		//Retrieve the distance
+		return distMaps.get (from).get (to);
+		
+	}
 	
 	public boolean inRoom (double x, double y) {
 		if (x > (roomPosX * 1080) && x < (roomPosX * 1080) + 1080 && y > (roomPosY * 720) && y < (roomPosY * 720) + 720) {
@@ -288,7 +316,7 @@ public class Roome extends GameObject {
 	}
 	public static void generateMap () {
 		//For some reason, this hangs on differing width-height
-		//It also fails for relatively large maps (as small as 12x12)
+		//It also fails for relatively large maps (as small as 12x12) - this is related to the open corridor probability
 		mapWidth = 10;
 		mapHeight = 10;
 		map = new Roome[mapHeight][mapWidth];
@@ -354,6 +382,10 @@ public class Roome extends GameObject {
 		if (GameCode.devMode ()) {
 			Ribbon.constructPath ();
 		}
+		
+		fillDistMaps ();
+		System.out.println (distBetween (new Point (0, 0), new Point (9, 9)));
+		System.out.println (distBetween (new Point (9, 9), new Point (0, 0)));
 		
 	}
 	
