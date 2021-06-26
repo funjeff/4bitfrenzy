@@ -28,7 +28,7 @@ public class Teleporter extends Item {
 		} else {
 			NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/teleporter.wav");
 		}
-		int [] telportCoords = Roome.map[rand.nextInt(10)][rand.nextInt(10)].biatch.getPosibleCoords(user.hitbox().width, user.hitbox().height);
+		int [] telportCoords = Roome.map[rand.nextInt(Roome.getMapHeight ())][rand.nextInt(Roome.getMapWidth ())].biatch.getPosibleCoords(user.hitbox().width, user.hitbox().height);
 		user.goX(telportCoords[0]);
 		user.goY(telportCoords[1]);
 		return true;

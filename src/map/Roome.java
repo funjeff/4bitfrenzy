@@ -315,8 +315,7 @@ public class Roome extends GameObject {
 		return map [(int)(y/720)][(int) (x/1080)];
 	}
 	public static void generateMap () {
-		//For some reason, this hangs on differing width-height
-		//It also fails for relatively large maps (as small as 12x12) - this is related to the open corridor probability
+		//This consistently fails for relatively large maps (as small as 12x12) - this is related to the open corridor probability
 		mapWidth = 10;
 		mapHeight = 10;
 		map = new Roome[mapHeight][mapWidth];
@@ -349,13 +348,13 @@ public class Roome extends GameObject {
 					if (wx == 0) {
 						working.leftJunction = false;
 					}
-					if (wx == map.length - 1) {
+					if (wx == mapWidth - 1) {
 						working.rightJunction = false;
 					}
 					if (wy == 0) {
 						working.topJunction = false;
 					}
-					if (wy == map[0].length - 1) {
+					if (wy == mapHeight - 1) {
 						working.bottomJunction = false;
 					}
 					
@@ -384,8 +383,6 @@ public class Roome extends GameObject {
 		}
 		
 		fillDistMaps ();
-		System.out.println (distBetween (new Point (0, 0), new Point (9, 9)));
-		System.out.println (distBetween (new Point (9, 9), new Point (0, 0)));
 		
 	}
 	
@@ -415,18 +412,18 @@ public class Roome extends GameObject {
 			ids[i] = Integer.parseInt (curr.substring (4, 7));
 			colors[i] = Integer.parseInt (curr.substring (7, 8));
 			r.setX ((i % mapWidth) * 1080);
-			r.setY ((i / mapHeight) * 720);
+			r.setY ((i / mapWidth) * 720);
 			
-			map [i / mapHeight][i % mapWidth] = r;
+			map [i / mapWidth][i % mapWidth] = r;
 		}
 		
 		for (int i = 0; i < mapWidth * mapHeight; i++) {
 			Roome r = new Roome ();
 			
-			r = map [i / mapHeight][i % mapWidth];
+			r = map [i / mapWidth][i % mapWidth];
 			r.init (ids[i], colors[i]);
 			r.roomPosX = (i % mapWidth);
-			r.roomPosY = (i / mapHeight);
+			r.roomPosY = (i / mapWidth);
 		}
 		
 		
@@ -436,7 +433,7 @@ public class Roome extends GameObject {
 		String val = "";
 		val += mapWidth + "," + mapHeight + ";";
 		for (int i = 0; i < mapWidth * mapHeight; i++) {
-			Roome r = map [i / mapHeight][i % mapWidth];
+			Roome r = map [i / mapWidth][i % mapWidth];
 			if (i != mapWidth * mapHeight - 1) {
 				val += r.toString () + ",";
 			} else {
