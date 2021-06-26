@@ -1,5 +1,6 @@
 package resources;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,6 +29,16 @@ public class Hud extends GameObject {
 	long prevTime;
 	static int lives = 10;
 	
+	//Register spawning parameters
+	public static int minRegisterDistance = 1;
+	public static int maxRegisterDistance = 4;
+	public static int registerRadius = 3;
+	
+	public static int minBlueRegisterDistance = 6;
+	public static int maxBlueRegisterDistance = 10;
+	
+	public static double blueRegisterOdds = .15;
+	public static double largeRegisterOdds = .2;
 
 	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
 
@@ -157,11 +168,11 @@ public class Hud extends GameObject {
 		}
 		Random rand = new Random ();
 		while (ObjectHandler.getObjectsByName ("Register") == null) {
-			for (int i = 0; i < Roome.map.length; i++) {
-				for (int j = 0; j < Roome.map[i].length; j++) {
+			for (int wy = 0; wy < Roome.map.length; wy++) {
+				for (int wx = 0; wx < Roome.map[wy].length; wx++) {
 					if (rand.nextInt(10) < roundNum) {
 						
-						int [] spawnCoords = Roome.map[i][j].biatch.getPosibleCoords(32, 32);
+						int [] spawnCoords = Roome.map[wy][wx].biatch.getPosibleCoords(32, 32);
 						
 						//IMPORTANT client is unresponsive if there are no items
 						switch (rand.nextInt(5)) {
@@ -212,45 +223,49 @@ public class Hud extends GameObject {
 						}
 						Register r = new Register(memNum);
 						
-						int [] spawnPoint = Roome.map[i][j].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
+						int [] spawnPoint = Roome.map[wy][wx].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
 						
 						r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
 						
-						Roome.map[i][j].r = r;
+						Roome.map[wy][wx].r = r;
 						
-						int xCoord = rand.nextInt(3);
+						int xCoord, yCoord;
+						Point p1 = new Point (wx, wy);
+						Point p2 = new Point (wx, wy);
 						
-						if (rand.nextBoolean()) {
-							xCoord = xCoord * -1;
+						boolean isBlue = rand.nextDouble () < blueRegisterOdds;
+						boolean isLarge = isBlue ? false : rand.nextDouble () < largeRegisterOdds; //Blue registers can't be large
+						
+						//Change the register as needed
+						if (isBlue) {
+							r.makeBlue ();
+						}
+						if (isLarge) {
+							r.makeLarge ();
 						}
 						
-						xCoord = i + xCoord;
-						
-						
-						int yCoord = rand.nextInt(3);
-						
-						if (rand.nextBoolean()) {
-							yCoord = yCoord * -1;
+						while (true) {
+							
+							//Select a random room (distance lookups are cheap because they are lookup tables)
+							xCoord = rand.nextInt (Roome.getMapWidth ());
+							yCoord = rand.nextInt (Roome.getMapHeight ());
+							
+							//Test for the required proximity
+							p2.x = xCoord;
+							p2.y = yCoord;
+							int dist = Roome.distBetween (p1, p2);
+							if (isBlue) {
+								if (dist >= minBlueRegisterDistance && dist <= maxBlueRegisterDistance) {
+									break; //Sorry for the bad design, I'm aware break is bad
+								}
+							} else {
+								if (dist >= minRegisterDistance && dist <= maxRegisterDistance) {
+									break; // ^
+								}
+							}
 						}
 						
-						yCoord = j + yCoord;
-						
-						if (xCoord > Roome.getMapWidth () - 1) {
-							xCoord = Roome.getMapWidth () - 1;
-						}
-						
-						if (xCoord < 0) {
-							xCoord = 0;
-						}
-						if (yCoord > Roome.getMapHeight () - 1) {
-							yCoord = Roome.getMapHeight () - 1;
-						}
-						
-						if (yCoord < 0) {
-							yCoord = 0;
-						}
-						
-						Roome dataRoom = Roome.map [xCoord][yCoord];
+						Roome dataRoom = Roome.map [yCoord][xCoord];
 						DataSlot ds = new DataSlot (memNum);
 						
 						int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);

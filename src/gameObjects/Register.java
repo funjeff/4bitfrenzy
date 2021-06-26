@@ -37,10 +37,6 @@ public class Register extends GameObject {
 	public Register (int memAdress) {
 		this.memAddress = memAdress;
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
-		if (NetworkHandler.isHost ()) {
-			if (Math.random () < .25) {this.makeLarge ();} //TODO account for one player case
-			else if (Math.random () < .25) {this.makeBlue ();}
-		}
 		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
 		display.changeBoxVisability();
 		display.setFont("text (lime green)");
