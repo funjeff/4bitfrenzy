@@ -1,7 +1,10 @@
 package gameObjects;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import engine.GameCode;
 import engine.GameObject;
@@ -50,7 +53,8 @@ public class TitleScreen extends GameObject {
 	static Server server;
 	static Client client;
 	
-	
+	public String mapLoadPath = null; //Set this to a filepath before closing the title screen to load a map
+	public static String[] initialData = null;
 	
 	@Override
 	public void onDeclare () {
@@ -157,7 +161,28 @@ public class TitleScreen extends GameObject {
 			this.draw();
 			RenderLoop.wind.refresh();
 			
-			Roome.generateMap();
+			//If there is a map to load
+			if (mapLoadPath != null) {
+				//Load the map
+				File f = new File (mapLoadPath);
+				try {
+					Scanner s = new Scanner (f);
+					//Load the room data
+					String mapStr = s.nextLine ();
+					String roomsStr = mapStr.split (":")[1];
+					Roome.loadMap (roomsStr);
+					//Load the object data
+					String dataStr = s.nextLine ();
+					initialData = dataStr.split (":");
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				//Arcade mode, generate a map
+				Roome.generateMap();
+			}
+			
 			RenderLoop.unPause();
 			this.setSprite(lobbySprite);
 			

@@ -3,6 +3,7 @@ package engine;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,6 +18,7 @@ import gameObjects.TitleScreen;
 import map.Ribbon;
 import map.RibbonPulse;
 import map.Roome;
+import network.Client;
 import network.NetworkHandler;
 import players.Bit;
 import resources.Hud;
@@ -47,6 +49,8 @@ public class GameCode {
 	private static boolean devMode = false;
 	
 	private static GameSettings settings;
+	
+	private File loadFile = null;
 	
 	public static void testBitch () {
 		
@@ -231,10 +235,17 @@ public class GameCode {
 
 	
 	public static void initGameState () {
+		
 		Hud hud = new Hud ();
-		if (NetworkHandler.isHost()) {
-			Hud.newWave ();
+		
+		//Make a new wave if generating a map
+		if (TitleScreen.initialData == null) {
+			if (NetworkHandler.isHost()) {
+				Hud.newWave ();
+			}
 		}
+		
+		//Declare the hud and make the bits
 		hud.declare();
 		int i = 0;
 		while (true) {
@@ -264,7 +275,11 @@ public class GameCode {
 			bits.add(bit);
 			i = i + 1;
 		}
-	
+		
+		if (TitleScreen.initialData != null) {
+			Client.updateGameData (TitleScreen.initialData);
+		}
+		
 	}
 	
 	public static void changeMusic (String songPath) {

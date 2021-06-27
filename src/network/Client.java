@@ -45,9 +45,10 @@ public class Client extends Thread {
 	
 	private static volatile boolean close;
 	
-	private static HashMap<Integer, Register> registerMap;
-	private static HashMap<Integer, DataSlot> slotMap;
-	private static HashMap<Integer, Item> itemMap;
+	private static HashMap<Integer, Register> registerMap = new HashMap<Integer, Register> ();;
+	private static HashMap<Integer, DataSlot> slotMap = new HashMap<Integer, DataSlot> ();
+	private static HashMap<Integer, Item> itemMap = new HashMap<Integer, Item> ();
+	int datas = 0;
 	
 	private String uuid = UUID.randomUUID ().toString ();
 	
@@ -57,9 +58,6 @@ public class Client extends Thread {
 		
 		this.ip = ip.split (":")[0];
 		this.port = Integer.parseInt (ip.split (":")[1]);
-		registerMap = new HashMap<Integer, Register> ();
-		slotMap = new HashMap<Integer, DataSlot> ();
-		itemMap = new HashMap <Integer, Item> ();
 		
 	}
 	
@@ -172,6 +170,7 @@ public class Client extends Thread {
 						
 						
 						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
+							System.out.println(str);
 							String[] data = str.split (":");
 							String room_data = data[1];
 							TitleScreen.titleClosed = true;
@@ -202,184 +201,16 @@ public class Client extends Thread {
 						}
 						
 						if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
-							
+							if (datas==0) {
+								System.out.println(str);
+								datas++;
+							}
 							ArrayList<Integer> toKeep = new ArrayList <Integer> ();
 							
 							long dataParseTime = System.currentTimeMillis ();
 							//Get the data
 							String[] data = str.split (":");
-							//Extract the timer
-							String timer_data = data[1];
-							int timer_amt = Integer.parseInt (timer_data);
-							Hud.timeLeft = timer_amt;
-							
-							//Extract the score
-							String score_data = data[2];
-							int score_amt = Integer.parseInt (score_data);
-							Hud.score = score_amt;
-							
-							int next = 3;
-							for (int i = 0; i < GameCode.bits.size(); i++) { 
-								//Extract the bit positions
-								String bit_data = data[3 + i];
-								String[] bit_coords = bit_data.split (",");
-								int bit_x = Integer.parseInt (bit_coords[0]);
-								int bit_y = Integer.parseInt (bit_coords[1]);
-								GameCode.bits.get(i).goX (bit_x);
-								GameCode.bits.get(i).goY (bit_y);
-								next = next + 1;
-								System.out.println(bit_data);
-							}
-							//Extract the register data
-							String reg_data = data[next];
-							String[] registers = reg_data.split (",");
-							for (int i = 0; i < registers.length; i++) {
-								Scanner s = new Scanner (registers [i]);
-								if (s.hasNext ()) {
-									int r_id = s.nextInt ();
-									if (registerMap.containsKey (r_id)) {
-										registerMap.get (r_id).refreshRegister (registers [i]);
-										toKeep.add(r_id);
-									} else {
-										Register reg = new Register (1);
-										reg.declare ();
-										reg.refreshRegister (registers [i]);
-										reg.id = r_id;
-										toKeep.add(r_id);
-										registerMap.put (r_id, reg);
-									}
-									s.close ();
-								}
-							}
-							
-							//Extract the DataSlot data
-							String slot_data = data[next + 1];
-							String[] slots = slot_data.split (",");
-							for (int i = 0; i < slots.length; i++) {
-								Scanner s = new Scanner (slots [i]);
-								if (s.hasNext ()) {
-								int r_id = s.nextInt ();
-									if (slotMap.containsKey (r_id)) {
-										toKeep.add(r_id);
-										slotMap.get (r_id).refreshDataSlot (slots [i]);
-									} else {
-										DataSlot ds = new DataSlot (1);
-										ds.declare ();
-										ds.refreshDataSlot (slots [i]);
-										ds.id = r_id;
-										toKeep.add(r_id);
-										slotMap.put (r_id, ds);
-									}
-									s.close ();
-								}
-							}
-							//Extract the DataSlot data
-							String item_data = data[next + 2];
-							if (!item_data.equals ("")) {
-								String[] items = item_data.split (",");
-								for (int i = 0; i < items.length; i++) {
-									if (i < items.length - GameCode.bits.size()) {
-										Scanner s = new Scanner (items [i]);
-										if (s.hasNext ()) {
-										int r_id = s.nextInt ();
-											if (itemMap.containsKey (r_id)) {
-												toKeep.add(r_id);
-												itemMap.get (r_id).refreshItem (items [i]);
-											} else {
-												Class<?> itemToUse = null;
-												try {
-													itemToUse = Class.forName(s.next());
-												} catch (ClassNotFoundException e) {
-													e.printStackTrace();
-												}
-												
-												Item it = null;
-												try {
-													it = (Item)itemToUse.getConstructor().newInstance();
-												} catch (InstantiationException | IllegalAccessException
-														| IllegalArgumentException | InvocationTargetException
-														| NoSuchMethodException | SecurityException e) {
-													// TODO Auto-generated catch block
-													e.printStackTrace();
-												}
-												it.declare ();
-												it.refreshItem (items [i]);
-												it.id = r_id;
-												toKeep.add(r_id);
-												itemMap.put (r_id, it);
-											}
-											s.close ();
-										}
-									} else {
-										Bit b = GameCode.bits.get(i - (items.length - GameCode.bits.size()));
-										if (!items[i].equals("null")) {
-											Scanner s2 = new Scanner (items [i]);
-											s2.next();
-											if (b.inventory.getItem() != null && b.inventory.getItem().getClass().toString().equals(s2.next())) {
-												b.inventory.getItem().refreshItem(items[i]);
-											} else {
-												Class<?> itemToUse = null;
-												try {
-													Scanner s = new Scanner (items [i]);
-													s.next();
-													itemToUse = Class.forName(s.next());
-													s.close();
-												} catch (ClassNotFoundException e) {
-													e.printStackTrace();
-												}
-												
-												Item it = null;
-												try {
-													it = (Item)itemToUse.getConstructor().newInstance();
-												} catch (InstantiationException | IllegalAccessException
-														| IllegalArgumentException | InvocationTargetException
-														| NoSuchMethodException | SecurityException e) {
-													// TODO Auto-generated catch block
-													e.printStackTrace();
-												}
-												b.inventory.setItem(it);
-											}
-											s2.close();
-										} else {
-											b.inventory.setItem(null);
-										}
-									}
-								}
-							}
-							
-							Set<Integer> itemSet = itemMap.keySet(); 
-					         
-							ArrayList<Integer> itemIds = new ArrayList<Integer>(itemSet);
-							
-							for (int i = 0; i <itemIds.size();i++) {
-								if (!toKeep.contains(itemIds.get(i))) {
-									itemMap.get(itemIds.get(i)).forget();
-									itemMap.remove(itemIds.get(i));
-								}
-							}
-							
-							Set<Integer> regSet = registerMap.keySet(); 
-					         
-							ArrayList<Integer> regIds = new ArrayList<Integer>(regSet);
-							
-							for (int i = 0; i <regIds.size();i++) {
-								if (!toKeep.contains(regIds.get(i))) {
-									registerMap.get(regIds.get(i)).forget();
-									registerMap.remove(regIds.get(i));
-								}
-							}
-							
-							Set<Integer> slotSet = slotMap.keySet(); 
-					         
-							ArrayList<Integer> slotIds = new ArrayList<Integer>(slotSet);
-							
-							for (int i = 0; i <slotIds.size();i++) {
-								if (!toKeep.contains(slotIds.get(i))) {
-									slotMap.get(slotIds.get(i)).forget();
-									slotMap.remove(slotIds.get(i));
-								}
-							}
-							
+							updateGameData (data);
 							
 						}
 						//System.out.println ("Message recieved: " + str);
@@ -439,5 +270,202 @@ public class Client extends Thread {
 	
 	public void setThread (Thread thread) {
 		this.thread = thread;
+	}
+	
+	public static void updateGameData (String[] data) {
+		//System.out.println(Arrays.toString(data));
+		ArrayList<Integer> toKeep = new ArrayList <Integer> ();
+		
+		long dataParseTime = System.currentTimeMillis ();
+		//Extract the timer
+		String timer_data = data[1];
+		int timer_amt = Integer.parseInt (timer_data);
+		Hud.timeLeft = timer_amt;
+		
+		//Extract the score
+		String score_data = data[2];
+		int score_amt = Integer.parseInt (score_data);
+		Hud.score = score_amt;
+		
+		int next = 3;
+		int totalBits = 0;
+		while (true) { 
+			//Extract the bit positions
+			String bit_data = data[next];
+			String[] bit_coords = bit_data.split (",");
+			if (bit_coords.length != 2) {
+				break;
+			}
+			totalBits++;
+			try {
+				int bit_x = Integer.parseInt (bit_coords[0]);
+				int bit_y = Integer.parseInt (bit_coords[1]);
+				GameCode.bits.get(next - 3).goX (bit_x);
+				GameCode.bits.get(next - 3).goY (bit_y);
+			} catch (IndexOutOfBoundsException e) {
+				//Do nothing
+				System.out.println ("HIA");
+			}
+			next = next + 1;
+		}
+		System.out.println (next);
+		//Extract the register data
+		String reg_data = data[next];
+		String[] registers = reg_data.split (",");
+		for (int i = 0; i < registers.length; i++) {
+			Scanner s = new Scanner (registers [i]);
+			if (s.hasNext ()) {
+				int r_id = s.nextInt ();
+				if (registerMap.containsKey (r_id)) {
+					registerMap.get (r_id).refreshRegister (registers [i]);
+					toKeep.add(r_id);
+				} else {
+					Register reg = new Register (1);
+					reg.declare ();
+					System.out.println (registers[i]);
+					reg.refreshRegister (registers [i]);
+					reg.id = r_id;
+					toKeep.add(r_id);
+					registerMap.put (r_id, reg);
+				}
+				s.close ();
+			}
+		}
+		
+		//Extract the DataSlot data
+		String slot_data = data[next + 1];
+		String[] slots = slot_data.split (",");
+		for (int i = 0; i < slots.length; i++) {
+			Scanner s = new Scanner (slots [i]);
+			if (s.hasNext ()) {
+			int r_id = s.nextInt ();
+				if (slotMap.containsKey (r_id)) {
+					toKeep.add(r_id);
+					slotMap.get (r_id).refreshDataSlot (slots [i]);
+				} else {
+					DataSlot ds = new DataSlot (1);
+					ds.declare ();
+					ds.refreshDataSlot (slots [i]);
+					ds.id = r_id;
+					toKeep.add(r_id);
+					slotMap.put (r_id, ds);
+				}
+				s.close ();
+			}
+		}
+		//Extract the DataSlot data
+		System.out.println ("BITS: " + totalBits);
+		String item_data = data[next + 2];
+		if (!item_data.equals ("")) {
+			String[] items = item_data.split (",");
+			for (int i = 0; i < items.length; i++) {
+				if (i < items.length - totalBits) {
+					Scanner s = new Scanner (items [i]);
+					System.out.println(items[i] + ", " + items [i].getClass());
+					if (s.hasNext ()) {
+						int r_id = s.nextInt ();
+						if (itemMap.containsKey (r_id)) {
+							toKeep.add(r_id);
+							itemMap.get (r_id).refreshItem (items [i]);
+							} else {
+								Class<?> itemToUse = null;
+								try {
+									itemToUse = Class.forName(s.next());
+								} catch (ClassNotFoundException e) {
+									e.printStackTrace();
+								}
+								
+								Item it = null;
+								try {
+									it = (Item)itemToUse.getConstructor().newInstance();
+								} catch (InstantiationException | IllegalAccessException
+										| IllegalArgumentException | InvocationTargetException
+										| NoSuchMethodException | SecurityException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								it.declare ();
+								it.refreshItem (items [i]);
+								it.id = r_id;
+								toKeep.add(r_id);
+								itemMap.put (r_id, it);
+							}
+							s.close ();
+						}
+					} else {
+						try {
+							Bit b = GameCode.bits.get(i - (items.length - totalBits));
+							if (!items[i].equals("null")) {
+								Scanner s2 = new Scanner (items [i]);
+								s2.next();
+								if (b.inventory.getItem() != null && b.inventory.getItem().getClass().toString().equals(s2.next())) {
+									b.inventory.getItem().refreshItem(items[i]);
+								} else {
+									Class<?> itemToUse = null;
+									try {
+										Scanner s = new Scanner (items [i]);
+										s.next();
+										itemToUse = Class.forName(s.next());
+										s.close();
+									} catch (ClassNotFoundException e) {
+										e.printStackTrace();
+									}
+								
+									Item it = null;
+									try {
+										it = (Item)itemToUse.getConstructor().newInstance();
+									} catch (InstantiationException | IllegalAccessException
+											| IllegalArgumentException | InvocationTargetException
+											| NoSuchMethodException | SecurityException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									b.inventory.setItem(it);
+								}
+								s2.close();
+							} else {
+								b.inventory.setItem(null);
+							}
+						} catch (IndexOutOfBoundsException e) {
+							//Do nothing
+						}
+					}
+				}
+			}
+			
+			Set<Integer> itemSet = itemMap.keySet(); 
+         
+			ArrayList<Integer> itemIds = new ArrayList<Integer>(itemSet);
+		
+			for (int i = 0; i <itemIds.size();i++) {
+				if (!toKeep.contains(itemIds.get(i))) {
+					itemMap.get(itemIds.get(i)).forget();
+					itemMap.remove(itemIds.get(i));
+				}
+			}
+		
+			Set<Integer> regSet = registerMap.keySet(); 
+         
+			ArrayList<Integer> regIds = new ArrayList<Integer>(regSet);
+		
+			for (int i = 0; i <regIds.size();i++) {
+				if (!toKeep.contains(regIds.get(i))) {
+					registerMap.get(regIds.get(i)).forget();
+					registerMap.remove(regIds.get(i));
+				}
+			}
+		
+			Set<Integer> slotSet = slotMap.keySet(); 
+         
+			ArrayList<Integer> slotIds = new ArrayList<Integer>(slotSet);
+		
+			for (int i = 0; i <slotIds.size();i++) {
+				if (!toKeep.contains(slotIds.get(i))) {
+					slotMap.get(slotIds.get(i)).forget();
+					slotMap.remove(slotIds.get(i));
+			}
+			
+			
+		}
 	}
 }

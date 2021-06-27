@@ -662,6 +662,10 @@ public class Roome extends GameObject {
 		return mapHeight;
 	}
 	
+	public void loadMapFromFile (String filepath) {
+		
+	}
+	
 	@Override
 	public boolean isColliding (GameObject obj) {
 		Rectangle objHitbox = new Rectangle (obj.hitbox());
