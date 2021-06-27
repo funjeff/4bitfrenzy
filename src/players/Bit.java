@@ -411,12 +411,12 @@ public class Bit extends GameObject {
 	public void updateScroll () {
 		
 		//216, 200, 864, 550
+		int SCREEN_WIDTH = GameCode.getSettings ().getResolutionX ();
+		int SCREEN_HEIGHT = GameCode.getSettings ().getResolutionY ();
 		int SCROLL_BOUND_LEFT = 216;
 		int SCROLL_BOUND_TOP = 200;
-		int SCROLL_BOUND_RIGHT = SCROLL_BOUND_LEFT + 648;
-		int SCROLL_BOUND_BOTTOM = SCROLL_BOUND_TOP + 350;
-		int SCREEN_WIDTH = 1080;
-		int SCREEN_HEIGHT = 720;
+		int SCROLL_BOUND_RIGHT = SCREEN_WIDTH - SCROLL_BOUND_LEFT;
+		int SCROLL_BOUND_BOTTOM = SCREEN_HEIGHT - SCROLL_BOUND_TOP;
 		
 		double relX = getX () - GameCode.getViewX ();
 		double relY = getY () - GameCode.getViewY ();

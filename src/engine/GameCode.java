@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -44,7 +45,8 @@ public class GameCode {
 	public static SoundPlayer musicHandler = new SoundPlayer ();
 
 	private static boolean devMode = false;
-
+	
+	private static GameSettings settings;
 	
 	public static void testBitch () {
 		
@@ -66,6 +68,12 @@ public class GameCode {
 	public static int getViewY () {
 		//Returns the y-coordinate of the viewport of the room
 		return viewY;
+	}
+	
+	public static void init () {
+		getSettings (); //Initializes the settings
+		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
+		RenderLoop.wind.setSize (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 	}
 	
 	public static void gameLoopFunc () {
@@ -269,4 +277,50 @@ public class GameCode {
 	public static boolean devMode () {
 		return devMode;
 	}
+	
+	public static GameSettings getSettings () {
+		if (settings == null) {
+			settings = new GameSettings ();
+		}
+		return settings;
+	}
+	
+	public static class GameSettings {
+		
+		public static final int SCALE_MODE_HORIZONTAL_BORDER = 0;
+		public static final int SCALE_MODE_FULL_BORDER = 1;
+		public static final int SCALE_MODE_STRETCH = 2;
+		public static final int SCALE_MODE_FULL = 3;
+		
+		private int resolutionX;
+		private int resolutionY;
+		
+		private int scaleMode = 0;
+		
+		public GameSettings () {
+			resolutionX = 1080;
+			resolutionY = 720;
+			scaleMode = SCALE_MODE_HORIZONTAL_BORDER;
+		}
+		
+		public int getResolutionX () {
+			return resolutionX;
+		}
+		
+		public int getResolutionY () {
+			return resolutionY;
+		}
+		
+		public int getScalingMode () {
+			return scaleMode;
+		}
+		
+		public void setResolution (int width, int height) {
+			resolutionX = width;
+			resolutionY = height;
+			RenderLoop.wind.setResolution (width, height);
+		}
+		
+	}
+	
 }

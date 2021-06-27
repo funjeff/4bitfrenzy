@@ -47,7 +47,7 @@ public class RenderLoop {
 		//Sets the initial frame time
 		frameTime = System.currentTimeMillis ();
 		//Create the GameWindow
-		wind = new GameWindow (1080, 720);
+		wind = new GameWindow (1280, 720);
 		GameCode.testBitch();
 		//Start the game logic loop on a separate thread
 		GameLoop gameLoop = new GameLoop ();

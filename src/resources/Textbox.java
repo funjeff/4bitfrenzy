@@ -237,7 +237,7 @@ public void drawBox (){
 public void draw () {
 		Rectangle thisRect = new Rectangle ((int)this.getX(), (int)this.getY(), this.width1 * 16, this.height1 * 16);
 	
-		Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), 1080, 720);
+		Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), GameCode.getSettings ().getResolutionX (), GameCode.getSettings ().getResolutionY ());
 		if (thisRect.intersects(veiwport)) {	
 			this.drawBox();
 		}

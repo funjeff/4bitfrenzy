@@ -31,6 +31,7 @@ public class GameLoop implements Runnable {
 	
 	@Override
 	public void run () {
+		GameCode.init ();
 		while (RenderLoop.running) {
 			//Get the target time in nanoseconds for this iteration; should be constant if stepsPerSecond doesn't change
 			long targetNanoseconds = (long)(1000000000 / stepsPerSecond);
