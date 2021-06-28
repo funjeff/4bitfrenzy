@@ -14,6 +14,7 @@ import items.Bombs;
 import items.DataScrambler;
 import items.Glue;
 import items.Speed;
+import items.Teleporter;
 import gameObjects.TitleScreen;
 import map.Ribbon;
 import map.RibbonPulse;
@@ -74,10 +75,20 @@ public class GameCode {
 		return viewY;
 	}
 	
+	private static void initSoundEffects() {
+		File folder = new File("resources/sounds/effects");
+		File[] listOfFiles = folder.listFiles();
+		
+		for (int i = 0; i < listOfFiles.length; i++) {
+			SoundPlayer.casheSoundEffect(listOfFiles[i]);
+		}
+	}
 	public static void init () {
 		getSettings (); //Initializes the settings
 		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		RenderLoop.wind.setSize (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
+		
+		initSoundEffects();
 	}
 	
 	public static void gameLoopFunc () {
@@ -276,6 +287,12 @@ public class GameCode {
 			i = i + 1;
 		}
 		
+//		Teleporter port = new Teleporter ();
+//		port = new Teleporter ();
+//		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].biatch;
+//		int spawnCoords[] = lolFunnyName.getPosibleCoords(port.hitbox().width, port.hitbox().height);
+//		port.declare(spawnCoords[0] - 20, spawnCoords[1] - 20);
+//		
 		if (TitleScreen.initialData != null) {
 			Client.updateGameData (TitleScreen.initialData);
 		}
@@ -313,7 +330,7 @@ public class GameCode {
 		private int scaleMode = 0;
 		
 		public GameSettings () {
-			resolutionX = 1080;
+			resolutionX = 1280;
 			resolutionY = 720;
 			scaleMode = SCALE_MODE_HORIZONTAL_BORDER;
 		}

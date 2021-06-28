@@ -3,7 +3,9 @@ package items;
 import java.util.Random;
 
 import engine.GameCode;
+import engine.ObjectHandler;
 import engine.Sprite;
+import gameObjects.Register;
 import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
@@ -21,16 +23,26 @@ public class Teleporter extends Item {
 	 */
 	@Override
 	public boolean useItem (Bit user) {
-		Random rand = new Random ();
-		if (NetworkHandler.isHost()) {
-			SoundPlayer play = new SoundPlayer ();
-			play.playSoundEffect(GameCode.volume,"resources/sounds/effects/teleporter.wav");
+		if (ObjectHandler.getObjectsByName("Register") != null && ObjectHandler.getObjectsByName("Register").size() != 0) {
+			Random rand = new Random ();
+			if (NetworkHandler.isHost()) {
+				SoundPlayer play = new SoundPlayer ();
+				play.playSoundEffect(GameCode.volume,"resources/sounds/effects/teleporter.wav");
+			} else {
+				NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/teleporter.wav");
+			}
+			int [] telportCoords;
+			while (true) {
+				telportCoords = Roome.map[rand.nextInt(Roome.getMapHeight ())][rand.nextInt(Roome.getMapWidth ())].biatch.getPosibleCoords(user.hitbox().width, user.hitbox().height);
+				if (Roome.getRoom(telportCoords[0], telportCoords[1]).r != null ) {
+					break;
+				}
+			}
+			user.goX(telportCoords[0]);
+			user.goY(telportCoords[1]);
+			return true;
 		} else {
-			NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/teleporter.wav");
+			return false;
 		}
-		int [] telportCoords = Roome.map[rand.nextInt(Roome.getMapHeight ())][rand.nextInt(Roome.getMapWidth ())].biatch.getPosibleCoords(user.hitbox().width, user.hitbox().height);
-		user.goX(telportCoords[0]);
-		user.goY(telportCoords[1]);
-		return true;
 	}
 }

@@ -12,8 +12,8 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
 public class SoundPlayer implements LineListener{
-	File soundFile;
-	File soundFile2;
+
+
 	String songPath;
 	private AudioFormat format;
 	Clip clip;
@@ -32,7 +32,7 @@ public class SoundPlayer implements LineListener{
 			
 		}
 		this.songPath = songPath;
-		soundFile = new File (songPath);
+		File soundFile = new File (songPath);
 		try {
 		AudioInputStream ais;
 		ais = AudioSystem.getAudioInputStream(soundFile);
@@ -81,7 +81,7 @@ public class SoundPlayer implements LineListener{
 	 */
 	public void playSoundEffect (float volume, String effectName){
 		Clip clip2;
-		soundFile2 = new File (effectName);
+		File soundFile2 = new File (effectName);
 		try {
 			AudioInputStream ais2;
 			AudioFormat format2;
@@ -96,6 +96,13 @@ public class SoundPlayer implements LineListener{
 		
 		} catch (Exception e){
 		System.out.println("whoops (error message) ");
+		}
+	}
+	public static void casheSoundEffect (File effect) {
+		try {
+			AudioSystem.getAudioInputStream(effect);
+		} catch (Exception e) {
+			System.out.println("whoops (cashe error message) ");
 		}
 	}
 	@Override

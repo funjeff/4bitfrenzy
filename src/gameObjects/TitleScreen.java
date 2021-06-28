@@ -1,5 +1,8 @@
 package gameObjects;
 
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +39,7 @@ public class TitleScreen extends GameObject {
 	private Button joinButton;
 	private Button rulesButton;
 	private Button perksButton;
+	private Button settingsButton;
 	
 	private static boolean connected = false;
 	
@@ -64,26 +68,7 @@ public class TitleScreen extends GameObject {
 		ip = "";
 		
 		//Make the buttons
-		hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
-		joinButton = new Button (new Sprite ("resources/sprites/join.png"));
-		rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
-		perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
-		
-		hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
-		joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
-		rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
-		perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
-		
-		hostButton.declare (700, 32);
-		joinButton.declare (640, 207);
-		rulesButton.declare(680, 382);
-		perksButton.declare(720, 550);
-		
-		
-		hostButton.setRenderPriority(69);
-		joinButton.setRenderPriority(69);
-		rulesButton.setRenderPriority(69);
-		perksButton.setRenderPriority(69);
+		makeButtons();
 		
 		//Make the textbox
 		ipBox = new Textbox ("");
@@ -149,6 +134,7 @@ public class TitleScreen extends GameObject {
 			joinButton.forget ();
 			rulesButton.forget();
 			perksButton.forget();
+			settingsButton.forget();
 			
 			isHost = true;
 			
@@ -200,6 +186,7 @@ public class TitleScreen extends GameObject {
 			joinButton.forget ();
 			rulesButton.forget();
 			perksButton.forget();
+			settingsButton.forget();
 			
 			enterIpMode ();
 		}
@@ -208,6 +195,8 @@ public class TitleScreen extends GameObject {
 			joinButton.forget();
 			rulesButton.forget();
 			perksButton.forget();
+			settingsButton.forget();
+			
 			this.setSprite(new Sprite ("resources/sprites/game infographic.png"));
 			if (!getKeyEvents().isEmpty()) {
 				
@@ -224,11 +213,23 @@ public class TitleScreen extends GameObject {
 			joinButton.forget();
 			rulesButton.forget();
 			perksButton.forget();
+			settingsButton.forget();
 			perkMenu menu = new perkMenu (this);
 			if (ObjectHandler.getObjectsByName("perkMenu") == null || ObjectHandler.getObjectsByName("perkMenu").size() == 0) {
 				menu.declare();
 			}
-			
+		}
+		if (settingsButton.isPressed()) {
+			hostButton.forget();
+			joinButton.forget();
+			rulesButton.forget();
+			perksButton.forget();
+			settingsButton.forget();
+			settingsButton.reset();
+			SettingMenu menu = new SettingMenu (this);
+			if (ObjectHandler.getObjectsByName("SettingMenu") == null || ObjectHandler.getObjectsByName("SettingMenu").size() == 0) {
+				menu.declare();
+			}
 		}
 		if (ipMode && !failedMode && !connectedMode && !waitMode) {
 			
@@ -253,27 +254,32 @@ public class TitleScreen extends GameObject {
 	}
 	
 	private void makeButtons () {
-		//Make the buttons
 		hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
 		joinButton = new Button (new Sprite ("resources/sprites/join.png"));
 		rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
 		perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
+		settingsButton = new Button (new Sprite ("resources/sprites/setup red.png"));
+		
 		
 		hostButton.setGreen(new Sprite ("resources/sprites/host.png"));
 		joinButton.setGreen(new Sprite ("resources/sprites/join green.png"));
 		rulesButton.setGreen(new Sprite ("resources/sprites/story green.png"));
 		perksButton.setGreen(new Sprite ("resources/sprites/perks green.png"));
+		settingsButton.setGreen(new Sprite ("resources/sprites/setup green.png"));
+		
 		
 		hostButton.declare (700, 32);
-		joinButton.declare (640, 207);
-		rulesButton.declare(680, 382);
-		perksButton.declare(720, 550);
-		
+		joinButton.declare (680, 167);
+		rulesButton.declare(680, 322);
+		perksButton.declare(720, 480);
+		settingsButton.declare(720, 600);
 		
 		hostButton.setRenderPriority(69);
 		joinButton.setRenderPriority(69);
 		rulesButton.setRenderPriority(69);
 		perksButton.setRenderPriority(69);
+		settingsButton.setRenderPriority(69);	
+	
 	}
 	
 	@Override
@@ -430,7 +436,6 @@ public class TitleScreen extends GameObject {
 				this.setSprite(red);
 			}
 		}
-		
 		public boolean isPressed () {
 			return pressed;
 		}
@@ -438,9 +443,167 @@ public class TitleScreen extends GameObject {
 		public void reset () {
 			pressed = false;
 		}
+		@Override
+		public void setSprite (Sprite src) {
+			super.setSprite(src);
+			if (green == null) {
+				red = src;
+			} else if (!green.equals(src)) {
+				red = src;
+			}
+		}
 		
 	}
-	
+	public static class ArrowButtons extends GameObject {
+		Button leftButton;
+		Button rightButton;
+		
+		boolean leftSelectable = false;
+		boolean rightSelectable = false;
+		
+		boolean toggled = false;
+		
+		String [] stringList;
+		int selectedIndex = 0;
+		
+		public ArrowButtons (String [] strings) {
+			stringList = strings;
+			leftButton = new Button (new Sprite ("resources/sprites/left arrow green.png"));
+			rightButton = new Button (new Sprite ("resources/sprites/right arrow green.png"));
+			
+		}
+		
+		public String getSelectedString () {
+			return stringList[selectedIndex];
+		}
+		
+		public boolean wasToggled () {
+			boolean wasToggled = toggled;
+			toggled = false;
+			return wasToggled;
+		}
+		@Override
+		public void frameEvent () {
+			if (selectedIndex == stringList.length -1) {
+				rightButton.setSprite(new Sprite ("resources/sprites/right arrow red.png"));
+				rightSelectable = false;
+			} else {
+				rightButton.setSprite(new Sprite ("resources/sprites/right arrow green.png"));
+				rightSelectable = true;
+			}
+			if (selectedIndex == 0) {
+				leftButton.setSprite(new Sprite ("resources/sprites/left arrow red.png"));
+				leftSelectable = false;
+			} else {
+				
+				leftButton.setSprite(new Sprite ("resources/sprites/left arrow green.png"));
+				leftSelectable = true;
+			}
+			
+			leftButton.frameEvent();
+			rightButton.frameEvent();
+			
+			if (leftButton.isPressed() && leftSelectable) {
+				selectedIndex = selectedIndex - 1;
+				leftButton.reset();
+				toggled = true;
+			}
+			if (rightButton.isPressed() && rightSelectable) {
+				selectedIndex = selectedIndex + 1;
+				rightButton.reset();
+				toggled = true;
+			}
+		}
+		@Override
+		public void onDeclare () {
+			leftButton.setX(this.getX());
+			leftButton.setY(this.getY());
+			rightButton.setY(this.getY());
+		}
+		@Override
+		public void draw () {
+			leftButton.draw();
+			Graphics g = RenderLoop.wind.getBufferGraphics();
+			FontMetrics fm = g.getFontMetrics();
+			
+			g.setColor(new Color (0x32a852));
+			g.drawString(getSelectedString(), (int) (this.getX() + leftButton.getSprite().getWidth()) + 10, (int)this.getY() + 20);
+			
+			int width = leftButton.getSprite().getWidth() + 20;
+			
+			for (int i = 0; i < getSelectedString().length(); i++) {
+				width = width + fm.charWidth(getSelectedString().charAt(i));
+			}
+			
+			rightButton.setX(this.getX() + width);
+			rightButton.draw();
+			
+		}
+	}
+	public class SettingMenu extends GameObject {
+		
+		String [] volumeArray = {"0","1","2","3","4","5","6","7","8","9","10"};
+		ArrowButtons volume = new ArrowButtons (volumeArray);
+		
+		String [] resoultionArray = {"1280 x 720","1366 x 768","1600 x 900","1920 x 1080","1920 x 1200"};
+		ArrowButtons resolutions = new ArrowButtons (resoultionArray);
+		
+		Button controllsButton = new Button (new Sprite ("resources/sprites/config button.png"));
+		
+		TitleScreen screen;
+		
+		public SettingMenu (TitleScreen screen) {
+			this.screen = screen;
+			
+			this.setSprite(new Sprite ("resources/sprites/settings menu.png"));
+			
+			this.setRenderPriority(70);
+			
+			volume.setRenderPriority(71);
+			resolutions.setRenderPriority(71);
+			controllsButton.setRenderPriority(71);
+			
+			volume.declare(140,260);
+			resolutions.declare(180,175);
+			controllsButton.declare(150, 345);
+			
+			
+		}
+		
+		@Override
+		public void frameEvent () {
+			
+			if (volume.wasToggled()) {
+				GameCode.volume = 6F/10 * Integer.parseInt(volume.getSelectedString());
+				GameCode.musicHandler.playSoundEffect(GameCode.volume, "resources/sounds/effects/test sound.wav");
+			}
+			
+			if (resolutions.wasToggled()) {
+				String num1 = "";
+				String num2 = "";
+				
+				boolean writeToNum1Or2 = false;
+				
+				for (int i = 0; i < resolutions.getSelectedString().length(); i++) {
+					if (resolutions.getSelectedString().charAt(i) == ' ') {
+						writeToNum1Or2 = true;
+						i = i + 2;
+					} else {
+						
+						if (!writeToNum1Or2) {
+							num1 = num1 + resolutions.getSelectedString().charAt(i);
+						} else {
+							num2 = num2 + resolutions.getSelectedString().charAt(i);
+						}
+					}
+				}
+				
+				GameCode.getSettings().setResolution(Integer.parseInt(num1), Integer.parseInt(num2));
+			}
+			
+		}
+		
+	}
 	public class perkMenu extends GameObject {
 		//Make the buttons
 			
