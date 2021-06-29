@@ -102,14 +102,16 @@ public class Register extends GameObject {
 			return false;
 		}
 		//Check collision for all bits
-		int[] xCoords = new int[bitsPushing.size ()];
+		double[] xCoords = new double[bitsPushing.size ()];
 		boolean canAllMove = true;
 		for (int i = 0; i < bitsPushing.size (); i++) {
-			if (!bitsPushing.get (i).goX (val)) {
+			xCoords [i] = bitsPushing.get (i).getX ();
+			if (!bitsPushing.get (i).goX (bitsPushing.get (i).getX () + val - x)) {
 				canAllMove = false;
 			}
 		}
 		if (!canAllMove) {
+			System.out.println("oops");
 			this.setX (x);
 			for (int i = 0; i < bitsPushing.size (); i++) {
 				bitsPushing.get (i).setX (xCoords [i]);
@@ -137,10 +139,11 @@ public class Register extends GameObject {
 		}
 		
 		//Check collision for all bits
-		int[] yCoords = new int[bitsPushing.size ()];
+		double[] yCoords = new double[bitsPushing.size ()];
 		boolean canAllMove = true;
 		for (int i = 0; i < bitsPushing.size (); i++) {
-			if (!bitsPushing.get (i).goY (val)) {
+			yCoords [i] = bitsPushing.get (i).getY ();
+			if (!bitsPushing.get (i).goY (bitsPushing.get (i).getY () + val - y)) {
 				canAllMove = false;
 			}
 		}
