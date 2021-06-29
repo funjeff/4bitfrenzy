@@ -389,6 +389,8 @@ public class GameCode {
 		
 		private int scaleMode = 0;
 		
+		private int [] controls = new int [13];
+		
 		public GameSettings () {
 			resolutionX = 1280;
 			resolutionY = 720;
@@ -414,5 +416,7 @@ public class GameCode {
 		}
 		
 	}
+	
+	
 	
 }
