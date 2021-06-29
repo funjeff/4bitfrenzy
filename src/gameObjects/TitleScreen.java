@@ -454,6 +454,30 @@ public class TitleScreen extends GameObject {
 		}
 		
 	}
+	
+	public static class TextButton extends Button {
+
+		String text;
+		
+		public TextButton() {
+			super(new Sprite ("resources/sprites/text button border.png"));
+			
+		}
+		
+		public void setText (String text) {
+			this.text = text;
+		}
+		
+		@Override
+		public void draw () {
+			super.draw();
+			Graphics g = RenderLoop.wind.getBufferGraphics();
+			g.drawString(text, (int)this.getX() + 1, (int)this.getY());
+		}
+		
+		
+	}
+	
 	public static class ArrowButtons extends GameObject {
 		Button leftButton;
 		Button rightButton;
@@ -552,6 +576,8 @@ public class TitleScreen extends GameObject {
 		
 		TitleScreen screen;
 		
+		Button backButton;
+		
 		public SettingMenu (TitleScreen screen) {
 			this.screen = screen;
 			
@@ -562,10 +588,15 @@ public class TitleScreen extends GameObject {
 			volume.setRenderPriority(71);
 			resolutions.setRenderPriority(71);
 			controllsButton.setRenderPriority(71);
+			backButton = new Button (new Sprite ("resources/sprites/back.png"));
 			
 			volume.declare(140,260);
 			resolutions.declare(180,175);
 			controllsButton.declare(150, 345);
+			backButton.declare(300, 512);
+			
+			
+			backButton.setRenderPriority(71);
 			
 			
 		}
@@ -600,6 +631,43 @@ public class TitleScreen extends GameObject {
 				
 				GameCode.getSettings().setResolution(Integer.parseInt(num1), Integer.parseInt(num2));
 			}
+			
+			if (controllsButton.isPressed()) {
+				controllsButton.reset();
+				this.forgetStuff();
+				ControlMenu menu = new ControlMenu ();
+				
+				menu.declare();
+				
+			}
+		
+			if (backButton.isPressed()) {
+				screen.makeButtons();
+				forgetStuff();
+			}
+			
+		}
+		private void forgetStuff () {
+
+			volume.forget();
+			resolutions.forget();
+			controllsButton.forget();
+
+			
+			backButton.forget();
+			
+			this.forget();
+		}
+		
+	}
+	public class ControlMenu extends GameObject {
+		
+		
+		
+		public ControlMenu () {
+		
+			this.setSprite(new Sprite ("resources/sprites/controls menu.png"));
+			this.setRenderPriority(72);
 			
 		}
 		

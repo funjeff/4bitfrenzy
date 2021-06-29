@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -83,8 +86,41 @@ public class GameCode {
 			SoundPlayer.casheSoundEffect(listOfFiles[i]);
 		}
 	}
+	
+	private static void loadControls () {
+			File file = new File ("resources/saves/controls.txt");
+				if (file.exists()) {
+					
+				} else {
+					try {
+						
+						file.createNewFile();
+						file.setWritable(true);
+						
+						FileWriter fw = new FileWriter (file);
+						
+						fw.write(Integer.toString('w'));
+						fw.write(Integer.toString('s'));
+						fw.write(Integer.toString('a'));
+						fw.write(Integer.toString('d'));
+						
+						fw.write(Integer.toString(KeyEvent.VK_SHIFT));
+						fw.write(Integer.toString(KeyEvent.VK_ENTER));
+						fw.write(Integer.toString(KeyEvent.VK_SPACE));
+						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+	}
+	
 	public static void init () {
 		getSettings (); //Initializes the settings
+		
+		
+		loadControls();
 		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		RenderLoop.wind.setSize (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		
