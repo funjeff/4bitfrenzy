@@ -289,6 +289,9 @@ public class Bit extends GameObject {
 					if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {
 						setX (xStart - (speed + 1));
 						setY (yStart - (speed + 1)); //-(speed + 1) to account for earlier offset
+						for (int i = 0; i < regestersBeingCarried.size (); i++) {
+							((Register)regestersBeingCarried.get (i)).push (this, 0, 0); //Push is duplicate-safe
+						}
 					}
 				
 				this.setHitboxAttributes(this.hitbox().width - (speed + 1) * 2, this.hitbox().height - (speed + 1) * 2);
