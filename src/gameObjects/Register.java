@@ -110,8 +110,7 @@ public class Register extends GameObject {
 				canAllMove = false;
 			}
 		}
-		if (!canAllMove) {
-			System.out.println("oops");
+		if (isColliding ("Bit") || !canAllMove) {
 			this.setX (x);
 			for (int i = 0; i < bitsPushing.size (); i++) {
 				bitsPushing.get (i).setX (xCoords [i]);
@@ -147,7 +146,8 @@ public class Register extends GameObject {
 				canAllMove = false;
 			}
 		}
-		if (!canAllMove) {
+		
+		if (isColliding ("Bit") || !canAllMove) {
 			this.setY (y);
 			for (int i = 0; i < bitsPushing.size (); i++) {
 				bitsPushing.get (i).setY (yCoords [i]);
