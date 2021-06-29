@@ -3,6 +3,7 @@ package engine;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -89,27 +90,50 @@ public class GameCode {
 	
 	private static void loadControls () {
 			File file = new File ("resources/saves/controls.txt");
-				if (file.exists()) {
-					
-				} else {
+				if (!file.exists()) {
 					try {
-						
 						file.createNewFile();
-						file.setWritable(true);
 						
 						FileWriter fw = new FileWriter (file);
+				
+						BufferedWriter bw = new BufferedWriter(fw);
 						
-						fw.write(Integer.toString('w'));
-						fw.write(Integer.toString('s'));
-						fw.write(Integer.toString('a'));
-						fw.write(Integer.toString('d'));
+						bw.write(Integer.toString('w'));
+						bw.newLine();
+						bw.write(Integer.toString('s'));
+						bw.newLine();
+						bw.write(Integer.toString('a'));
+						bw.newLine();
+						bw.write(Integer.toString('d'));
+						bw.newLine();
 						
-						fw.write(Integer.toString(KeyEvent.VK_SHIFT));
-						fw.write(Integer.toString(KeyEvent.VK_ENTER));
-						fw.write(Integer.toString(KeyEvent.VK_SPACE));
+						
+						bw.write(Integer.toString(KeyEvent.VK_SHIFT));
+						bw.newLine();
+						bw.write(Integer.toString(KeyEvent.VK_ENTER));
+						bw.newLine();
+						bw.write(Integer.toString(KeyEvent.VK_SPACE));
+						bw.newLine();
+						
+						
+						bw.write(Integer.toString('m'));
+						bw.newLine();
+						
+						bw.write(Integer.toString(KeyEvent.VK_UP));
+						bw.newLine();
+						bw.write(Integer.toString(KeyEvent.VK_DOWN));
+						bw.newLine();
+						bw.write(Integer.toString(KeyEvent.VK_LEFT));
+						bw.newLine();
+						bw.write(Integer.toString(KeyEvent.VK_LEFT));
+						bw.newLine();
+						bw.write(Integer.toString(KeyEvent.VK_CONTROL));
+						bw.newLine();
+						
+						bw.close();
 						
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+			
 						e.printStackTrace();
 					}
 					
