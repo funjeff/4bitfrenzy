@@ -95,9 +95,27 @@ public class Register extends GameObject {
 		if (currentRoom.r == null) {
 			currentRoom.r = this;
 		}
+		//Check register collision
 		this.setX(val);
 		if (currentRoom.isColliding(this) || this.isColliding("Register")) {
 			this.setX(x);
+			return false;
+		}
+		//Check collision for all bits
+		double[] xCoords = new double[bitsPushing.size ()];
+		boolean canAllMove = true;
+		for (int i = 0; i < bitsPushing.size (); i++) {
+			xCoords [i] = bitsPushing.get (i).getX ();
+			if (!bitsPushing.get (i).goX (bitsPushing.get (i).getX () + val - x)) {
+				canAllMove = false;
+			}
+		}
+		if (!canAllMove) {
+			System.out.println("oops");
+			this.setX (x);
+			for (int i = 0; i < bitsPushing.size (); i++) {
+				bitsPushing.get (i).setX (xCoords [i]);
+			}
 			return false;
 		}
 		if (!currentRoom.equals(Roome.getRoom(this.getX(), this.getY()))) {
@@ -114,8 +132,26 @@ public class Register extends GameObject {
 		}
 		this.setY(val);
 		
+		//Check collision for register
 		if (currentRoom.isColliding(this) || this.isColliding("Register")) {
 			this.setY(y);
+			return false;
+		}
+		
+		//Check collision for all bits
+		double[] yCoords = new double[bitsPushing.size ()];
+		boolean canAllMove = true;
+		for (int i = 0; i < bitsPushing.size (); i++) {
+			yCoords [i] = bitsPushing.get (i).getY ();
+			if (!bitsPushing.get (i).goY (bitsPushing.get (i).getY () + val - y)) {
+				canAllMove = false;
+			}
+		}
+		if (!canAllMove) {
+			this.setY (y);
+			for (int i = 0; i < bitsPushing.size (); i++) {
+				bitsPushing.get (i).setY (yCoords [i]);
+			}
 			return false;
 		}
 		
@@ -204,19 +240,8 @@ public class Register extends GameObject {
 		//Move the register
 		if (canPush) {
 			if (trajectory != null) {
-				
-				if (goX (getX () + trajectory.x)) {
-					for (int i = 0; i < bitsPushing.size (); i++) {
-						Bit b = bitsPushing.get (i);
-						b.setX (b.getX () + trajectory.x); //Move the bits with the register
-					}
-				}
-				if (goY (getY () + trajectory.y)) {
-					for (int i = 0; i < bitsPushing.size (); i++) {
-						Bit b = bitsPushing.get (i);
-						b.setY (b.getY () + trajectory.y); //Move the bits with the register
-					}
-				}
+				goX (getX () + trajectory.x);
+				goY (getY () + trajectory.y);
 			}
 		}
 		
