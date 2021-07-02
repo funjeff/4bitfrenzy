@@ -156,7 +156,7 @@ public class Bit extends GameObject {
 					inventory.setVisability(true);
 				}
 			}
-			if (!this.isActive() && keys != null && keys.contains(Integer.toString(KeyEvent.VK_CONTROL)) && !switching) {
+			if (!this.isActive() && keys != null && keys.contains(Integer.toString('C')) && !switching) {
 				active = true;
 				switching = true;
 				GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
@@ -169,7 +169,7 @@ public class Bit extends GameObject {
 					}
 				}
 			}
-			if (keys != null && !keys.contains(Integer.toString(KeyEvent.VK_CONTROL))) {
+			if (keys != null && !keys.contains(Integer.toString('C'))) {
 				this.switching = false;
 			}
 			
@@ -220,25 +220,25 @@ public class Bit extends GameObject {
 				}
 				double xStart = getX ();
 				double yStart = getY ();
-				if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_UP)) && this.isSecondaryBit()))) {
+				if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains ("U") && this.isSecondaryBit()))) {
 					if (this.goY((int)(this.getY() - speed))) {
 						this.carryRegestersY((((int)speed) * -1) - 1);
 					}
 					lastMove = 0;
 				}
-				if (keys != null && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_RIGHT)) && this.isSecondaryBit()))) {
+				if (keys != null && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains ("R") && this.isSecondaryBit()))) {
 					if (this.goX((int)(this.getX() + speed))) {
 						this.carryRegestersX((int)speed);
 					}
 					lastMove = 2;
 				}
-				if (keys != null && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_LEFT)) && this.isSecondaryBit()))) {
+				if (keys != null && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains ("L") && this.isSecondaryBit()))) {
 					if (this.goX((int)(this.getX() - speed))) {
 						this.carryRegestersX((((int)speed) * -1) - 1);
 					}
 					lastMove = 3;
 				}
-				if (keys != null && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains (Integer.toString(KeyEvent.VK_DOWN)) && this.isSecondaryBit()))) {
+				if (keys != null && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains ("G") && this.isSecondaryBit()))) {
 					if (this.goY((int)(this.getY() + speed))) {
 						this.carryRegestersY((int)speed);
 					}

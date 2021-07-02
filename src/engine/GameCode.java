@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 import gameObjects.DataSlot;
 import gameObjects.PixelBitch;
@@ -88,7 +89,7 @@ public class GameCode {
 		}
 	}
 	
-	private static void loadControls () {
+	public static void initControls () {
 			File file = new File ("resources/saves/controls.txt");
 				if (!file.exists()) {
 					try {
@@ -98,13 +99,13 @@ public class GameCode {
 				
 						BufferedWriter bw = new BufferedWriter(fw);
 						
-						bw.write(Integer.toString('w'));
+						bw.write(Integer.toString(KeyEvent.VK_W));
 						bw.newLine();
-						bw.write(Integer.toString('s'));
+						bw.write(Integer.toString(KeyEvent.VK_S));
 						bw.newLine();
-						bw.write(Integer.toString('a'));
+						bw.write(Integer.toString(KeyEvent.VK_A));
 						bw.newLine();
-						bw.write(Integer.toString('d'));
+						bw.write(Integer.toString(KeyEvent.VK_D));
 						bw.newLine();
 						
 						
@@ -116,8 +117,10 @@ public class GameCode {
 						bw.newLine();
 						
 						
-						bw.write(Integer.toString('m'));
+						bw.write(Integer.toString(KeyEvent.VK_M));
 						bw.newLine();
+						
+						
 						
 						bw.write(Integer.toString(KeyEvent.VK_UP));
 						bw.newLine();
@@ -125,7 +128,7 @@ public class GameCode {
 						bw.newLine();
 						bw.write(Integer.toString(KeyEvent.VK_LEFT));
 						bw.newLine();
-						bw.write(Integer.toString(KeyEvent.VK_LEFT));
+						bw.write(Integer.toString(KeyEvent.VK_RIGHT));
 						bw.newLine();
 						bw.write(Integer.toString(KeyEvent.VK_CONTROL));
 						bw.newLine();
@@ -138,13 +141,41 @@ public class GameCode {
 					}
 					
 				}
+
+				loadControls();
+				
+	}
+	
+	public static void loadControls () {
+		
+		File file = new File ("resources/saves/controls.txt");
+		
+		int [] controls = new int [13];
+		
+		try {
+			Scanner scan = new Scanner (file);
+			
+			int index = 0;
+			
+			while (scan.hasNextLine()) {
+				controls[index] = Integer.parseInt(scan.nextLine());
+				index = index + 1;
+			}
+			
+			scan.close();
+			
+			getSettings().setControls(controls);
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void init () {
 		getSettings (); //Initializes the settings
 		
 		
-		loadControls();
+		initControls();
 		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		RenderLoop.wind.setSize (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		
@@ -228,46 +259,46 @@ public class GameCode {
 			if (!NetworkHandler.isHost()) {
 				String toSend = "KEYS:";
 				try {
-					if (bits.get(0).keyDown ('W')) {
+					if (bits.get(0).keyDown (getSettings().getControls()[0])) {
 						toSend += 'W';
 					}
-					if (bits.get(0).keyDown ('A')) {
+					if (bits.get(0).keyDown (getSettings().getControls()[2])) {
 						toSend += 'A';
 					}
-					if (bits.get(0).keyDown ('S')) {
+					if (bits.get(0).keyDown (getSettings().getControls()[1])) {
 						toSend += 'S';
 					}
-					if (bits.get(0).keyDown ('D')) {
+					if (bits.get(0).keyDown (getSettings().getControls()[3])) {
 						toSend += 'D';
 					}
-					if (bits.get(0).keyDown (KeyEvent.VK_UP)) {
-						toSend += KeyEvent.VK_UP;
+					if (bits.get(0).keyDown (getSettings().getControls()[8])) {
+						toSend += 'U';
 					}
-					if (bits.get(0).keyDown (KeyEvent.VK_LEFT)) {
-						toSend += KeyEvent.VK_LEFT;
+					if (bits.get(0).keyDown (getSettings().getControls()[10])) {
+						toSend += 'L';
 					}
-					if (bits.get(0).keyDown (KeyEvent.VK_DOWN)) {
-						toSend += KeyEvent.VK_DOWN;
+					if (bits.get(0).keyDown (getSettings().getControls()[9])) {
+						toSend += 'G';
 					}
-					if (bits.get(0).keyDown (KeyEvent.VK_RIGHT)) {
-						toSend += KeyEvent.VK_RIGHT;
+					if (bits.get(0).keyDown (getSettings().getControls()[11])) {
+						toSend += 'R';
 					}
-					if (bits.get(0).keyDown(KeyEvent.VK_CONTROL)) {
-						toSend += KeyEvent.VK_CONTROL;
+					if (bits.get(0).keyDown(getSettings().getControls()[12])) {
+						toSend += 'C';
 					}
-					if (bits.get(0).keyDown (10)) {
+					if (bits.get(0).keyDown (getSettings().getControls()[5])) {
 						toSend += 10;
 					}
-					if (bits.get(0).keyDown (13)) {
+					if (bits.get(0).keyDown (getSettings().getControls()[6])) {
 						toSend += 13;
 					}
-					if (bits.get(0).keyDown('E')) {
-						toSend += 'E';
-					}
-					if (bits.get(0).keyDown ('M')) {
+//					if (bits.get(0).keyDown('E')) {
+//						toSend += 'E';
+//					}
+					if (bits.get(0).keyDown (getSettings().getControls()[7])) {
 						toSend += 'M';
 					}
-					if (bits.get(0).keyDown (KeyEvent.VK_SHIFT)) {
+					if (bits.get(0).keyDown (getSettings().getControls()[4])) {
 						toSend += 'v';
 					}
 				} catch (IndexOutOfBoundsException e) {
@@ -275,9 +306,7 @@ public class GameCode {
 				}
 				NetworkHandler.getClient ().messageServer (toSend);
 				
-			} else {
-				
-			}
+			} 
 		}
 	}
 
@@ -339,6 +368,7 @@ public class GameCode {
 				bit1dot5.makeSecondaryBit();
 				bit1dot5.updateIcon();
 				bit1dot5.declare(spawnCoords[0], spawnCoords[1]);
+				bits.add(bit1dot5);
 			}
 			bit.declare(spawnCoords[0],spawnCoords[1]);
 			bit.setPerk(perks[i]);
@@ -389,6 +419,20 @@ public class GameCode {
 		
 		private int scaleMode = 0;
 		
+		
+		//0 is for up
+		//1 is for down
+		//2 is for left
+		//3 is for right
+		//4 is for grab
+		//5 is for items
+		//6 is for compass
+		//7 is for map
+		//8 is for up (duel core)
+		//9 is for down (duel core)
+		//10 is for left (duel core)
+		//11 is for right (duel core)
+		//12 is for camera (duel core)
 		private int [] controls = new int [13];
 		
 		public GameSettings () {
@@ -413,6 +457,36 @@ public class GameCode {
 			resolutionX = width;
 			resolutionY = height;
 			RenderLoop.wind.setResolution (width, height);
+		}
+
+		public int [] getControls() {
+			return controls;
+		}
+
+		public void setControls(int [] controls) {
+			this.controls = controls;
+		}
+		
+		public void updateControlFile () {
+			File file = new File ("resources/saves/controls.txt");
+				try {
+					
+					FileWriter fw = new FileWriter (file);
+			
+					BufferedWriter bw = new BufferedWriter(fw);
+					
+					
+					for (int i = 0; i < controls.length; i++) {
+						bw.write(Integer.toString(controls[i]));
+						bw.newLine();
+					}
+					
+					bw.close();
+					
+				} catch (IOException e) {
+		
+					e.printStackTrace();
+				}
 		}
 		
 	}

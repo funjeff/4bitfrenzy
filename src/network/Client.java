@@ -300,6 +300,7 @@ public class Client extends Thread {
 			try {
 				int bit_x = Integer.parseInt (bit_coords[0]);
 				int bit_y = Integer.parseInt (bit_coords[1]);
+				System.out.println("Identifer " + GameCode.bits);
 				GameCode.bits.get(next - 3).goX (bit_x);
 				GameCode.bits.get(next - 3).goY (bit_y);
 			} catch (IndexOutOfBoundsException e) {

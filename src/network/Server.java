@@ -99,46 +99,46 @@ public class Server extends Thread {
 			//Do inputs normally
 			String toSend = "";
 			try {
-				if (GameCode.bits.get(0).keyDown ('W')) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[0])) {
 					toSend += 'W';
 				}
-				if (GameCode.bits.get(0).keyDown ('A')) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[2])) {
 					toSend += 'A';
 				}
-				if (GameCode.bits.get(0).keyDown ('S')) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[1])) {
 					toSend += 'S';
 				}
-				if (GameCode.bits.get(0).keyDown ('D')) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[3])) {
 					toSend += 'D';
 				}
-				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_UP)) {
-					toSend += KeyEvent.VK_UP;
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[8])) {
+					toSend += 'U';
 				}
-				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_LEFT)) {
-					toSend += KeyEvent.VK_LEFT;
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[10])) {
+					toSend +='L';
 				}
-				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_DOWN)) {
-					toSend += KeyEvent.VK_DOWN;
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[9])) {
+					toSend += 'G';
 				}
-				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_RIGHT)) {
-					toSend += KeyEvent.VK_RIGHT;
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[11])) {
+					toSend += 'R';
 				}
-				if (GameCode.bits.get(0).keyDown(KeyEvent.VK_CONTROL)) {
-					toSend += KeyEvent.VK_CONTROL;
+				if (GameCode.bits.get(0).keyDown(GameCode.getSettings().getControls()[12])) {
+					toSend += 'C';
 				}
-				if (GameCode.bits.get(0).keyDown (10)) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[5])) {
 					toSend += 10;
 				}
-				if (GameCode.bits.get(0).keyDown (13)) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[6])) {
 					toSend += 13;
 				}
-				if (GameCode.bits.get(0).keyDown('E')) {
-					toSend += 'E';
-				}
-				if (GameCode.bits.get(0).keyDown ('M')) {
+//				if (bits.get(0).keyDown('E')) {
+//					toSend += 'E';
+//				}
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[7])) {
 					toSend += 'M';
 				}
-				if (GameCode.bits.get(0).keyDown (KeyEvent.VK_SHIFT)) {
+				if (GameCode.bits.get(0).keyDown (GameCode.getSettings().getControls()[4])) {
 					toSend += 'v';
 				}
 				//System.out.println (toSend);

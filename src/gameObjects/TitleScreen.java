@@ -472,7 +472,7 @@ public class TitleScreen extends GameObject {
 		public void draw () {
 			super.draw();
 			Graphics g = RenderLoop.wind.getBufferGraphics();
-			g.drawString(text, (int)this.getX() + 1, (int)this.getY());
+			g.drawString(text, (int)this.getX() + 1, (int)this.getY() + 14);
 		}
 		
 		
@@ -633,11 +633,13 @@ public class TitleScreen extends GameObject {
 			}
 			
 			if (controllsButton.isPressed()) {
-				controllsButton.reset();
-				this.forgetStuff();
-				ControlMenu menu = new ControlMenu ();
+				ControlMenu menu = new ControlMenu (screen);
 				
 				menu.declare();
+				
+				controllsButton.reset();
+				this.forgetStuff();
+				
 				
 			}
 		
@@ -663,14 +665,123 @@ public class TitleScreen extends GameObject {
 	public class ControlMenu extends GameObject {
 		
 		
+		TextButton [] buttons = new TextButton[13];
 		
-		public ControlMenu () {
+		Button backButton;
 		
+		TitleScreen screen;
+		
+		int selectedButton = -1;
+		
+		Button defaultButton;
+		
+		public ControlMenu (TitleScreen screen) {
+		
+			this.screen = screen;
 			this.setSprite(new Sprite ("resources/sprites/controls menu.png"));
 			this.setRenderPriority(72);
 			
+	
+			
 		}
 		
+		@Override
+		public void onDeclare () {
+			
+			for (int i = 0; i < buttons.length; i++) {
+				buttons[i] = new TextButton ();
+				buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
+				buttons[i].setRenderPriority(73);
+			}
+			
+			buttons[0].declare(120, 125);
+			buttons[1].declare(180, 170);
+			buttons[2].declare(140, 210);
+			buttons[3].declare(170, 260);
+			buttons[4].declare(160, 340);
+			buttons[5].declare(240, 385);
+			buttons[6].declare(400, 430);
+			buttons[7].declare(480, 520);
+			buttons[8].declare(690, 135);
+			buttons[9].declare(750, 180);
+			buttons[10].declare(710, 220);
+			buttons[11].declare(730, 265);
+			buttons[12].declare(940, 350);
+			
+			backButton = new Button (new Sprite ("resources/sprites/back.png"));
+			
+			backButton.declare(550, 452);
+			
+			backButton.setRenderPriority(73);
+			
+			
+			defaultButton = new Button (new Sprite ("resources/sprites/default button.png"));
+			
+			defaultButton.declare(550, 402);
+			
+			defaultButton.setRenderPriority(73);
+			
+		}
+		
+		
+		@Override
+		public void frameEvent () {
+			if (backButton.isPressed()) {
+				this.forgetStuff();
+				this.forget();
+				
+				SettingMenu menu = new SettingMenu (screen);
+				menu.declare();
+			}
+			
+			for (int i = 0; i < buttons.length; i++) {
+				if (buttons[i].isPressed()) {
+					if (i != selectedButton) {
+						if (selectedButton != -1) {
+							buttons[selectedButton].reset();
+						}
+						selectedButton = i;
+					} else {
+						if (getKeysDown().length != 0) {
+							int [] oldControls = GameCode.getSettings().getControls();
+							oldControls[i] = getKeysDown()[0];
+							
+							
+							
+							GameCode.getSettings().setControls(oldControls);
+							GameCode.getSettings().updateControlFile();
+							
+							buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
+							selectedButton = -1;
+						}
+					}
+				}
+			}
+			if (defaultButton.isPressed()) {
+				File oldControls = new File ("resources/saves/controls.txt");
+				oldControls.delete();
+				GameCode.initControls();
+				
+				
+				for (int i = 0; i < buttons.length; i++) {
+					buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
+				}
+			}
+		}
+		
+		
+		private void forgetStuff () {
+
+			for (int i = 0; i < buttons.length; i++) {
+				buttons[i].forget();
+			}
+			
+			backButton.forget();
+			
+			defaultButton.forget();
+			
+			this.forget();
+		}
 	}
 	public class perkMenu extends GameObject {
 		//Make the buttons
