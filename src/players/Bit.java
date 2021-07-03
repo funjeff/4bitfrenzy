@@ -13,6 +13,7 @@ import engine.SpriteParser;
 import gameObjects.Compass;
 import gameObjects.DataSlot;
 import gameObjects.Register;
+import gameObjects.WaveCompleteGraphic;
 import items.Item;
 import items.ItemBox;
 import map.Map;

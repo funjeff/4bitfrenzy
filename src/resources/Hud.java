@@ -10,12 +10,14 @@ import engine.ObjectHandler;
 import gameObjects.DataSlot;
 import gameObjects.GameOverScreen;
 import gameObjects.Register;
+import gameObjects.WaveCompleteGraphic;
 import items.Bombs;
 import items.DataScrambler;
 import items.Glue;
 import items.Speed;
 import items.Teleporter;
 import map.Roome;
+import network.NetworkHandler;
 
 public class Hud extends GameObject {
 	
@@ -139,7 +141,7 @@ public class Hud extends GameObject {
 	public static void newWave() {	
 		
 		roundNum = roundNum + 1;
-		waveNum.changeText("WAVE NUMBER " + Integer.toString(roundNum));
+		waveNum.changeText("WAVE COMPLETE! " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
 		if (roundNum != 1) {
@@ -167,7 +169,7 @@ public class Hud extends GameObject {
 			}
 		}
 		Random rand = new Random ();
-		while (ObjectHandler.getObjectsByName ("Register") == null) {
+		do {
 			for (int wy = 0; wy < Roome.map.length; wy++) {
 				for (int wx = 0; wx < Roome.map[wy].length; wx++) {
 					if (rand.nextInt(10) < roundNum) {
@@ -277,8 +279,17 @@ public class Hud extends GameObject {
 					}
 				}
 			}
-		}
+		} while (ObjectHandler.getObjectsByName ("Register") == null);
 		timeLeft = 60000 * 5 + 60000 * roundNum;
 	}
-	
+	public static void waveOver () {
+		if (NetworkHandler.isHost ()) {
+			NetworkHandler.getServer ().sendMessage ("ROUND COMPLETE");
+		}
+		setRoundTime (15000);
+		new WaveCompleteGraphic ();
+	}
+	public static void setRoundTime (long roundTime) {
+		timeLeft = roundTime;
+	}
 }

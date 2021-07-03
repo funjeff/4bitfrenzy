@@ -7,7 +7,6 @@ import java.awt.Point;
 import engine.GameCode;
 import engine.GameObject;
 import engine.RenderLoop;
-import main.MainLoop;
 import util.ColorMap;
 
 public class RibbonPulse extends GameObject {
