@@ -144,7 +144,9 @@ public class Client extends Thread {
 							String filePath = str.split(":")[1];
 							GameCode.changeMusic(filePath);
 						}
-						
+						if (str.equals ("ROUND COMPLETE")) {
+							Hud.waveOver ();
+						}
 						if (str.length () >= 15 && str.substring (0, 15).equals ("FORGET REGISTER")) {
 							int forgetableReg = Integer.parseInt(str.split(":")[1]);
 							if (ObjectHandler.getObjectsByName("Register") != null) { //obligatory null check
@@ -293,18 +295,19 @@ public class Client extends Thread {
 			//Extract the bit positions
 			String bit_data = data[next];
 			String[] bit_coords = bit_data.split (",");
-			if (bit_coords.length != 2) {
+			if (bit_data.equals("") || bit_data.contains (" ")) {
 				break;
 			}
 			totalBits++;
 			try {
 				int bit_x = Integer.parseInt (bit_coords[0]);
 				int bit_y = Integer.parseInt (bit_coords[1]);
+
 				GameCode.bits.get(next - 3).setX (bit_x);
 				GameCode.bits.get(next - 3).setY (bit_y);
+
 			} catch (IndexOutOfBoundsException e) {
 				//Do nothing
-				System.out.println ("HIA");
 			}
 			next = next + 1;
 		}
@@ -352,14 +355,12 @@ public class Client extends Thread {
 			}
 		}
 		//Extract the DataSlot data
-		System.out.println ("BITS: " + totalBits);
 		String item_data = data[next + 2];
 		if (!item_data.equals ("")) {
 			String[] items = item_data.split (",");
 			for (int i = 0; i < items.length; i++) {
 				if (i < items.length - totalBits) {
 					Scanner s = new Scanner (items [i]);
-					System.out.println(items[i] + ", " + items [i].getClass());
 					if (s.hasNext ()) {
 						int r_id = s.nextInt ();
 						if (itemMap.containsKey (r_id)) {

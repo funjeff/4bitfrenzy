@@ -8,6 +8,7 @@ import engine.Sprite;
 import map.Roome;
 import network.NetworkHandler;
 import players.Bit;
+import resources.Hud;
 import resources.Textbox;
 import util.Vector2D;
 
@@ -231,7 +232,7 @@ public class Register extends GameObject {
 		if (bitsPushing.size () > 1) {
 			canPush = true;
 			//Apply speed boost for multiple bits pulling
-			if (!isLargeRegister && trajectory != null && trajectory.getLength () < 5 /*Default bit speed is 5*/) {
+			if (!isLargeRegister && trajectory != null && trajectory.getLength () != 0 && trajectory.getLength () < 5 /*Default bit speed is 5*/) {
 				trajectory.normalize ();
 				trajectory.scale (5);
 			}
@@ -254,7 +255,10 @@ public class Register extends GameObject {
 	@Override
 	public void forget () {
 		if (NetworkHandler.isHost()) {
-			NetworkHandler.getServer().sendMessage("FORGET REGISTER:" + this.id);
+			NetworkHandler.getServer().sendMessage ("FORGET REGISTER:" + this.id);
+		}
+		if (NetworkHandler.isHost () && ObjectHandler.getObjectsByName ("Register").size () == 1) {
+			Hud.waveOver ();
 		}
 		super.forget();
 	}
