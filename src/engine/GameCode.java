@@ -48,7 +48,7 @@ public class GameCode {
 	static int frame = 1;
 	
 
-	public static float volume = 6F;
+	public static float volume = 5;
 	
 	public static SoundPlayer musicHandler = new SoundPlayer ();
 
@@ -417,6 +417,9 @@ public class GameCode {
 		private int resolutionX;
 		private int resolutionY;
 		
+		private int defaultresX;
+		private int defaultresY;
+		
 		private int scaleMode = 0;
 		
 		
@@ -438,6 +441,10 @@ public class GameCode {
 		public GameSettings () {
 			resolutionX = 1280;
 			resolutionY = 720;
+			
+			defaultresX = 1280;
+			defaultresY = 720;
+			
 			scaleMode = SCALE_MODE_HORIZONTAL_BORDER;
 		}
 		
@@ -456,7 +463,30 @@ public class GameCode {
 		public void setResolution (int width, int height) {
 			resolutionX = width;
 			resolutionY = height;
+			defaultresX = width;
+			defaultresY = height;
+
 			RenderLoop.wind.setResolution (width, height);
+		}
+		
+		public void resetRes () { 
+			resolutionX = defaultresX;
+			resolutionY = defaultresY;
+			RenderLoop.wind.setResolution (resolutionX, resolutionY);
+		}
+		
+		public void changeResolution (int width, int height) {
+			resolutionX = width;
+			resolutionY = height;
+			RenderLoop.wind.setResolution (width, height);
+		}
+		
+		public int getScaleMode() {
+			return scaleMode;
+		}
+
+		public void setScaleMode(int scaleMode) {
+			this.scaleMode = scaleMode;
 		}
 
 		public int [] getControls() {

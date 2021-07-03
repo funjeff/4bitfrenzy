@@ -72,8 +72,8 @@ public class Register extends GameObject {
 			this.setSprite (new Sprite ("resources/sprites/Regester blue.png"));
 		}
 		
-		this.goX(Double.parseDouble(infos[7]));
-		this.goY(Double.parseDouble(infos[8]));
+		this.setX(Double.parseDouble(infos[7]));
+		this.setY(Double.parseDouble(infos[8]));
 		
 		this.updateTime = 0;
 		

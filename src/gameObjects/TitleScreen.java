@@ -403,7 +403,10 @@ public class TitleScreen extends GameObject {
 		private Sprite green;
 		private Sprite red;
 		
+	
 		boolean mouseInside;
+		
+		public boolean hidden = false;
 		
 		public boolean isMouseInside() {
 			return mouseInside;
@@ -421,19 +424,21 @@ public class TitleScreen extends GameObject {
 		}
 		@Override
 		public void frameEvent () {
-			int mouseX = getCursorX ();
-			int mouseY = getCursorY ();
-			if (mouseX > getX () && mouseY > getY () && mouseX < getX () + getSprite ().getWidth () && mouseY < getY () + getSprite ().getHeight ()) {
-				if (green != null) {
-					this.setSprite(green);
+			if (this.isVisable()) {
+				int mouseX = getCursorX ();
+				int mouseY = getCursorY ();
+				if (mouseX > getX () && mouseY > getY () && mouseX < getX () + getSprite ().getWidth () && mouseY < getY () + getSprite ().getHeight ()) {
+					if (green != null) {
+						this.setSprite(green);
+					}
+					mouseInside = true;
+					if (this.mouseButtonReleased (0)) {
+						pressed = true;
+					}
+				} else {
+					mouseInside = false;
+					this.setSprite(red);
 				}
-				mouseInside = true;
-				if (this.mouseButtonReleased (0)) {
-					pressed = true;
-				}
-			} else {
-				mouseInside = false;
-				this.setSprite(red);
 			}
 		}
 		public boolean isPressed () {
@@ -442,6 +447,12 @@ public class TitleScreen extends GameObject {
 		
 		public void reset () {
 			pressed = false;
+		}
+		public boolean isHidden() {
+			return hidden;
+		}
+		public void setHidden(boolean hidden) {
+			this.hidden = hidden;
 		}
 		@Override
 		public void setSprite (Sprite src) {
@@ -470,9 +481,11 @@ public class TitleScreen extends GameObject {
 		
 		@Override
 		public void draw () {
-			super.draw();
-			Graphics g = RenderLoop.wind.getBufferGraphics();
-			g.drawString(text, (int)this.getX() + 1, (int)this.getY() + 14);
+			if (this.isVisable()) {
+				super.draw();
+				Graphics g = RenderLoop.wind.getBufferGraphics();
+				g.drawString(text, (int)this.getX() + 1, (int)this.getY() + 14);
+			}
 		}
 		
 		
@@ -506,6 +519,13 @@ public class TitleScreen extends GameObject {
 			toggled = false;
 			return wasToggled;
 		}
+		
+		public void setIndex (int index) {
+			selectedIndex = index;
+		}
+		public int getIndex () {
+			return selectedIndex;
+		}
 		@Override
 		public void frameEvent () {
 			if (selectedIndex == stringList.length -1) {
@@ -519,7 +539,6 @@ public class TitleScreen extends GameObject {
 				leftButton.setSprite(new Sprite ("resources/sprites/left arrow red.png"));
 				leftSelectable = false;
 			} else {
-				
 				leftButton.setSprite(new Sprite ("resources/sprites/left arrow green.png"));
 				leftSelectable = true;
 			}
@@ -543,10 +562,8 @@ public class TitleScreen extends GameObject {
 			leftButton.setX(this.getX());
 			leftButton.setY(this.getY());
 			rightButton.setY(this.getY());
-		}
-		@Override
-		public void draw () {
-			leftButton.draw();
+		
+			
 			Graphics g = RenderLoop.wind.getBufferGraphics();
 			FontMetrics fm = g.getFontMetrics();
 			
@@ -555,26 +572,61 @@ public class TitleScreen extends GameObject {
 			
 			int width = leftButton.getSprite().getWidth() + 20;
 			
-			for (int i = 0; i < getSelectedString().length(); i++) {
-				width = width + fm.charWidth(getSelectedString().charAt(i));
+			int cpy = width;
+			
+			for (int j = 0; j < stringList.length; j++) {
+				int tempWidth = cpy;
+				for (int i = 0; i < stringList[j].length(); i++) {
+					tempWidth = tempWidth + fm.charWidth(stringList[j].charAt(i));
+				}
+				if (tempWidth > width) {
+					width = tempWidth;
+				}
 			}
-			
 			rightButton.setX(this.getX() + width);
-			rightButton.draw();
 			
+		
 		}
+		@Override
+		public void draw () {
+			
+			if (this.isVisable()) {
+				leftButton.draw();
+				rightButton.draw();
+				Graphics g = RenderLoop.wind.getBufferGraphics();
+	
+				g.setColor(new Color (0x32a852));
+				g.drawString(getSelectedString(), (int) (this.getX() + leftButton.getSprite().getWidth()) + 10, (int)this.getY() + 20);
+				
+			}
+		}
+		
 	}
 	public class SettingMenu extends GameObject {
 		
 		String [] volumeArray = {"0","1","2","3","4","5","6","7","8","9","10"};
 		ArrowButtons volume = new ArrowButtons (volumeArray);
 		
+		String [] widthArray = {"2","3","4","5","6","7","8","9","10"};
+		ArrowButtons width = new ArrowButtons (widthArray);
+		
+		String [] heightArray = {"2","3","4","5","6","7","8","9","10"};
+		ArrowButtons height = new ArrowButtons (heightArray);
+		
 		String [] resoultionArray = {"1280 x 720","1366 x 768","1600 x 900","1920 x 1080","1920 x 1200"};
 		ArrowButtons resolutions = new ArrowButtons (resoultionArray);
+		
+		String [] displayModeArray = {"Horizontal Border","Full Border","Strech","Full"};
+		ArrowButtons displayMode = new ArrowButtons (displayModeArray);
+		
 		
 		Button controllsButton = new Button (new Sprite ("resources/sprites/config button.png"));
 		
 		TitleScreen screen;
+		
+		Sprite resolutionsText = new Sprite ("resources/sprites/resolutions.png");
+		
+		boolean showResText = true;
 		
 		Button backButton;
 		
@@ -587,13 +639,24 @@ public class TitleScreen extends GameObject {
 			
 			volume.setRenderPriority(71);
 			resolutions.setRenderPriority(71);
+			width.setRenderPriority(71);
+			height.setRenderPriority(71);
 			controllsButton.setRenderPriority(71);
+			displayMode.setRenderPriority(71);
+			
 			backButton = new Button (new Sprite ("resources/sprites/back.png"));
+			
+			width.setIndex(8);
+			height.setIndex(8);
+			volume.setIndex(10);
 			
 			volume.declare(140,260);
 			resolutions.declare(180,175);
+			width.declare(140,460);
+			height.declare(140,520);
 			controllsButton.declare(150, 345);
 			backButton.declare(300, 512);
+			displayMode.declare(550, 165);
 			
 			
 			backButton.setRenderPriority(71);
@@ -603,10 +666,32 @@ public class TitleScreen extends GameObject {
 		
 		@Override
 		public void frameEvent () {
-			
+			if (width.wasToggled()) {
+				Roome.setMapWidth(Integer.parseInt(width.getSelectedString()));
+			}
+			if (width.wasToggled()) {
+				Roome.setMapWidth(Integer.parseInt(width.getSelectedString()));
+			}
 			if (volume.wasToggled()) {
-				GameCode.volume = 6F/10 * Integer.parseInt(volume.getSelectedString());
-				GameCode.musicHandler.playSoundEffect(GameCode.volume, "resources/sounds/effects/test sound.wav");
+				if (Integer.parseInt(volume.getSelectedString()) == 0) {
+					GameCode.musicHandler.muted = true;
+				} else {
+					GameCode.musicHandler.muted = false;
+					GameCode.volume =  -45 + (5 * Integer.parseInt(volume.getSelectedString()));
+					GameCode.musicHandler.playSoundEffect(GameCode.volume, "resources/sounds/effects/test sound.wav");
+				}
+			}
+			
+			if (displayMode.wasToggled()) {
+				GameCode.getSettings().setScaleMode(displayMode.getIndex());
+				
+				if (displayMode.getIndex() == 3) {
+					resolutions.setVisability(false);
+					showResText = false;
+				} else {
+					showResText = true;
+					resolutions.setVisability(true);
+				}
 			}
 			
 			if (resolutions.wasToggled()) {
@@ -654,11 +739,22 @@ public class TitleScreen extends GameObject {
 			volume.forget();
 			resolutions.forget();
 			controllsButton.forget();
-
+			width.forget();
+			height.forget();
+			displayMode.forget();
+			
 			
 			backButton.forget();
 			
 			this.forget();
+		}
+		
+		@Override
+		public void draw () {			
+			super.draw();
+			if (showResText) {
+				resolutionsText.draw(15,160);
+			}
 		}
 		
 	}

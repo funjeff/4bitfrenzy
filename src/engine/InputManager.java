@@ -232,8 +232,17 @@ public class InputManager {
 		}
 		
 		private void updateMouseCoords (MouseEvent e) {
-			cursorX = ((double)e.getX ()) / mouseComponent.getWidth ();
-			cursorY = ((double)e.getY ()) / mouseComponent.getHeight ();
+			cursorX = ((double)e.getX () - RenderLoop.wind.getOffsetX()) / RenderLoop.wind.getScreenWidth();
+			cursorY = ((double)e.getY () - RenderLoop.wind.getOffsetY()) / RenderLoop.wind.getScreenHeight();
+			
+			if (cursorX < 0) {
+				cursorX = 0;
+			}
+			
+			if (cursorY < 0) {
+				cursorY = 0;
+			}
+		
 		}
 		
 		private int getButtonIndex (int button) {

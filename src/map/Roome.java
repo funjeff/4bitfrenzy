@@ -36,8 +36,8 @@ public class Roome extends GameObject {
 	public static Roome [][] map;
 	public static HashMap<Point, Integer> distMap;
 	
-	private static int mapWidth;
-	private static int mapHeight;
+	private static int mapWidth = 10;
+	private static int mapHeight = 10;
 	
 	private static HashMap<Point, HashMap<Point, Integer>> distMaps;
 	
@@ -316,8 +316,6 @@ public class Roome extends GameObject {
 	}
 	public static void generateMap () {
 		//This consistently fails for relatively large maps (as small as 12x12) - this is related to the open corridor probability
-		mapWidth = 10;
-		mapHeight = 10;
 		map = new Roome[mapHeight][mapWidth];
 		do {
 			ArrayList <GameObject> oldRooms = ObjectHandler.getObjectsByName("Roome");
@@ -660,6 +658,14 @@ public class Roome extends GameObject {
 	
 	public static int getMapHeight () {
 		return mapHeight;
+	}
+	
+	public static void setMapWidth (int width) {
+		mapWidth = width;
+	}
+	
+	public static void setMapHeight (int height) {
+		mapHeight = height;
 	}
 	
 	public void loadMapFromFile (String filepath) {

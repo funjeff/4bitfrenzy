@@ -17,6 +17,9 @@ public class SoundPlayer implements LineListener{
 	String songPath;
 	private AudioFormat format;
 	Clip clip;
+	
+	public boolean muted = false;
+	
 	public SoundPlayer (){
 	}
 	public boolean playing = false;
@@ -26,31 +29,32 @@ public class SoundPlayer implements LineListener{
 	 * @param volume the volume to play it at
 	 */
 	public void play (String songPath, float volume){
-		try {
-		clip.stop();
-		} catch (NullPointerException e) {
-			
+		if (!muted) {
+			try {
+			clip.stop();
+			} catch (NullPointerException e) {
+				
+			}
+			this.songPath = songPath;
+			File soundFile = new File (songPath);
+			try {
+			AudioInputStream ais;
+			ais = AudioSystem.getAudioInputStream(soundFile);
+			format = ais.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			clip = (Clip) AudioSystem.getLine (info);
+			clip.addLineListener(this);
+			clip.open (ais);
+			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(volume);
+			clip.start();
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			playing = true;
+			} catch (Exception e){
+			System.out.println("whoops (error message) ");
+			System.out.println(songPath);
+			}
 		}
-		this.songPath = songPath;
-		File soundFile = new File (songPath);
-		try {
-		AudioInputStream ais;
-		ais = AudioSystem.getAudioInputStream(soundFile);
-		format = ais.getFormat();
-		DataLine.Info info = new DataLine.Info(Clip.class, format);
-		clip = (Clip) AudioSystem.getLine (info);
-		clip.addLineListener(this);
-		clip.open (ais);
-		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-		gainControl.setValue(volume);
-		clip.start();
-		clip.loop(Clip.LOOP_CONTINUOUSLY);
-		playing = true;
-		} catch (Exception e){
-		System.out.println("whoops (error message) ");
-		System.out.println(songPath);
-		}
-		
 	}
 	public void setVolume(float volume) {
 		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
@@ -80,22 +84,24 @@ public class SoundPlayer implements LineListener{
 	 * @param effectName the name of the sound effect
 	 */
 	public void playSoundEffect (float volume, String effectName){
-		Clip clip2;
-		File soundFile2 = new File (effectName);
-		try {
-			AudioInputStream ais2;
-			AudioFormat format2;
-		ais2 = AudioSystem.getAudioInputStream(soundFile2);
-		format2 = ais2.getFormat();
-		DataLine.Info info2 = new DataLine.Info(Clip.class, format2);
-		clip2 = (Clip) AudioSystem.getLine (info2);
-		clip2.open (ais2);
-		FloatControl gainControl2 = (FloatControl) clip2.getControl(FloatControl.Type.MASTER_GAIN);
-		gainControl2.setValue(volume);
-		clip2.start();
-		
-		} catch (Exception e){
-		System.out.println("whoops (error message) ");
+		if (!muted) {
+			Clip clip2;
+			File soundFile2 = new File (effectName);
+			try {
+				AudioInputStream ais2;
+				AudioFormat format2;
+			ais2 = AudioSystem.getAudioInputStream(soundFile2);
+			format2 = ais2.getFormat();
+			DataLine.Info info2 = new DataLine.Info(Clip.class, format2);
+			clip2 = (Clip) AudioSystem.getLine (info2);
+			clip2.open (ais2);
+			FloatControl gainControl2 = (FloatControl) clip2.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl2.setValue(volume);
+			clip2.start();
+			
+			} catch (Exception e){
+			System.out.println("whoops (error message) ");
+			}
 		}
 	}
 	public static void casheSoundEffect (File effect) {

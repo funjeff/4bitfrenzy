@@ -440,7 +440,12 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void draw () {
+		if (this.playerNum == NetworkHandler.getPlayerNum() && isActive()) {
+			updateScroll();
+		}
+		
 		super.draw();
+		
 		if (perk == 2 && keyDown ('M')) {
 			map.draw();
 		}

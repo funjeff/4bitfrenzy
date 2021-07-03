@@ -300,16 +300,14 @@ public class Client extends Thread {
 			try {
 				int bit_x = Integer.parseInt (bit_coords[0]);
 				int bit_y = Integer.parseInt (bit_coords[1]);
-				System.out.println("Identifer " + GameCode.bits);
-				GameCode.bits.get(next - 3).goX (bit_x);
-				GameCode.bits.get(next - 3).goY (bit_y);
+				GameCode.bits.get(next - 3).setX (bit_x);
+				GameCode.bits.get(next - 3).setY (bit_y);
 			} catch (IndexOutOfBoundsException e) {
 				//Do nothing
 				System.out.println ("HIA");
 			}
 			next = next + 1;
 		}
-		System.out.println (next);
 		//Extract the register data
 		String reg_data = data[next];
 		String[] registers = reg_data.split (",");
@@ -323,7 +321,6 @@ public class Client extends Thread {
 				} else {
 					Register reg = new Register (1);
 					reg.declare ();
-					System.out.println (registers[i]);
 					reg.refreshRegister (registers [i]);
 					reg.id = r_id;
 					toKeep.add(r_id);

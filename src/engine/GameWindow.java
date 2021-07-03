@@ -75,30 +75,18 @@ public class GameWindow extends JFrame {
 		
 		int xOffs = 0;
 		int yOffs = 0;
-		int screenWidth = 0;
-		int screenHeight = 0;
+		int screenWidth = getScreenWidth();
+		int screenHeight = getScreenHeight();
 		//Calculate the sizing of the content
 		int scalingMode = GameCode.getSettings ().getScalingMode ();
 		if (scalingMode == GameCode.GameSettings.SCALE_MODE_HORIZONTAL_BORDER) {
-			screenHeight = getContentPane ().getHeight ();
-			screenWidth = (int)(((double)buffer.getWidth() / buffer.getHeight ()) * screenHeight);
-			xOffs = (getContentPane ().getWidth () - screenWidth) / 2;
+			xOffs = getOffsetX();
 		}
 		if (scalingMode == GameCode.GameSettings.SCALE_MODE_FULL_BORDER) {
-			screenWidth = GameCode.getSettings ().getResolutionX();
-			screenHeight = GameCode.getSettings ().getResolutionY ();
-			xOffs = (getContentPane ().getWidth () - screenWidth) / 2;
-			yOffs = (getContentPane ().getHeight () - screenHeight) / 2;
+			xOffs = getOffsetX();
+			yOffs = getOffsetY();
 		}
-		if (scalingMode == GameCode.GameSettings.SCALE_MODE_STRETCH) {
-			screenWidth = getContentPane ().getWidth ();
-			screenHeight = getContentPane ().getHeight ();
-		}
-		if (scalingMode == GameCode.GameSettings.SCALE_MODE_FULL) {
-			screenWidth = getContentPane ().getWidth ();
-			screenHeight = getContentPane ().getHeight ();
-		}
-		
+	
 		//Set the colors
 		windowGraphics.setColor (GameCode.devMode () ? new Color (0x2F2F2F) : new Color (0x000000));
 		bufferGraphics.setColor (GameCode.devMode () ? new Color (0x2F2F2F) : new Color (0x000000));
@@ -119,11 +107,54 @@ public class GameWindow extends JFrame {
 		//Update the resolution if in full mode
 		if (scalingMode == GameCode.GameSettings.SCALE_MODE_FULL) {
 			if (getContentPane ().getWidth () != buffer.getWidth () || getContentPane ().getHeight () != buffer.getHeight ())
-			GameCode.getSettings ().setResolution (getContentPane ().getWidth (), getContentPane ().getHeight ());
+				GameCode.getSettings ().changeResolution (getContentPane ().getWidth (), getContentPane ().getHeight ());
+		} else {
+			GameCode.getSettings().resetRes();
 		}
-		
 	}
 	
+	public int getOffsetX() {
+		
+		int screenWidth;
+		
+		int screenHeight = getContentPane ().getHeight ();
+		
+		if (GameCode.getSettings().getScaleMode() == GameCode.GameSettings.SCALE_MODE_HORIZONTAL_BORDER) {
+			screenWidth = (int)(((double)buffer.getWidth() / buffer.getHeight ()) * screenHeight);
+		} else if (GameCode.getSettings().getScaleMode() ==  GameCode.GameSettings.SCALE_MODE_FULL_BORDER){
+			screenWidth = GameCode.getSettings ().getResolutionX();
+		} else {
+			return 0;
+		}
+		return (getContentPane ().getWidth () - screenWidth) / 2;
+	}
+	
+	public int getOffsetY() {
+		int screenHeight = GameCode.getSettings ().getResolutionY ();
+		if (GameCode.getSettings().getScaleMode() == GameCode.GameSettings.SCALE_MODE_FULL_BORDER) {
+			return (getContentPane ().getHeight () - screenHeight) / 2;
+		} else {
+			return 0;
+		}
+	}
+	public int getScreenWidth () {
+		int screenHeight = getContentPane ().getHeight ();
+		
+		if (GameCode.getSettings().getScaleMode() == GameCode.GameSettings.SCALE_MODE_HORIZONTAL_BORDER) {
+			return (int)(((double)buffer.getWidth() / buffer.getHeight ()) * screenHeight);
+		} else if (GameCode.getSettings().getScaleMode() ==  GameCode.GameSettings.SCALE_MODE_FULL_BORDER){
+			return GameCode.getSettings ().getResolutionX();
+		} else {
+			return getContentPane ().getWidth ();
+		}
+	}
+	public int getScreenHeight () {
+		if (GameCode.getSettings().getScaleMode() == GameCode.GameSettings.SCALE_MODE_FULL_BORDER) {
+			return GameCode.getSettings ().getResolutionY ();
+		} else {
+			return getContentPane ().getHeight ();
+		}
+	}
 	/**
 	 * Gets the graphics object referring to this GameWindow's buffer.
 	 * @return The buffer for this GameWindow's graphics
