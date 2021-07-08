@@ -26,6 +26,7 @@ import map.RibbonPulse;
 import map.Roome;
 import network.Client;
 import network.NetworkHandler;
+import npcs.Baseball;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
@@ -57,6 +58,8 @@ public class GameCode {
 	private static GameSettings settings;
 	
 	private File loadFile = null;
+	
+	static boolean firstFrame = true;
 	
 	public static void testBitch () {
 		
@@ -172,6 +175,7 @@ public class GameCode {
 	}
 	
 	public static void init () {
+		
 		getSettings (); //Initializes the settings
 		
 		
@@ -193,6 +197,14 @@ public class GameCode {
 		frame++;
 		if (NetworkHandler.isHost () && gameStarted) {
 		
+			if (firstFrame) {
+				Baseball b = new Baseball ();
+				System.out.println (b.getNpcType());
+				b.setX (bits.get(0).getX ());
+				b.setY (bits.get(0).getY ());
+				firstFrame = false;
+			}
+			
 			int mouseX = bits.get (0).getCursorX () + getViewX ();
 			int mouseY = bits.get (0).getCursorY () + getViewY ();
 			Point pt = Ribbon.getRibbonFromPoint (new Point (mouseX, mouseY));
