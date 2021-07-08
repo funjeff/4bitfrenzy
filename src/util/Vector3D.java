@@ -1,7 +1,5 @@
 package util;
 
-import main.GameObject;
-
 public class Vector3D {
 	
 	public double x;

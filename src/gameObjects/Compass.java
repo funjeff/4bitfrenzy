@@ -7,6 +7,7 @@ import engine.Sprite;
 import network.NetworkHandler;
 import players.Bit;
 import resources.Textbox;
+import util.Vector2D;
 
 public class Compass extends GameObject {
 	
@@ -31,85 +32,13 @@ public class Compass extends GameObject {
 	
 	@Override
 	public void frameEvent () {
-		if (pointObject.getX() - owner.getX() < -1080 || pointObject.getX() - owner.getX() > 1080) {
-			if (pointObject.getX() > owner.getX()) {
-				if (pointObject.getY() - owner.getY() <-720 || pointObject.getY() - owner.getY() > 720) {
-					if (pointObject.getY() > owner.getY()) {
-						if (pointObject instanceof DataSlot) {
-							this.setSprite(UP_RIGHTR);
-						} else {
-							this.setSprite(UP_RIGHT);
-						}
-						this.getAnimationHandler().setFlipVertical(true);
-						this.getAnimationHandler().setFlipHorizontal(false);
-					} else {
-						if (pointObject instanceof DataSlot) {
-							this.setSprite(UP_RIGHTR);
-						} else {
-							this.setSprite(UP_RIGHT);
-								
-						}
-						this.getAnimationHandler().setFlipVertical(false);
-						this.getAnimationHandler().setFlipHorizontal(false);
-					}
-				} else {
-					if (pointObject instanceof DataSlot) {
-						this.setSprite(RIGHTR);
-					} else {
-						this.setSprite(RIGHT);
-					}
-					this.getAnimationHandler().setFlipHorizontal(false);
-					this.getAnimationHandler().setFlipVertical(false);
-				}
-			} else {
-				if (pointObject.getY() - owner.getY() <-720 || pointObject.getY() - owner.getY() > 720) {
-					if (pointObject.getY() > owner.getY()) {
-						if (pointObject instanceof DataSlot) {
-							this.setSprite(UP_RIGHTR);
-						} else {
-							this.setSprite(UP_RIGHT);
-						}
-						this.getAnimationHandler().setFlipVertical(true);
-						this.getAnimationHandler().setFlipHorizontal(true);
-					} else {
-						if (pointObject instanceof DataSlot) {
-							this.setSprite(UP_RIGHTR);
-						} else {
-							this.setSprite(UP_RIGHT);
-						}
-						this.getAnimationHandler().setFlipVertical(false);
-						this.getAnimationHandler().setFlipHorizontal(true);
-					}
-				} else {
-					if (pointObject instanceof DataSlot) {
-						this.setSprite(RIGHTR);
-					} else {
-						this.setSprite(RIGHT);
-					}
-					this.getAnimationHandler().setFlipHorizontal(true);
-					this.getAnimationHandler().setFlipVertical(false);
-				}
-			}
-		} else {
-			if (pointObject.getY() < owner.getY()) {
-				if (pointObject instanceof DataSlot) {
-					this.setSprite(UPR);
-				} else {
-					this.setSprite(UP);
-				}
-				this.getAnimationHandler().setFlipVertical(false);
-				this.getAnimationHandler().setFlipHorizontal(false);
-			} else {
-				if (pointObject instanceof DataSlot) {
-					this.setSprite(UPR);
-				} else {
-					this.setSprite(UP);
-				}
-				this.getAnimationHandler().setFlipVertical(true);
-				this.getAnimationHandler().setFlipHorizontal(false);
-			}
-		}
 		
+		//Set this arrow's sprite
+		double ang = Math.atan2 (owner.getCenterX () - pointObject.getCenterX (), owner.getCenterY () - pointObject.getCenterY ());
+		ang += Math.PI / 2; //Start point correction
+		setArrowParams (ang);
+		
+		//Not really sure what this does, Jeffrey explain pls
 		try {
 			DataSlot ds = (DataSlot) pointObject;
 			if (ds.cleared) {
@@ -131,6 +60,74 @@ public class Compass extends GameObject {
 		this.pointObject = pointObject;
 	}
 	
+	public void setArrowParams (double direction) {
+		
+		//Convert the angle to the domain 0-7
+		direction += direction < 0 ? Math.PI * 2 : 0; //Convert to 0-2pi range
+		direction *= (4 / Math.PI); //Map to [0,8)
+		direction = Math.round (direction); //Snap to one of (9) angles
+		int intDir = direction == 8 ? 0 : (int)direction;
+		
+		//Set the arrow's direction (sprite, flip) accordingly
+		switch (intDir) {
+			case 0:
+				setSprite (RIGHT);
+				getAnimationHandler ().setFlipHorizontal (false);
+				getAnimationHandler ().setFlipVertical (false);
+				break;
+			case 1:
+				setSprite (UP_RIGHT);
+				getAnimationHandler ().setFlipHorizontal (false);
+				getAnimationHandler ().setFlipVertical (false);
+				break;
+			case 2:
+				setSprite (UP);
+				getAnimationHandler ().setFlipHorizontal (false);
+				getAnimationHandler ().setFlipVertical (false);
+				break;
+			case 3:
+				setSprite (UP_RIGHT);
+				getAnimationHandler ().setFlipHorizontal (true);
+				getAnimationHandler ().setFlipVertical (false);
+				break;
+			case 4:
+				setSprite (RIGHT);
+				getAnimationHandler ().setFlipHorizontal (true);
+				getAnimationHandler ().setFlipVertical (false);
+				break;
+			case 5:
+				setSprite (UP_RIGHT);
+				getAnimationHandler ().setFlipHorizontal (true);
+				getAnimationHandler ().setFlipVertical (true);
+				break;
+			case 6:
+				setSprite (UP);
+				getAnimationHandler ().setFlipHorizontal (false);
+				getAnimationHandler ().setFlipVertical (true);
+				break;
+			case 7:
+				setSprite (UP_RIGHT);
+				getAnimationHandler ().setFlipHorizontal (false);
+				getAnimationHandler ().setFlipVertical (true);
+				break;
+			default:
+				break;
+		}
+		
+		//Change to the red arrow if pointing to a data slot
+		if (pointObject instanceof DataSlot) {
+			if (getSprite () == UP) {
+				setSprite (UPR);
+			}
+			if (getSprite () == UP_RIGHT) {
+				setSprite (UP_RIGHTR);
+			}
+			if (getSprite () == RIGHT) {
+				setSprite (RIGHTR);
+			}
+		}
+		
+	}
 	
 	
 	@Override

@@ -141,7 +141,7 @@ public class Hud extends GameObject {
 	public static void newWave() {	
 		
 		roundNum = roundNum + 1;
-		waveNum.changeText("WAVE COMPLETE! " + Integer.toString(roundNum));
+		waveNum.changeText("REGISTERS LEFT: " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
 		if (roundNum != 1) {

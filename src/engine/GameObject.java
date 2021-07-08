@@ -471,6 +471,22 @@ public abstract class GameObject extends GameAPI {
 	}
 	
 	/**
+	 * Gets the x-coordinate of the center of this GameObject, based on its position and hitbox attributes
+	 * @return the x-coordinate of this GameObject's center point
+	 */
+	public double getCenterX () {
+		return x + hitbox ().getX () + hitbox ().getWidth () / 2;
+	}
+	
+	/**
+	 * Gets the y-coordinate of the center of this GameObject, based on its position and hitbox attributes
+	 * @return the y-coordinate of this GameObject's center point
+	 */
+	public double getCenterY () {
+		return y + hitbox ().getY () + hitbox ().getHeight () / 2;
+	}
+	
+	/**
 	 * Gets the x component of this GameObject's previous position.
 	 * @return The x coordinate of this GameObject
 	 */
