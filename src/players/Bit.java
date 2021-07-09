@@ -174,23 +174,7 @@ public class Bit extends GameObject {
 				this.switching = false;
 			}
 			
-				double resistance = 1;
-				if (perk != 1) {
-					if (regestersBeingCarried != null) {
-						if (keys != null && !keys.contains ("v")) {
-							regestersBeingCarried = null;
-						} else {
-							resistance = 0.5/regestersBeingCarried.size();
-						}
-						
-					}
-				}
-				
-				double speed = this.speed * resistance;
-				
-				if (perk == 0) {
-					speed = speed + 2;
-				}
+				double speed = this.getCarrySpeed ();
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
 					if(compass != null && ObjectHandler.getObjectsByName("Register") != null &&ObjectHandler.getObjectsByName("Register").size() != 0) {
@@ -410,6 +394,23 @@ public class Bit extends GameObject {
 			break;
 		}
 		
+	}
+	
+	public double getCarrySpeed () {
+		double resistance = 1;
+		if (perk != 1) {
+			if (regestersBeingCarried != null) {
+				resistance = 0.5/regestersBeingCarried.size();
+			}
+		}
+		
+		double speed = this.speed * resistance;
+		
+		if (perk == 0) {
+			speed = speed + 2;
+		}
+		
+		return speed;
 	}
 	
 	public void updateScroll () {

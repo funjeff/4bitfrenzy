@@ -2,7 +2,7 @@ package npcs;
 
 import engine.Sprite;
 
-public class Baseball extends NPC {
+public class Baseball extends PushableNPC {
 	
 	public Baseball () {
 		super ();
@@ -12,9 +12,7 @@ public class Baseball extends NPC {
 	
 	@Override
 	public void npcFrame () {
-		if (isColliding ("Bit")) {
-			assertPosition (getX () + 1, getY ());
-		}
+		super.npcFrame ();
 	}
 
 }
