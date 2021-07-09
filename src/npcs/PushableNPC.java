@@ -3,6 +3,8 @@ package npcs;
 import java.util.ArrayList;
 
 import engine.GameObject;
+import engine.Room;
+import map.Roome;
 import players.Bit;
 
 public class PushableNPC extends NPC {
@@ -20,8 +22,17 @@ public class PushableNPC extends NPC {
 	public void npcFrame () {
 		
 		//Move according to vx, vy
+		double xprev = getX ();
+		double yprev = getY ();
 		setX (getX () + vx);
 		setY (getY () + vy);
+		if (Roome.getRoom(this.getX(), this.getY()).isColliding (this)) {
+			//Hit the wall
+			this.setX (xprev);
+			this.setY (yprev);
+			vx = 0;
+			vy = 0;
+		}
 		
 		//Apply friction
 		if (Math.abs (vx) > 0) {

@@ -173,7 +173,9 @@ public class Bit extends GameObject {
 			if (keys != null && !keys.contains(Integer.toString('C'))) {
 				this.switching = false;
 			}
-			
+				if (regestersBeingCarried != null && keys != null && !keys.contains ("v")) {
+					regestersBeingCarried = null;
+				}
 				double speed = this.getCarrySpeed ();
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
