@@ -220,16 +220,18 @@ public class Client extends Thread {
 						if (str.length () >= 3 && str.substring (0,4).equals ("NPC ")) {
 							String[] args = str.split (" ");
 							if (args[1].equals ("CREATE")) {
-								System.out.println ("NPC CREATED");
 								NPC npc = NPC.getInstance (args[2]);
 								npc.declare (0, 0);
 								System.out.println (npc.id);
 							} else if (args[1].equals ("UPDATE")) {
-								System.out.println ("NPC UPDATED");
 								String[] data = args[2].split (":");
-								NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
-								System.out.println (npc.id);
-								//npc.updateNpc (args[2]); CRASHES, FIX LATER
+								System.out.println(data[1]);
+								try {
+									NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
+									npc.updateNpc (args[2]);
+								} catch (NullPointerException e) {
+									System.out.println ("WARNING: NPC WAS NULL");
+								}
 							} else if (args[1].equals ("FORGET")) {
 								NPC.getNpcById (Integer.parseInt (args[2])).forget ();
 							}

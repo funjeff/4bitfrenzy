@@ -24,9 +24,9 @@ public class NPC extends GameObject {
 	
 	public void initNpc () {
 		if (NetworkHandler.isHost ()) {
+			declare (0, 0);
 			NetworkHandler.getServer ().sendMessage ("NPC CREATE " + toString ());
 		}
-		declare (0, 0);
 	}
 	
 	/**
@@ -104,7 +104,14 @@ public class NPC extends GameObject {
 	
 	@Override
 	public void declare (int x, int y) {
-		super.declare (x, y);
+		if (!NetworkHandler.isHost ()) {
+			int currId = id;
+			super.declare (x, y);
+			id = currId; //Hacky workaround to keep the old ID
+		} else {
+			super.declare (x, y);
+		}
+		System.out.println ("NEW ID :" + id);
 		mapNpc ();
 	}
 	

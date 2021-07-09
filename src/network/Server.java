@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import engine.GameCode;
 import engine.RenderLoop;
@@ -70,6 +71,7 @@ public class Server extends Thread {
 	}
 	
 	public void sendMessage (String message) {
+		while (write) {}
 		write = true;
 		writeMessage = message;
 	}
