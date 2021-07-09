@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
 
 import engine.GameCode;
 import engine.RenderLoop;
@@ -18,8 +20,7 @@ public class ServerConnection extends Thread {
 	Socket incoming;
 	boolean open = true;
 	
-	private volatile boolean write = false;
-	private volatile String message;
+	private volatile LinkedList<String> message = new LinkedList<String> ();
 	
 	private String inputs;
 	
@@ -61,10 +62,26 @@ public class ServerConnection extends Thread {
 						}
 					}
 				}
-				if (write) {
-					dataOut.writeUTF (message);
-					write = false;
+				while (!message.isEmpty ()) {
+					
+					//Attempt to pop the message from writeMessage
+					String s = null;
+					while (s == null) {
+						try {
+							s = message.removeLast ();
+						} catch (ConcurrentModificationException e) {
+							try {
+								Thread.sleep (1); //Wait and try again
+							} catch (InterruptedException e1) {
+								//Timing is not important
+							}
+						}
+					}
+					
+					//Send the message
+					dataOut.writeUTF (s);
 					dataOut.flush ();
+					
 				}
 			}
 			
@@ -78,8 +95,7 @@ public class ServerConnection extends Thread {
 	}
 
 	public void message (String message) {
-		this.write = true;
-		this.message = message;
+		this.message.add (message);
 	}
 	
 	public String getInputs () {
