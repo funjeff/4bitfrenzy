@@ -4,13 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import engine.GameObject;
+import items.Item;
 import network.NetworkHandler;
 
-public class NPC extends GameObject {
+public class NPC extends GameObject implements ItemGenerator {
 	
 	private String npcType;
 	
 	private static HashMap<Integer, NPC> npcMap;
+	
+	private static HashMap<Class<?>, Class<?>> collisionExceptions = new HashMap<Class<?>, Class<?>> ();
 	
 	protected NPC () {
 		npcType = getClass ().getSimpleName ();
@@ -106,6 +109,18 @@ public class NPC extends GameObject {
 		return npcMap.get (id);
 	}
 	
+	protected void addCollisionException (Class c) {
+		collisionExceptions.put (c, c);
+	}
+	
+	public boolean canCollide (Class c) {
+		if (!collisionExceptions.containsKey (c)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	private void mapNpc () {
 		if (npcMap == null) {
 			npcMap = new HashMap<Integer, NPC> ();
@@ -150,6 +165,20 @@ public class NPC extends GameObject {
 	public String toString () {
 		//If overriding, append to super.toString()
 		return getNpcType () + ":" + getId () + ":" + getX () + ":" + getY ();
+	}
+	
+	@Override
+	public void becomeItem (Class<?> c) {
+		Item it;
+		try {
+			it = (Item)c.getConstructor ().newInstance ();
+			it.declare ((int)getX (), (int)getY ());
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		forget ();
 	}
 
 }

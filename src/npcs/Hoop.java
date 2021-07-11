@@ -1,6 +1,8 @@
 package npcs;
 
 import engine.Sprite;
+import items.BasketBomb;
+import items.Bombs;
 
 public class Hoop extends NPC {
 
@@ -14,8 +16,8 @@ public class Hoop extends NPC {
 	
 	@Override
 	public void npcFrame () {
-		if (this.isColliding ("Baseball")) {
-			this.getCollisionInfo ().getCollidingObjects ().get (0).forget ();
+		if (this.isColliding ("Basketball")) {
+			((ItemGenerator)(this.getCollisionInfo ().getCollidingObjects ().get (0))).becomeItem (BasketBomb.class);
 		}
 	}
 	

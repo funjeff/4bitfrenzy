@@ -1,7 +1,9 @@
 package npcs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import engine.CollisionInfo;
 import engine.GameObject;
 import engine.Room;
 import map.Roome;
@@ -22,18 +24,23 @@ public class PushableNPC extends NPC {
 	public void npcFrame () {
 		
 		//Move according to vx, vy
-		double xprev = getX ();
-		double yprev = getY ();
-		setX (getX () + vx);
-		setY (getY () + vy);
-		if (Roome.getRoom(this.getX(), this.getY()).isColliding (this)) {
-			//Hit the wall
-			this.setX (xprev);
-			this.setY (yprev);
-			vx *= -.5;
-			vy *= -.5; //Bounce (NOTE: not a "proper" bounce for diagonal directions)
+		if (vx != 0 || vy != 0) {
+			double xprev = getX ();
+			double yprev = getY ();
+			setX (getX () + vx);
+			setY (getY () + vy);
+			if (Roome.getRoom(this.getX(), this.getY()).isColliding (this)
+				|| (this.isCollidingChildren ("NPC") && this.getCollisionInfo ().getCollidingObjects ().size () != 0)
+				|| this.isColliding ("Register")
+			) {
+				//Hit the wall
+				this.setX (xprev);
+				this.setY (yprev);
+				vx *= -.5;
+				vy *= -.5; //Bounce (NOTE: not a "proper" bounce for diagonal directions)
+			}
+			assertPosition (getX (), getY ());
 		}
-		assertPosition (getX (), getY ());
 		
 		//Apply friction
 		if (Math.abs (vx) > 0) {
@@ -88,6 +95,27 @@ public class PushableNPC extends NPC {
 	
 	public double getFriction () {
 		return friction;
+	}
+	
+	@Override
+	public CollisionInfo getCollisionInfo () {
+		
+		//WARNING: This does not affect isColliding methods, they may return true despite the new CollisionInfo containing no colliding objects.
+		
+		//Remove all exceptions from the colliding objects
+		CollisionInfo info = super.getCollisionInfo ();
+		ArrayList<GameObject> objs = info.getCollidingObjects ();
+		Iterator<GameObject> iter = objs.iterator ();
+		while (iter.hasNext ()) {
+			GameObject obj = iter.next ();
+			if (!canCollide (obj.getClass())) {
+				iter.remove ();
+			}
+		}
+		
+		//Return the new CollisionInfo object
+		return info;
+		
 	}
 	
 }

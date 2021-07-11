@@ -32,6 +32,7 @@ import map.Roome;
 import network.Client;
 import network.NetworkHandler;
 import npcs.Baseball;
+import npcs.Basketball;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
@@ -206,7 +207,7 @@ public class GameCode {
 		if (NetworkHandler.isHost () && gameStarted) {
 		
 			if (firstFrame) {
-				Baseball b = new Baseball (bits.get(0).getX (), bits.get(0).getY ());
+				Basketball b = new Basketball (bits.get(0).getX (), bits.get(0).getY ());
 				firstFrame = false;
 			}
 			
