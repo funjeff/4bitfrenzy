@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import engine.GameCode;
@@ -24,8 +26,7 @@ public class Server extends Thread {
 	private String serverIp;
 	
 	private static volatile boolean open = false;
-	private static volatile boolean write = false;
-	private static volatile String writeMessage;
+	private static volatile LinkedList<String> writeMessage = new LinkedList<String> ();
 	
 	public Server () {
 		connections = new ArrayList<ServerConnection> ();
@@ -50,20 +51,30 @@ public class Server extends Thread {
 			h.start ();
 			while (true) {
 
-				if (write) {
-					for (int i = 0; i < connections.size (); i++) {
-						connections.get (i).message (writeMessage);
+				if (!writeMessage.isEmpty ()) {
+					
+					//Attempt to pop the message from writeMessage
+					String s = null;
+					while (s == null) {
+						try {
+							s = writeMessage.removeLast ();
+						} catch (ConcurrentModificationException e) {
+							try {
+								Thread.sleep (1); //Wait and try again
+							} catch (InterruptedException e1) {
+								//Timing is not important
+							}
+						}
 					}
-					write = false;
+					
+					//Send the message
+					for (int i = 0; i < connections.size (); i++) {
+						connections.get (i).message (s);
+					}
 				}
 				
 			}
 			
-			
-			//Close
-			/*incoming.close ();
-			socket.close ();
-			System.out.println ("Server closed");*/
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,9 +82,7 @@ public class Server extends Thread {
 	}
 	
 	public void sendMessage (String message) {
-		while (write) {}
-		write = true;
-		writeMessage = message;
+		writeMessage.add (message);
 	}
 	
 	public boolean isOpen () {

@@ -111,7 +111,6 @@ public class NPC extends GameObject {
 		} else {
 			super.declare (x, y);
 		}
-		System.out.println ("NEW ID :" + id);
 		mapNpc ();
 	}
 	

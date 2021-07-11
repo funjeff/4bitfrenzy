@@ -11,6 +11,7 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -49,11 +50,13 @@ public class Client extends Thread {
 	private static HashMap<Integer, Register> registerMap = new HashMap<Integer, Register> ();;
 	private static HashMap<Integer, DataSlot> slotMap = new HashMap<Integer, DataSlot> ();
 	private static HashMap<Integer, Item> itemMap = new HashMap<Integer, Item> ();
-	int datas = 0;
+	static int datas = 0;
+	
+	private static volatile LinkedList<String> inMessages = new LinkedList<String> ();
 	
 	private String uuid = UUID.randomUUID ().toString ();
 	
-	public SoundPlayer clientPlayer = new SoundPlayer ();
+	public static SoundPlayer clientPlayer = new SoundPlayer ();
 	
 	public Client (String ip) {
 		
@@ -79,174 +82,11 @@ public class Client extends Thread {
 				//Wait until there's data to send
 				while (!readyToSend && !close) {
 					
-					
 					if (dataIn.available () != 0) {
-						String str = dataIn.readUTF ();
-					
-						//System.out.println ("Message recieved: " + str);
-						
-						//Parse message, etc.
-						if (str.length () >= 6 && str.substring (0, 6).equals("PLAYER")) {
-							TitleScreen.connectSuccess ();
-							
-							NetworkHandler.setPlayerNum (str.charAt (7) - '0');
-							RenderLoop.wind.setTitle (str);
-							
-						}
-						
-						if (str.substring (0, 5).equals ("PERKS")) {
-							
-							
-							String [] perks = str.substring(6).split(":");
-							
-							for (int i = 0; i < perks.length;i++) {
-								GameCode.setPerk(Integer.parseInt(perks[i]),i);
-							}
-							
-						}
-						
-						
-						if (str.substring (0, 5).equals ("POINT")) {
-							
-							String [] data = str.substring(6).split(":");
-
-							if (NetworkHandler.getPlayerNum() == Integer.parseInt(data[0])) {
-								if (DataSlot.getDataSlot(Integer.parseInt(data[1])) != null) { // I don't want to try to figure this out right now this will fix it in like 99% of cases
-									GameCode.bits.get(NetworkHandler.getPlayerNum() - 1).compass.setPointObject(DataSlot.getDataSlot(Integer.parseInt(data[1])));
-								}
-							}
-						}
-						if (str.substring (0, 7).equals ("DESTROY")) {
-							String [] toDestroy = str.substring(8).split(":");
-							switch (toDestroy[0]) {
-							case "top":
-								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyTopWall();
-								break;
-							case "bottom":
-								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyBottomWall();
-								break;
-							case "left":
-								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyLeftWall();
-								break;
-							case "right":
-								Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyRightWall();
-								break;
-							}
-						}
-						
-						if (str.length () >= 5 && str.substring (0, 5).equals ("SOUND")) {
-							String targetedPlayer = str.split(":")[1];
-							String filePath = str.split(":")[2];
-							if (targetedPlayer.equals(Integer.toString(NetworkHandler.getPlayerNum())) || targetedPlayer.equals("ALL")) {
-								clientPlayer.playSoundEffect(GameCode.volume, filePath);
-							}
-						}
-						if (str.length () >= 5 && str.substring (0, 5).equals ("MUSIC")) {
-							String filePath = str.split(":")[1];
-							GameCode.changeMusic(filePath);
-						}
-						if (str.equals ("ROUND COMPLETE")) {
-							Hud.waveOver ();
-						}
-						if (str.length () >= 15 && str.substring (0, 15).equals ("FORGET REGISTER")) {
-							int forgetableReg = Integer.parseInt(str.split(":")[1]);
-							if (ObjectHandler.getObjectsByName("Register") != null) { //obligatory null check
-								for (int i = 0; i < ObjectHandler.getObjectsByName("Register").size(); i++) {
-									Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(i);
-									if (reg.id == forgetableReg) {
-										reg.forget();
-									}
-								}
-							}
-						}
-						
-						
-						if (str.length () >= 9 && str.substring (0, 9).equals ("FORGET DS")) {
-							int forgetableDS = Integer.parseInt(str.split(":")[1]);
-							for (int i = 0; i < ObjectHandler.getObjectsByName("DataSlot").size(); i++) {
-								DataSlot ds = (DataSlot)ObjectHandler.getObjectsByName("DataSlot").get(i);
-								if (ds.id == forgetableDS) {
-									ds.forget();
-								}
-							}
-						}
-						
-						
-						if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
-							System.out.println(str);
-							String[] data = str.split (":");
-							String room_data = data[1];
-							TitleScreen.titleClosed = true;
-							
-						
-							
-							GameCode.getTitleScreen().setSprite(new Sprite ("resources/sprites/now loading.png"));
-							
-							
-							
-							RenderLoop.pause();
-							
-							GameCode.getTitleScreen().draw();
-							
-							RenderLoop.wind.refresh();
-							
-							Roome.loadMap (room_data);
-							
-							RenderLoop.unPause();
-							
-							
-							GameCode.initGameState ();
-							
-							
-							GameCode.closeTitleScreen();
-							
-							
-						}
-						
-						if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
-							if (datas==0) {
-								System.out.println(str);
-								datas++;
-							}
-							ArrayList<Integer> toKeep = new ArrayList <Integer> ();
-							
-							long dataParseTime = System.currentTimeMillis ();
-							//Get the data
-							String[] data = str.split (":");
-							updateGameData (data);
-							
-						}
-						
-						if (str.length () >= 3 && str.substring (0,4).equals ("NPC ")) {
-							String[] args = str.split (" ");
-							if (args[1].equals ("CREATE")) {
-								NPC npc = NPC.getInstance (args[2]);
-								npc.declare (0, 0);
-								System.out.println (npc.id);
-							} else if (args[1].equals ("UPDATE")) {
-								String[] data = args[2].split (":");
-								System.out.println(data[1]);
-								try {
-									NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
-									npc.updateNpc (args[2]);
-								} catch (NullPointerException e) {
-									System.out.println ("WARNING: NPC WAS NULL");
-								}
-							} else if (args[1].equals ("FORGET")) {
-								NPC.getNpcById (Integer.parseInt (args[2])).forget ();
-							}
-						}
-						//System.out.println ("Message recieved: " + str);
-
+						inMessages.push (dataIn.readUTF ());
 					}
-					
-					try {
-						thread.sleep (1);
-					} catch (InterruptedException e) {
-						//Do nothing, timing is not critical
-					}
+
 				}
-				
 				if (close) {
 					break;
 				}
@@ -293,6 +133,174 @@ public class Client extends Thread {
 	
 	public void setThread (Thread thread) {
 		this.thread = thread;
+	}
+	
+	public static void processMessages () {
+		while (!inMessages.isEmpty ()) {
+			String str = inMessages.removeLast ();
+		
+			//System.out.println ("Message recieved: " + str);
+			
+			//Parse message, etc.
+			if (str.length () >= 6 && str.substring (0, 6).equals("PLAYER")) {
+				TitleScreen.connectSuccess ();
+				
+				NetworkHandler.setPlayerNum (str.charAt (7) - '0');
+				RenderLoop.wind.setTitle (str);
+				
+			}
+			
+			if (str.substring (0, 5).equals ("PERKS")) {
+				
+				
+				String [] perks = str.substring(6).split(":");
+				
+				for (int i = 0; i < perks.length;i++) {
+					GameCode.setPerk(Integer.parseInt(perks[i]),i);
+				}
+				
+			}
+			
+			
+			if (str.substring (0, 5).equals ("POINT")) {
+				
+				String [] data = str.substring(6).split(":");
+
+				if (NetworkHandler.getPlayerNum() == Integer.parseInt(data[0])) {
+					if (DataSlot.getDataSlot(Integer.parseInt(data[1])) != null) { // I don't want to try to figure this out right now this will fix it in like 99% of cases
+						GameCode.bits.get(NetworkHandler.getPlayerNum() - 1).compass.setPointObject(DataSlot.getDataSlot(Integer.parseInt(data[1])));
+					}
+				}
+			}
+			if (str.substring (0, 7).equals ("DESTROY")) {
+				String [] toDestroy = str.substring(8).split(":");
+				switch (toDestroy[0]) {
+				case "top":
+					Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyTopWall();
+					break;
+				case "bottom":
+					Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyBottomWall();
+					break;
+				case "left":
+					Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyLeftWall();
+					break;
+				case "right":
+					Roome.map[Integer.parseInt(toDestroy[2])][Integer.parseInt(toDestroy[1])].destroyRightWall();
+					break;
+				}
+			}
+			
+			if (str.length () >= 5 && str.substring (0, 5).equals ("SOUND")) {
+				String targetedPlayer = str.split(":")[1];
+				String filePath = str.split(":")[2];
+				if (targetedPlayer.equals(Integer.toString(NetworkHandler.getPlayerNum())) || targetedPlayer.equals("ALL")) {
+					clientPlayer.playSoundEffect(GameCode.volume, filePath);
+				}
+			}
+			if (str.length () >= 5 && str.substring (0, 5).equals ("MUSIC")) {
+				String filePath = str.split(":")[1];
+				GameCode.changeMusic(filePath);
+			}
+			if (str.equals ("ROUND COMPLETE")) {
+				Hud.waveOver ();
+			}
+			if (str.length () >= 15 && str.substring (0, 15).equals ("FORGET REGISTER")) {
+				int forgetableReg = Integer.parseInt(str.split(":")[1]);
+				if (ObjectHandler.getObjectsByName("Register") != null) { //obligatory null check
+					for (int i = 0; i < ObjectHandler.getObjectsByName("Register").size(); i++) {
+						Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(i);
+						if (reg.id == forgetableReg) {
+							reg.forget();
+						}
+					}
+				}
+			}
+			
+			
+			if (str.length () >= 9 && str.substring (0, 9).equals ("FORGET DS")) {
+				int forgetableDS = Integer.parseInt(str.split(":")[1]);
+				for (int i = 0; i < ObjectHandler.getObjectsByName("DataSlot").size(); i++) {
+					DataSlot ds = (DataSlot)ObjectHandler.getObjectsByName("DataSlot").get(i);
+					if (ds.id == forgetableDS) {
+						ds.forget();
+					}
+				}
+			}
+			
+			
+			if (str.length () >= 5 && str.substring (0, 5).equals ("START")) {
+				System.out.println(str);
+				String[] data = str.split (":");
+				String room_data = data[1];
+				TitleScreen.titleClosed = true;
+				
+			
+				
+				GameCode.getTitleScreen().setSprite(new Sprite ("resources/sprites/now loading.png"));
+				
+				
+				
+				RenderLoop.pause();
+				
+				GameCode.getTitleScreen().draw();
+				
+				RenderLoop.wind.refresh();
+				
+				Roome.loadMap (room_data);
+				
+				RenderLoop.unPause();
+				
+				
+				GameCode.initGameState ();
+				
+				
+				GameCode.closeTitleScreen();
+				
+				
+			}
+			
+			if (str.length () >= 4 && str.substring (0,4).equals ("DATA")) {
+				if (datas==0) {
+					System.out.println(str);
+					datas++;
+				}
+				ArrayList<Integer> toKeep = new ArrayList <Integer> ();
+				
+				long dataParseTime = System.currentTimeMillis ();
+				//Get the data
+				String[] data = str.split (":");
+				updateGameData (data);
+				
+			}
+			
+			if (str.length () >= 3 && str.substring (0,4).equals ("NPC ")) {
+				String[] args = str.split (" ");
+				if (args[1].equals ("CREATE")) {
+					NPC npc = NPC.getInstance (args[2]);
+					npc.declare (0, 0);
+					System.out.println (npc.id);
+				} else if (args[1].equals ("UPDATE")) {
+					String[] data = args[2].split (":");
+					System.out.println(data[1]);
+					try {
+						NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
+						npc.updateNpc (args[2]);
+					} catch (NullPointerException e) {
+						System.out.println ("WARNING: NPC WAS NULL");
+					}
+				} else if (args[1].equals ("FORGET")) {
+					NPC.getNpcById (Integer.parseInt (args[2])).forget ();
+				}
+			}
+			//System.out.println ("Message recieved: " + str);
+
+		}
+		
+		/*try {
+			thread.sleep (1);
+		} catch (InterruptedException e) {
+			//Do nothing, timing is not critical
+		}*/
 	}
 	
 	public static void updateGameData (String[] data) {

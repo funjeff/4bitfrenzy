@@ -193,6 +193,9 @@ public class GameCode {
 	
 	public static void gameLoopFunc () {
 	
+		if (!NetworkHandler.isHost ()) {
+			Client.processMessages ();
+		}
 		if (titleScreen.keyPressed ('Q')) {
 			devMode = true;
 		}
