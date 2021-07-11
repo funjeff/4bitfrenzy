@@ -201,10 +201,7 @@ public class GameCode {
 		if (NetworkHandler.isHost () && gameStarted) {
 		
 			if (firstFrame) {
-				Baseball b = new Baseball ();
-				System.out.println (b.getNpcType());
-				b.setX (bits.get(0).getX ());
-				b.setY (bits.get(0).getY ());
+				Baseball b = new Baseball (bits.get(0).getX (), bits.get(0).getY ());
 				firstFrame = false;
 			}
 			

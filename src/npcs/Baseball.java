@@ -4,8 +4,8 @@ import engine.Sprite;
 
 public class Baseball extends PushableNPC {
 	
-	public Baseball () {
-		super ();
+	public Baseball (double x, double y) {
+		super (x, y);
 		setHitboxAttributes (32, 32);
 		setSprite (new Sprite ("resources/sprites/baseball.png"));
 	}

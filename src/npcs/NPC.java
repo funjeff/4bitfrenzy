@@ -12,19 +12,33 @@ public class NPC extends GameObject {
 	
 	private static HashMap<Integer, NPC> npcMap;
 	
-	public NPC () {
+	protected NPC () {
 		npcType = getClass ().getSimpleName ();
 		initNpc ();
 	}
 	
-	public NPC (String type) {
+	protected NPC (String type) {
 		this.npcType = type;
+		initNpc ();
+	}
+	
+	protected NPC (double x, double y) {
+		npcType = getClass ().getSimpleName ();
+		setX (x);
+		setY (y);
+		initNpc ();
+	}
+	
+	protected NPC (String type, double x, double y) {
+		npcType = type;
+		setX (x);
+		setY (y);
 		initNpc ();
 	}
 	
 	public void initNpc () {
 		if (NetworkHandler.isHost ()) {
-			declare (0, 0);
+			declare ((int)getX (), (int)getY ());
 			NetworkHandler.getServer ().sendMessage ("NPC CREATE " + toString ());
 		}
 	}
@@ -38,13 +52,16 @@ public class NPC extends GameObject {
 		String[] params = s.split (":");
 		try {
 			//Make and return a new NPC with the given parameters
-			NPC newNpc = (NPC) Class.forName ("npcs." + params[0]).getConstructor ().newInstance ();
+			double sx = Double.parseDouble (params [2]);
+			double sy = Double.parseDouble (params [3]);
+			NPC newNpc = (NPC) Class.forName ("npcs." + params[0]).getConstructor (Double.TYPE, Double.TYPE).newInstance (sx, sy);
 			newNpc.id = Integer.parseInt (params [1]);
 			newNpc.updateNpc (s);
 			return newNpc;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			//Return null if instantiation fails
+			System.out.println (e);
 			return null;
 		}
 	}
@@ -98,7 +115,7 @@ public class NPC extends GameObject {
 	
 	@Override
 	public void declare () {
-		declare (0, 0);
+		declare ((int)getX (), (int)getY ());
 		mapNpc ();
 	}
 	

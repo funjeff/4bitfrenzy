@@ -19,6 +19,7 @@ import items.ItemBox;
 import map.Map;
 import map.Roome;
 import network.NetworkHandler;
+import npcs.Hoop;
 import resources.SoundPlayer;
 import resources.Textbox;
 
@@ -108,6 +109,9 @@ public class Bit extends GameObject {
 	@Override
 	public void frameEvent () {	
 			String keys;
+			if (keyPressed('R') && NetworkHandler.isHost () && NetworkHandler.getPlayerNum () == playerNum) {
+				Hoop hoop = new Hoop (getX (), getY ());
+			}
 			try {
 		
 				keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);

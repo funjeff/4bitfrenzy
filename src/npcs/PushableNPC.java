@@ -9,13 +9,13 @@ import players.Bit;
 
 public class PushableNPC extends NPC {
 	
-	double vx;
-	double vy;
+	private double vx;
+	private double vy;
 	
-	public static final double FRICTION_AMOUNT = .1;
+	private double friction = .1;
 	
-	public PushableNPC () {
-		super ();
+	public PushableNPC (double x, double y) {
+		super (x, y);
 	}
 	
 	@Override
@@ -30,14 +30,15 @@ public class PushableNPC extends NPC {
 			//Hit the wall
 			this.setX (xprev);
 			this.setY (yprev);
-			vx = 0;
-			vy = 0;
+			vx *= -.5;
+			vy *= -.5; //Bounce (NOTE: not a "proper" bounce for diagonal directions)
 		}
+		assertPosition (getX (), getY ());
 		
 		//Apply friction
 		if (Math.abs (vx) > 0) {
 			double vxprev = vx;
-			vx -= vx < 0 ? -FRICTION_AMOUNT : FRICTION_AMOUNT;
+			vx -= vx < 0 ? -friction : friction;
 			if (vxprev != 0 && Math.signum (vx) != Math.signum (vxprev)) {
 				vx = 0;
 			}
@@ -45,7 +46,7 @@ public class PushableNPC extends NPC {
 		
 		if (Math.abs (vy) > 0) {
 			double vyprev = vy;
-			vy -= vy < 0 ? -FRICTION_AMOUNT : FRICTION_AMOUNT;
+			vy -= vy < 0 ? -friction : friction;
 			if (vyprev != 0 && Math.signum (vy) != Math.signum (vyprev)) {
 				vy = 0;
 			}
@@ -79,6 +80,14 @@ public class PushableNPC extends NPC {
 			}
 		}
 		
+	}
+	
+	public void setFriction (double friction) {
+		this.friction = friction;
+	}
+	
+	public double getFriction () {
+		return friction;
 	}
 	
 }
