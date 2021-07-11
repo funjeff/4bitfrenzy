@@ -224,10 +224,13 @@ public class Register extends GameObject {
 		boolean canPush = isLargeRegister ? false : true; //Defaults to false for large registers
 		//Check for powerhouse perk
 		for (int i = 0; i < bitsPushing.size (); i++) {
-			if (bitsPushing.get (i).perk == 3) {
+			if (bitsPushing.get (i).perk == 3 || bitsPushing.get(i).isPoweredUp()) {
 				canPush = true; //Only one bit needs to have powerhouse
 			}
 		}
+		
+		
+		
 		//Check for 2 or more bits
 		if (bitsPushing.size () > 1) {
 			canPush = true;

@@ -16,10 +16,15 @@ import gameObjects.DataSlot;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
 import items.Bombs;
+import items.BrokenTeleporter;
+import items.Cash;
 import items.DataScrambler;
+import items.Egg;
+import items.FakeScrambler;
 import items.Glue;
 import items.Speed;
 import items.Teleporter;
+import items.Water;
 import gameObjects.TitleScreen;
 import map.Ribbon;
 import map.RibbonPulse;
@@ -389,12 +394,20 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-//		Teleporter port = new Teleporter ();
-//		port = new Teleporter ();
-//		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].biatch;
-//		int spawnCoords[] = lolFunnyName.getPosibleCoords(port.hitbox().width, port.hitbox().height);
-//		port.declare(spawnCoords[0] - 20, spawnCoords[1] - 20);
+		Cash port = new Cash ();
+		port = new Cash ();
+		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].biatch;
+		int spawnCoords[] = lolFunnyName.getPosibleCoords(port.hitbox().width, port.hitbox().height);
+		port.declare(spawnCoords[0] - 20, spawnCoords[1] - 20);
 //		
+//		Register regBig = new Register (45);
+//		
+//		Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].r = regBig;
+//		
+//		regBig.makeLarge();
+//		
+//		regBig.declare(spawnCoords[0] - 40, spawnCoords[1] - 40);
+		
 		if (TitleScreen.initialData != null) {
 			Client.updateGameData (TitleScreen.initialData);
 		}

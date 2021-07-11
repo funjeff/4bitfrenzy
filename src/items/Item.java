@@ -1,6 +1,7 @@
 package items;
 
 import engine.GameObject;
+import map.Roome;
 import players.Bit;
 
 public class Item extends GameObject {
@@ -21,7 +22,17 @@ public class Item extends GameObject {
 	
 	}
 	
+	public void pickUpItem (Bit pickUper) {
+		
+	}
 
+	public void dropItem (Bit droper) {
+		
+		Roome romm = Roome.getRoom(droper.getX(), droper.getY());
+		int [] spawnCoords = romm.biatch.getPosibleCoords(this.hitbox().width, this.hitbox().height);
+		this.declare(spawnCoords[0], spawnCoords[1]);
+	}
+	
 	public void refreshItem (String str) {
 		String [] args = str.split(" ");
 		this.setX(Integer.parseInt(args[2]));

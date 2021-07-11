@@ -39,6 +39,7 @@ public class Compass extends GameObject {
 		setArrowParams (ang);
 		
 		//Not really sure what this does, Jeffrey explain pls
+		//checks if it is pointing to a cleared data slot and makes it not do that (because pointing to a cleared data slot is a waste of time)
 		try {
 			DataSlot ds = (DataSlot) pointObject;
 			if (ds.cleared) {
