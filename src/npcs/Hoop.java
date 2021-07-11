@@ -21,4 +21,9 @@ public class Hoop extends NPC {
 		}
 	}
 	
+	@Override
+	public void forget () {
+		Thread.dumpStack ();
+	}
+	
 }

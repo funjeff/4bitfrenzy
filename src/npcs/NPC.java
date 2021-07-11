@@ -40,6 +40,7 @@ public class NPC extends GameObject implements ItemGenerator {
 	}
 	
 	public void initNpc () {
+		System.out.println (getClass ());
 		if (NetworkHandler.isHost ()) {
 			declare ((int)getX (), (int)getY ());
 			NetworkHandler.getServer ().sendMessage ("NPC CREATE " + toString ());

@@ -139,6 +139,7 @@ public class TitleScreen extends GameObject {
 			isHost = true;
 			
 			GameCode.setPerk(perkNum, 0);
+			NetworkHandler.setHost (true);
 			
 			this.setSprite(new Sprite ("resources/sprites/now loading.png"));
 			
@@ -172,7 +173,6 @@ public class TitleScreen extends GameObject {
 			RenderLoop.unPause();
 			this.setSprite(lobbySprite);
 			
-			NetworkHandler.setHost (true);
 			enterIpMode ();
 			
 			
@@ -1039,5 +1039,9 @@ public class TitleScreen extends GameObject {
 					
 					this.forget();
 				}
+		}
+	
+		public static int getNumberOfPlayers () {
+			return numPlayers;
 		}
 	}

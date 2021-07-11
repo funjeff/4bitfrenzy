@@ -356,8 +356,11 @@ public class GameCode {
 		
 		Hud hud = new Hud ();
 		
-		//Make a new wave if generating a map
+		//If generating a map,
 		if (TitleScreen.initialData == null) {
+			//Populate the map
+			Roome.populateRoomes ();
+			//Make a new wave
 			if (NetworkHandler.isHost()) {
 				Hud.newWave ();
 			}

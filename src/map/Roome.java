@@ -5,8 +5,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 import engine.GameCode;
@@ -30,6 +34,7 @@ import items.Glue;
 import items.Speed;
 import items.Teleporter;
 import network.NetworkHandler;
+import npcs.NPC;
 import resources.Textbox;
 
 public class Roome extends GameObject {
@@ -62,12 +67,124 @@ public class Roome extends GameObject {
 	
 	public PixelBitch biatch;
 	
-	
+	public static ArrayList<String> roomData;
+	public static ArrayList<Integer> roomPool;
 	
 	public Roome ()
 	{
 		
 	}
+	
+	public static ArrayList<String> getRoomeData () {
+		
+		//Init the room data if null
+		if (roomData == null) {
+			roomData = new ArrayList<String> ();
+			File f = new File ("resources/sprites/config/rooms.txt");
+			Scanner s;
+			try {
+				s = new Scanner (f);
+				while (s.hasNextLine ()) {
+					roomData.add (s.nextLine ());
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//Get the room data
+		return roomData;
+		
+	}
+	
+	public static int rollRoomeId () {
+		ArrayList<Integer> ids = getRoomeIdPool ();
+		int idx = (int)(Math.random () * ids.size ());
+		return ids.get (idx);
+	}
+	
+	public static ArrayList<Integer> getRoomeIdPool () {
+		
+		//Get the room data
+		ArrayList<String> roomDat = getRoomeData ();
+		
+		//Make the room pool if it's not yet made
+		if (roomPool == null) {
+			roomPool = new ArrayList<Integer> ();
+			for (int i = 0; i < roomDat.size (); i++) {
+				Scanner s = new Scanner (roomDat.get (i));
+				s.next ();
+				int amt = s.nextInt ();
+				System.out.println (i + ", " + amt);
+				for (int j = 0; j < amt; j++) {
+					roomPool.add (i);
+				}
+			}
+		}
+		
+		//Return the room pool
+		return roomPool;
+		
+	}
+	
+	public static void populateRoomes () {
+		
+		if (roomData == null) {
+			getRoomeData (); //Populate roomData if it's currently null
+		}
+		
+		Scanner s1 = null;
+		Scanner s2 = null;
+		Scanner s3 = null;
+		
+		for (int wx = 0; wx < mapWidth; wx++) {
+			for (int wy = 0; wy < mapHeight; wy++) {
+				
+				//Get the roome data
+				Roome r = map[wy][wx];
+				String dat = roomData.get (r.id);
+				s1 = new Scanner (dat);
+				s1.next ();
+				s1.next ();
+				
+				//Find the object file and make the object
+				if (s1.hasNext ()) {
+					File f2 = new File (s1.next ());
+					try {
+						s2 = new Scanner (f2);
+						//Scan through the object list
+						while (s2.hasNextLine ()) {
+							//Scan through the object text and create the appropraite object
+							s3 = new Scanner (s2.nextLine ());
+							String objType = s3.next ();
+							double objX = r.getX () + s3.nextInt ();
+							double objY = r.getY () + s3.nextInt ();
+							try {
+								Class.forName ("npcs." + objType).getConstructor (Double.TYPE, Double.TYPE).newInstance (objX, objY);
+							} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+									| InvocationTargetException | NoSuchMethodException | SecurityException
+									| ClassNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+			try {
+				s1.close ();
+				s2.close ();
+				s3.close ();
+			} catch (Exception e) {
+				//Do nothing, s2-4 were never made
+			}
+		}
+	}
+	
 	public void init (int id, int colorNum) {
 		
 		if (biatch == null) {
@@ -82,17 +199,9 @@ public class Roome extends GameObject {
 			int lineNum = id; // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
 			this.id = id;
 
-			
-			//thanks stack overflow :)
-			try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/rooms.txt"))) {
-				
-			    toUse = lines.skip(lineNum).findFirst().get();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			String roomPath = getRoomeData ().get (lineNum).split (" ")[0];
 
-			this.setSprite(new Sprite (toUse));
+			this.setSprite(new Sprite (roomPath));
 			
 			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
 			
@@ -372,7 +481,7 @@ public class Roome extends GameObject {
 		for (int i = 0; i < finalRooms.size(); i++) {
 			Roome working = (Roome)finalRooms.get(i);
 			if (working != null) {
-				working.init(r.nextInt (12), r.nextInt (5));
+				working.init(rollRoomeId (), r.nextInt (5));
 			}
 		}
 

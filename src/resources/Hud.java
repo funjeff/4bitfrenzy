@@ -10,6 +10,7 @@ import engine.ObjectHandler;
 import gameObjects.DataSlot;
 import gameObjects.GameOverScreen;
 import gameObjects.Register;
+import gameObjects.TitleScreen;
 import gameObjects.WaveCompleteGraphic;
 import items.Bombs;
 import items.DataScrambler;
@@ -141,7 +142,7 @@ public class Hud extends GameObject {
 	public static void newWave() {	
 		
 		roundNum = roundNum + 1;
-		waveNum.changeText("REGISTERS LEFT: " + Integer.toString(roundNum));
+		waveNum.changeText("CURRENT WAVE: " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
 		if (roundNum != 1) {
@@ -169,117 +170,123 @@ public class Hud extends GameObject {
 			}
 		}
 		Random rand = new Random ();
-		do {
-			for (int wy = 0; wy < Roome.map.length; wy++) {
-				for (int wx = 0; wx < Roome.map[wy].length; wx++) {
-					if (rand.nextInt(10) < roundNum) {
-						
-						int [] spawnCoords = Roome.map[wy][wx].biatch.getPosibleCoords(32, 32);
-						
-						//IMPORTANT client is unresponsive if there are no items
-						switch (rand.nextInt(5)) {
-						case 0:
-							Glue glue = new Glue ();
-							glue.declare(spawnCoords[0], spawnCoords[1]);
-							break;
-						case 1:
-							Bombs bombs = new Bombs ();
-							bombs.declare(spawnCoords[0], spawnCoords[1]);
-							break;
-						case 2:
-							Speed speed = new Speed ();
-							speed.declare(spawnCoords[0], spawnCoords[1]);
-							break;
-						case 3:
-							Teleporter tele = new Teleporter ();
-							tele.declare(spawnCoords[0], spawnCoords[1]);
-							break;
-						case 4:
-							DataScrambler scrambler = new DataScrambler ();
-							scrambler.declare(spawnCoords[0], spawnCoords[1]);
-							break;
-						}
-								
-					}
+		
+		//Spawn in items
+		int numItems = rand.nextInt (TitleScreen.getNumberOfPlayers () + 1);
+			
+		for (int i = 0; i < numItems; i++) {
+			int wx = rand.nextInt (Roome.getMapWidth ());
+			int wy = rand.nextInt (Roome.getMapHeight ());
+			int [] spawnCoords = Roome.map[wy][wx].biatch.getPosibleCoords(32, 32);
+		
+			//IMPORTANT client is unresponsive if there are no items
+			switch (rand.nextInt(5)) {
+				case 0:
+					Glue glue = new Glue ();
+					glue.declare(spawnCoords[0], spawnCoords[1]);
+					break;
+				case 1:
+					Bombs bombs = new Bombs ();
+					bombs.declare(spawnCoords[0], spawnCoords[1]);
+					break;
+				case 2:
+					Speed speed = new Speed ();
+					speed.declare(spawnCoords[0], spawnCoords[1]);
+					break;
+				case 3:
+					Teleporter tele = new Teleporter ();
+					tele.declare(spawnCoords[0], spawnCoords[1]);
+					break;
+				case 4:
+					DataScrambler scrambler = new DataScrambler ();
+					scrambler.declare(spawnCoords[0], spawnCoords[1]);
+					break;
+			}
+		}
+		
+		//Spawn in registers
+		int newRegisters = (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
+		for (int i = 0; i < newRegisters; i++) {
+				
+			int memNum = rand.nextInt(256);
+			int wx = rand.nextInt (Roome.getMapWidth ());
+			int wy = rand.nextInt (Roome.getMapHeight ());
+			
+			if (ObjectHandler.getObjectsByName("Register") != null) {
+				while (true) {
 					
-					if (rand.nextInt(20) < roundNum) {
-						int memNum = rand.nextInt(256);
-						
-						if (ObjectHandler.getObjectsByName("Register") != null) {
-							while (true) {
-								
-								boolean broken = false;
-								
-								for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
-									Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
-									if (reg.getMemAddress() == memNum) {
-										broken = true;
-										break;
-									}
-								}
-									if (!broken) {
-										break;
-									}
-									memNum = rand.nextInt(256);
-							}
+					boolean broken = false;
+					
+					for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
+						Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
+						if (reg.getMemAddress() == memNum) {
+							broken = true;
+							break;
 						}
-						Register r = new Register(memNum);
-						
-						int [] spawnPoint = Roome.map[wy][wx].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
-						
-						r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
-						
-						Roome.map[wy][wx].r = r;
-						
-						int xCoord, yCoord;
-						Point p1 = new Point (wx, wy);
-						Point p2 = new Point (wx, wy);
-						
-						boolean isBlue = rand.nextDouble () < blueRegisterOdds;
-						boolean isLarge = isBlue ? false : rand.nextDouble () < largeRegisterOdds; //Blue registers can't be large
-						
-						//Change the register as needed
-						if (isBlue) {
-							r.makeBlue ();
+					}
+						if (!broken) {
+							break;
 						}
-						if (isLarge) {
-							r.makeLarge ();
-						}
-						
-						while (true) {
-							
-							//Select a random room (distance lookups are cheap because they are lookup tables)
-							xCoord = rand.nextInt (Roome.getMapWidth ());
-							yCoord = rand.nextInt (Roome.getMapHeight ());
-							
-							//Test for the required proximity
-							p2.x = xCoord;
-							p2.y = yCoord;
-							int dist = Roome.distBetween (p1, p2);
-							if (isBlue) {
-								if (dist >= minBlueRegisterDistance && dist <= maxBlueRegisterDistance) {
-									break; //Sorry for the bad design, I'm aware break is bad
-								}
-							} else {
-								if (dist >= minRegisterDistance && dist <= maxRegisterDistance) {
-									break; // ^
-								}
-							}
-						}
-						
-						Roome dataRoom = Roome.map [yCoord][xCoord];
-						DataSlot ds = new DataSlot (memNum);
-						
-						int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
-						
-						
-						ds.declare((int)otherPoint[0],(int) otherPoint[1]);
-						
-						dataRoom.ds = ds;
+						memNum = rand.nextInt(256);
+				}
+			}
+			Register r = new Register(memNum);
+			
+			int [] spawnPoint = Roome.map[wy][wx].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
+			
+			r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
+			
+			Roome.map[wy][wx].r = r;
+			
+			int xCoord, yCoord;
+			Point p1 = new Point (wx, wy);
+			Point p2 = new Point (wx, wy);
+			
+			boolean isBlue = rand.nextDouble () < blueRegisterOdds;
+			boolean isLarge = isBlue ? false : rand.nextDouble () < largeRegisterOdds; //Blue registers can't be large
+			if (TitleScreen.getNumberOfPlayers() == 1) {
+				isLarge = false;
+			}
+			
+			//Change the register as needed
+			if (isBlue) {
+				r.makeBlue ();
+			}
+			if (isLarge) {
+				r.makeLarge ();
+			}
+			
+			while (true) {
+				
+				//Select a random room (distance lookups are cheap because they are lookup tables)
+				xCoord = rand.nextInt (Roome.getMapWidth ());
+				yCoord = rand.nextInt (Roome.getMapHeight ());
+				
+				//Test for the required proximity
+				p2.x = xCoord;
+				p2.y = yCoord;
+				int dist = Roome.distBetween (p1, p2);
+				if (isBlue) {
+					if (dist >= minBlueRegisterDistance && dist <= maxBlueRegisterDistance) {
+						break; //Sorry for the bad design, I'm aware break is bad
+					}
+				} else {
+					if (dist >= minRegisterDistance && dist <= maxRegisterDistance) {
+						break; // ^
 					}
 				}
 			}
-		} while (ObjectHandler.getObjectsByName ("Register") == null);
+			
+			Roome dataRoom = Roome.map [yCoord][xCoord];
+			DataSlot ds = new DataSlot (memNum);
+			
+			int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
+			
+			
+			ds.declare((int)otherPoint[0],(int) otherPoint[1]);
+			
+			dataRoom.ds = ds;
+		}
 		timeLeft = 60000 * 5 + 60000 * roundNum;
 	}
 	public static void waveOver () {
