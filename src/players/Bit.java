@@ -45,6 +45,10 @@ public class Bit extends GameObject {
 	
 	boolean secondaryBit = false;
 	
+	boolean poweredUp = false;
+	
+	long powerTimer = 0;
+	
 	public int regNum = 0;
 	
 	public boolean isSecondaryBit() {
@@ -119,6 +123,10 @@ public class Bit extends GameObject {
 				keys = null;
 			}
 		
+			if (powerTimer < System.currentTimeMillis()&& powerTimer != 0) {
+				powerTimer = 0;
+				poweredUp = false;
+			} 
 			if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
 				speedUpTimer = 0;
 				speed = speed - 2;
@@ -135,11 +143,10 @@ public class Bit extends GameObject {
 				if (toUse.pickupablity) {
 					if (inventory.getItem() != null) {
 						Item it = inventory.getItem();
-						Roome romm = Roome.getRoom(this.getX(), this.getY());
-						int [] spawnCoords = romm.biatch.getPosibleCoords(it.hitbox().width, it.hitbox().height);
-						it.declare(spawnCoords[0], spawnCoords[1]);
+						it.dropItem(this);
 					}
 					inventory.setItem(toUse);
+					toUse.pickUpItem(this);
 					toUse.forget();
 				}
 			}
@@ -292,6 +299,14 @@ public class Bit extends GameObject {
 					updateScroll ();
 				}
 			}
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
 	private void carryRegestersY (double dist) {
 		if (regestersBeingCarried != null) {
 			for (int i = 0; i < regestersBeingCarried.size(); i++) {
@@ -341,6 +356,13 @@ public class Bit extends GameObject {
 	public void speedUpTemporarly() {
 		speed = speed + 2;
 		speedUpTimer = System.currentTimeMillis() +  30 * 1000;
+	}
+	public void powerUpTemporarly () {
+		poweredUp = true;
+		powerTimer = System.currentTimeMillis() +  30 * 1000;
+	}
+	public boolean isPoweredUp () {
+		return poweredUp;
 	}
 	@Override
 	public boolean goY(double val) {

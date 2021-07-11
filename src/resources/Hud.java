@@ -40,7 +40,7 @@ public class Hud extends GameObject {
 	public static int maxBlueRegisterDistance = 10;
 	
 	public static double blueRegisterOdds = .15;
-	public static double largeRegisterOdds = .2;
+	public static double largeRegisterOdds = 1090;
 
 	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
 

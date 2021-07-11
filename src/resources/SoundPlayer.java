@@ -1,6 +1,7 @@
 package resources;
 
 import java.io.File;
+import java.util.HashMap;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -19,6 +20,8 @@ public class SoundPlayer implements LineListener{
 	Clip clip;
 	
 	public boolean muted = false;
+	
+	public static HashMap <String, Clip> soundEffects = new HashMap <String, Clip>();
 	
 	public SoundPlayer (){
 	}
@@ -84,6 +87,13 @@ public class SoundPlayer implements LineListener{
 	 * @param effectName the name of the sound effect
 	 */
 	public void playSoundEffect (float volume, String effectName){
+		try {
+			if (soundEffects.get(effectName).isActive()) {
+				soundEffects.get(effectName).stop();
+			}
+		} catch (NullPointerException e) {
+		
+		}
 		if (!muted) {
 			Clip clip2;
 			File soundFile2 = new File (effectName);
@@ -98,6 +108,10 @@ public class SoundPlayer implements LineListener{
 			FloatControl gainControl2 = (FloatControl) clip2.getControl(FloatControl.Type.MASTER_GAIN);
 			gainControl2.setValue(volume);
 			clip2.start();
+	
+			
+			soundEffects.put(effectName, clip2);
+		
 			
 			} catch (Exception e){
 			System.out.println("whoops (error message) ");
