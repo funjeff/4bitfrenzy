@@ -26,4 +26,29 @@ public class Hoop extends NPC {
 		Thread.dumpStack ();
 	}
 	
+	@Override
+	public boolean spawnsQuestItem () {
+		return true;
+	}
+	
+	@Override
+	public Class<?> getQuestItemType () {
+		return Basketball.class;
+	}
+	
+	@Override
+	public double getQuestItemSpawnOdds () {
+		return 0.2;
+	}
+	
+	@Override
+	public int getMinQuestItems () {
+		return 1;
+	}
+	
+	@Override
+	public int getMaxQuestItems () {
+		return 3;
+	}
+	
 }

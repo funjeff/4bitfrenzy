@@ -32,7 +32,6 @@ import map.Roome;
 import network.Client;
 import network.NetworkHandler;
 import npcs.Baseball;
-import npcs.Basketball;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
@@ -64,8 +63,6 @@ public class GameCode {
 	private static GameSettings settings;
 	
 	private File loadFile = null;
-	
-	static boolean firstFrame = true;
 	
 	public static void testBitch () {
 		
@@ -205,11 +202,6 @@ public class GameCode {
 		}
 		frame++;
 		if (NetworkHandler.isHost () && gameStarted) {
-		
-			if (firstFrame) {
-				Basketball b = new Basketball (bits.get(0).getX (), bits.get(0).getY ());
-				firstFrame = false;
-			}
 			
 			int mouseX = bits.get (0).getCursorX () + getViewX ();
 			int mouseY = bits.get (0).getCursorY () + getViewY ();

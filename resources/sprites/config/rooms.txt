@@ -10,4 +10,4 @@ resources/sprites/room_lake.png 100
 resources/sprites/room_noise.png 100
 resources/sprites/room_ram_fields.png 100
 resources/sprites/room_snakes.png 100
-resources/sprites/room_basketball.png 500 resources/sprites/config/room_basketball_objs.txt
+resources/sprites/room_basketball.png 20 resources/sprites/config/room_basketball_objs.txt

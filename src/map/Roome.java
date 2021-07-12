@@ -34,6 +34,7 @@ import items.Glue;
 import items.Speed;
 import items.Teleporter;
 import network.NetworkHandler;
+import npcs.Dirt;
 import npcs.NPC;
 import resources.Textbox;
 
@@ -69,6 +70,9 @@ public class Roome extends GameObject {
 	
 	public static ArrayList<String> roomData;
 	public static ArrayList<Integer> roomPool;
+	public static ArrayList<String> codeWallLines;
+	public static ArrayList<String> codeWallColors;
+	public static HashMap<Integer, ArrayList<Roome>> roomeIdMap;
 	
 	public Roome ()
 	{
@@ -130,6 +134,8 @@ public class Roome extends GameObject {
 	
 	public static void populateRoomes () {
 		
+		Random rand = new Random ();
+		
 		if (roomData == null) {
 			getRoomeData (); //Populate roomData if it's currently null
 		}
@@ -137,6 +143,8 @@ public class Roome extends GameObject {
 		Scanner s1 = null;
 		Scanner s2 = null;
 		Scanner s3 = null;
+		
+		HashMap<Integer, ArrayList<Roome>> roomeMap;
 		
 		for (int wx = 0; wx < mapWidth; wx++) {
 			for (int wy = 0; wy < mapHeight; wy++) {
@@ -174,15 +182,98 @@ public class Roome extends GameObject {
 						e1.printStackTrace();
 					}
 				}
-			}
-			try {
-				s1.close ();
-				s2.close ();
-				s3.close ();
-			} catch (Exception e) {
-				//Do nothing, s2-4 were never made
+				try {
+					s1.close ();
+					s2.close ();
+					s3.close ();
+				} catch (Exception e) {
+					//Do nothing, s2-4 were never made
+				}
 			}
 		}
+		
+		//Load in hardcoded objects (with special conditions)
+		ArrayList<Roome> flowerRooms = getRoomeIdMap ().get (3);
+		System.out.println (flowerRooms);
+		if (flowerRooms != null && flowerRooms.size () >= 1) {
+			int room1 = rand.nextInt (flowerRooms.size ());
+			int room2;
+			do {
+				room2 = rand.nextInt (flowerRooms.size ());
+			} while (room1 == room2);
+			int[] coords1 = flowerRooms.get (room1).biatch.getPosibleCoords (31, 32);
+			int[] coords2 = flowerRooms.get (room2).biatch.getPosibleCoords (31, 32);
+			new Dirt (coords1[0], coords1[1]);
+			new Dirt (coords2[0], coords2[1]);
+		}
+		
+	}
+	
+	public ArrayList<String> getCodeWallLines () {
+		
+		//Populate the code wall lines list if it's empty
+		if (codeWallLines == null) {
+			codeWallLines = new ArrayList<String> ();
+			File f = new File ("resources/sprites/config/code.txt");
+			Scanner s;
+			try {
+				s = new Scanner (f);
+				while (s.hasNextLine ()) {
+					codeWallLines.add (s.nextLine ());
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//Return the code wall lines
+		return codeWallLines;
+		
+	}
+	
+	public ArrayList<String> getCodeWallColors () {
+		
+		//Populate the code wall colors list if it's empty
+		if (codeWallColors == null) {
+			codeWallColors = new ArrayList<String> ();
+			File f = new File ("resources/sprites/config/colors.txt");
+			Scanner s;
+			try {
+				s = new Scanner (f);
+				while (s.hasNextLine ()) {
+					codeWallColors.add (s.nextLine ());
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//Return the code wall colors
+		return codeWallColors;
+		
+	}
+	
+	public static HashMap<Integer, ArrayList<Roome>> getRoomeIdMap () {
+		
+		if (roomeIdMap == null) {
+			roomeIdMap = new HashMap<Integer, ArrayList<Roome>> ();
+			for (int wx = 0; wx < getMapWidth (); wx++) {
+				for (int wy = 0; wy < getMapHeight (); wy++) {
+					Roome r = map[wy][wx];
+					ArrayList<Roome> currList = roomeIdMap.get (r.id);
+					if (currList == null) {
+						currList = new ArrayList<Roome> ();
+						roomeIdMap.put (r.id, currList);
+					}
+					currList.add (r);
+				}
+			}
+		}
+		
+		return roomeIdMap;
+		
 	}
 	
 	public void init (int id, int colorNum) {
@@ -347,35 +438,23 @@ public class Roome extends GameObject {
 			String color = "";
 			
 			//thanks stack overflow :)
-			try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/colors.txt"))) {
-			  color = (lines.skip(colorNum).findFirst().get());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+			color = getCodeWallColors ().get (colorNum);
 			for (int i = 0; i < walls.length; i++) {
 				
-				String finalMessage = "";
-				if (walls[i] instanceof Textbox) { //Only relevant for testing
+				StringBuilder finalMessage = new StringBuilder ();
+				if (walls[i] instanceof Textbox) { //Only relevant for testing\
 					Textbox working = (Textbox)walls[i];
 					while (working.getSpace()/2 > finalMessage.length()) {
-						int lineNum2 = rand.nextInt(315); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
-						
-						//thanks stack overflow :)
-						try (Stream<String> lines = Files.lines(Paths.get("resources/sprites/config/code.txt"))) {
-						    finalMessage = finalMessage + " " + lines.skip(lineNum2).findFirst().get();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						int lineNum2 = rand.nextInt (getCodeWallLines ().size ());
+						finalMessage.append (' ');
+						finalMessage.append (getCodeWallLines ().get (lineNum2));
 					}
-					
-					working.changeText(finalMessage.toUpperCase());
+					working.changeText(finalMessage.toString ().toUpperCase());
 					working.setFont(color);
 				}
 				
 			}
+			
 		}
 	}
 	
