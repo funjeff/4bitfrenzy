@@ -181,7 +181,7 @@ public class Hud extends GameObject {
 		for (int i = 0; i < numItems; i++) {
 			int wx = rand.nextInt (Roome.getMapWidth ());
 			int wy = rand.nextInt (Roome.getMapHeight ());
-			int [] spawnCoords = Roome.map[wy][wx].biatch.getPosibleCoords(32, 32);
+			int [] spawnCoords = Roome.map[wy][wx].getSpawningMask ().getPosibleCoords(32, 32);
 		
 			//IMPORTANT client is unresponsive if there are no items
 			switch (rand.nextInt(5)) {
@@ -212,19 +212,18 @@ public class Hud extends GameObject {
 		if (roundNum == 1 && GameCode.hasPerk15()) {
 			Point pt1 = new Point (Roome.getMapWidth () / 2, Roome.getMapHeight () / 2);
 			Point pt2 = getNearbyRoome (pt1, 1, 1);
-			Roome registerRoome = Roome.getRoom (pt1.x, pt1.y);
-			Roome slotRoome = Roome.getRoom (pt2.x, pt2.y);
+			Roome registerRoome = Roome.map [pt1.y][pt1.x];
+			Roome slotRoome = Roome.map [pt2.y][pt2.x];
 			int memNum = rand.nextInt (256);
 			//Register
 			Register r = new Register (memNum);
-			int[] regSpawn = registerRoome.biatch.getPosibleCoords ((int)r.hitbox ().getWidth (), (int)r.hitbox ().getHeight ());
-			r.declare (regSpawn [0] + pt1.x * 1080, regSpawn [1] + pt1.y * 720);
+			int[] regSpawn = registerRoome.getSpawningMask ().getPosibleCoords ((int)r.hitbox ().getWidth (), (int)r.hitbox ().getHeight ());
+			r.declare (regSpawn [0], regSpawn [1]);
 			registerRoome.r = r;
-			System.out.println ("COORDS: " + r.getX () + ", " + r.getY ());
 			//Data slot
 			DataSlot ds = new DataSlot (memNum);
-			int[] dsSpawn = slotRoome.biatch.getPosibleCoords ((int)ds.hitbox ().getWidth (), (int)ds.hitbox ().getHeight ());
-			ds.declare (dsSpawn [0] + pt2.x * 1080, dsSpawn [1] + pt2.y * 720);
+			int[] dsSpawn = slotRoome.getSpawningMask ().getPosibleCoords ((int)ds.hitbox ().getWidth (), (int)ds.hitbox ().getHeight ());
+			ds.declare (dsSpawn [0], dsSpawn [1]);
 			slotRoome.ds = ds;
 		}
 		
@@ -256,7 +255,7 @@ public class Hud extends GameObject {
 			}
 			Register r = new Register(memNum);
 			
-			int [] spawnPoint = Roome.map[wy][wx].biatch.getPosibleCoords(r.hitbox().width, r.hitbox().height);
+			int [] spawnPoint = Roome.map[wy][wx].getSpawningMask ().getPosibleCoords(r.hitbox().width, r.hitbox().height);
 			
 			r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
 			
@@ -291,7 +290,7 @@ public class Hud extends GameObject {
 			Roome dataRoom = Roome.map [yCoord][xCoord];
 			DataSlot ds = new DataSlot (memNum);
 			
-			int [] otherPoint = dataRoom.biatch.getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
+			int [] otherPoint = dataRoom.getSpawningMask ().getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
 			
 			
 			ds.declare((int)otherPoint[0],(int) otherPoint[1]);
@@ -336,16 +335,15 @@ public class Hud extends GameObject {
 						//Find the spawn location
 						int roomX = (int)(currNpc.getX () / 1080);
 						int roomY = (int)(currNpc.getY () / 720);
-						System.out.println (roomX + ", " + roomY);
 						Point p1 = new Point (roomX, roomY);
 						Point p2 = getNearbyRoome (p1, currNpc.getMinQuestItemDist (), currNpc.getMaxQuestItemDist ());
-						PixelBitch biatch = Roome.getRoom (p2.x, p2.y).biatch;
+						PixelBitch biatch = Roome.map [p2.y][p2.x].getSpawningMask ();
 						Dimension d = NPC.getHitboxDimensions (spawnClass);
 						int[] spawnCoords = biatch.getPosibleCoords (d.width, d.height);
 						
 						//Spawn the quest item
 						try {
-							GameObject newObj = (GameObject)spawnClass.getConstructor (Double.TYPE, Double.TYPE).newInstance (spawnCoords [0] + p2.x * 1080, spawnCoords [1] + p2.y * 720);
+							GameObject newObj = (GameObject)spawnClass.getConstructor (Double.TYPE, Double.TYPE).newInstance (spawnCoords [0], spawnCoords [1]);
 							currNpc.linkQuestObject (newObj);
 						} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 								| InvocationTargetException | SecurityException e) {

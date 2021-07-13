@@ -386,7 +386,7 @@ public class GameCode {
 			}
 			Bit bit = new Bit ();
 			bit.playerNum = i + 1;
-			PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].biatch;
+			PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].getSpawningMask ();
 			int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 			if (perks[i] == 5) {
 				Bit bit1dot5 = new Bit();
@@ -407,7 +407,7 @@ public class GameCode {
 		
 		FriedFood port = new FriedFood ();
 		port = new FriedFood ();
-		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].biatch;
+		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].getSpawningMask ();
 		int spawnCoords[] = lolFunnyName.getPosibleCoords(port.hitbox().width, port.hitbox().height);
 		port.declare(spawnCoords[0] - 20, spawnCoords[1] - 20);
 //		

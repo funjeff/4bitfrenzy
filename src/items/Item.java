@@ -29,7 +29,7 @@ public class Item extends GameObject {
 	public void dropItem (Bit droper) {
 		
 		Roome romm = Roome.getRoom(droper.getX(), droper.getY());
-		int [] spawnCoords = romm.biatch.getPosibleCoords(this.hitbox().width, this.hitbox().height);
+		int [] spawnCoords = romm.getSpawningMask().getPosibleCoords(this.hitbox().width, this.hitbox().height);
 		this.declare(spawnCoords[0], spawnCoords[1]);
 	}
 	

@@ -159,7 +159,7 @@ public class Client extends Thread {
 				
 			}
 			
-			if (str.substring (0, 5).equals ("PERKS")) {
+			if (str.length () >= 5 && str.substring (0, 5).equals ("PERKS")) {
 				
 				
 				String [] perks = str.substring(6).split(":");
@@ -170,14 +170,14 @@ public class Client extends Thread {
 				
 			}
 			
-			if (str.substring (0, 5).equals ("LIVES")) {
+			if (str.length () >= 5 && str.substring (0, 5).equals ("LIVES")) {
 				int lives = Integer.parseInt(str.substring(6));
 				
 				Hud.setLives(lives);
 				
 			}
 			
-			if (str.substring (0, 9).equals ("GAME OVER")) {
+			if (str.length () >= 9 && str.substring (0, 9).equals ("GAME OVER")) {
 				
 				Hud.gameOver();
 				
@@ -193,7 +193,7 @@ public class Client extends Thread {
 					}
 				}
 			}
-			if (str.substring (0, 7).equals ("DESTROY")) {
+			if (str.length () >= 7 && str.substring (0, 7).equals ("DESTROY")) {
 				String [] toDestroy = str.substring(8).split(":");
 				switch (toDestroy[0]) {
 				case "top":

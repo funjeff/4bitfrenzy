@@ -66,7 +66,8 @@ public class Roome extends GameObject {
 	public Register r = null;
 	public DataSlot ds = null;
 	
-	public PixelBitch biatch;
+	private PixelBitch spawningBitch;
+	private PixelBitch collisionBitch;
 	
 	public static ArrayList<String> roomData;
 	public static ArrayList<Integer> roomPool;
@@ -120,7 +121,6 @@ public class Roome extends GameObject {
 				Scanner s = new Scanner (roomDat.get (i));
 				s.next ();
 				int amt = s.nextInt ();
-				System.out.println (i + ", " + amt);
 				for (int j = 0; j < amt; j++) {
 					roomPool.add (i);
 				}
@@ -194,15 +194,14 @@ public class Roome extends GameObject {
 		
 		//Load in hardcoded objects (with special conditions)
 		ArrayList<Roome> flowerRooms = getRoomeIdMap ().get (3);
-		System.out.println (flowerRooms);
 		if (flowerRooms != null && flowerRooms.size () >= 1) {
 			int room1 = rand.nextInt (flowerRooms.size ());
 			int room2;
 			do {
 				room2 = rand.nextInt (flowerRooms.size ());
 			} while (room1 == room2);
-			int[] coords1 = flowerRooms.get (room1).biatch.getPosibleCoords (31, 32);
-			int[] coords2 = flowerRooms.get (room2).biatch.getPosibleCoords (31, 32);
+			int[] coords1 = flowerRooms.get (room1).spawningBitch.getPosibleCoords (31, 32);
+			int[] coords2 = flowerRooms.get (room2).spawningBitch.getPosibleCoords (31, 32);
 			new Dirt (coords1[0], coords1[1]);
 			new Dirt (coords2[0], coords2[1]);
 		}
@@ -278,24 +277,23 @@ public class Roome extends GameObject {
 	
 	public void init (int id, int colorNum) {
 		
-		if (biatch == null) {
+		if (spawningBitch == null || collisionBitch == null) {
 			
 			Random rand = new Random ();
 			
-			
 			String toUse = "";
-			
-			
 
 			int lineNum = id; // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
 			this.id = id;
 
 			String roomPath = getRoomeData ().get (lineNum).split (" ")[0];
+			Sprite bgSprite = new Sprite (roomPath + "background.png");
+			Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
+			Sprite collisionMask = new Sprite (roomPath + "collision_mask.png");
 
-			this.setSprite(new Sprite (roomPath));
-			
-			biatch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,this.getSprite().getFrame(0).getSubimage(216, 144, 648, 432));
-			
+			this.setSprite (bgSprite);
+			this.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMask.getFrame(0).getSubimage(216, 144, 648, 432));
+			this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432)); 
 			
 			if (!GameCode.devMode ()) {
 				walls[0] = new Textbox("");
@@ -860,6 +858,14 @@ public class Roome extends GameObject {
 		
 	}
 	
+	public PixelBitch getCollisionMask () {
+		return collisionBitch;
+	}
+	
+	public PixelBitch getSpawningMask () {
+		return spawningBitch;
+	}
+	
 	@Override
 	public boolean isColliding (GameObject obj) {
 		Rectangle objHitbox = new Rectangle (obj.hitbox());
@@ -891,8 +897,10 @@ public class Roome extends GameObject {
 		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
 		
+		//ROOMS ARE 648x432
 		
-			if (biatch.isColliding(obj)) {
+		
+			if (collisionBitch.isColliding(obj)) {
 				return true;
 			}
 //	Graphics2D grapics =(Graphics2D) RenderLoop.wind.getBufferGraphics();

@@ -33,7 +33,7 @@ public class Teleporter extends Item {
 			}
 			int [] telportCoords;
 			while (true) {
-				telportCoords = Roome.map[rand.nextInt(Roome.getMapHeight ())][rand.nextInt(Roome.getMapWidth ())].biatch.getPosibleCoords(user.hitbox().width, user.hitbox().height);
+				telportCoords = Roome.map[rand.nextInt(Roome.getMapHeight ())][rand.nextInt(Roome.getMapWidth ())].getSpawningMask ().getPosibleCoords(user.hitbox().width, user.hitbox().height);
 				if (Roome.getRoom(telportCoords[0], telportCoords[1]).r != null ) {
 					break;
 				}

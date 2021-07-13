@@ -1,13 +1,13 @@
-resources/sprites/room_default.png 100
-resources/sprites/room_corners.png 100
-resources/sprites/room_bricks.png 100
-resources/sprites/room_flower.png 100
-resources/sprites/room_funny.png 100
-resources/sprites/room_head.png 100
-resources/sprites/room_heart.png 100
-resources/sprites/room_hex.png 100
-resources/sprites/room_lake.png 100
-resources/sprites/room_noise.png 100
-resources/sprites/room_ram_fields.png 100
-resources/sprites/room_snakes.png 100
-resources/sprites/room_basketball.png 20 resources/sprites/config/room_basketball_objs.txt
+resources/sprites/rooms/default/ 100
+resources/sprites/rooms/corners/ 100
+resources/sprites/rooms/bricks/ 100
+resources/sprites/rooms/flower/ 100
+resources/sprites/rooms/funny/ 100
+resources/sprites/rooms/head/ 100
+resources/sprites/rooms/heart/ 100
+resources/sprites/rooms/hex/ 100
+resources/sprites/rooms/lake/ 100
+resources/sprites/rooms/noise/ 100
+resources/sprites/rooms/ram_fields/ 100
+resources/sprites/rooms/snakes/ 100
+resources/sprites/rooms/basketball/ 20 resources/sprites/rooms/basketball/objs.txt
