@@ -116,9 +116,11 @@ public class Bit extends GameObject {
 			if (keyPressed('T') && NetworkHandler.isHost () && NetworkHandler.getPlayerNum () == playerNum) {
 				ArrayList<ArrayList<GameObject>> npcs = ObjectHandler.getChildrenByName ("NPC");
 				ArrayList<GameObject> randList = npcs.get ((int)(Math.random () * npcs.size ()));
-				GameObject randObj = randList.get ((int)(Math.random () * randList.size ()));
-				setX (randObj.getX ());
-				setY (randObj.getY ());
+				if (!randList.isEmpty ()) {
+					GameObject randObj = randList.get ((int)(Math.random () * randList.size ()));
+					setX (randObj.getX ());
+					setY (randObj.getY ());
+				}
 			}
 			try {
 		

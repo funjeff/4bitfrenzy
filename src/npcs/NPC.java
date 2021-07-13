@@ -59,6 +59,7 @@ public class NPC extends GameObject implements ItemGenerator {
 		//Populate the hitbox dimensions
 		hitboxDimensions.put (Dirt.class, new Dimension (30, 31));
 		hitboxDimensions.put (Basketball.class, new Dimension (48, 48));
+		hitboxDimensions.put (Shovel.class, new Dimension (22, 48));
 		
 	}
 	

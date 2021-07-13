@@ -208,6 +208,26 @@ public class Hud extends GameObject {
 			}
 		}
 		
+		//Spawn in perk 15 bonus register (if applicable)
+		if (roundNum == 1 && GameCode.hasPerk15()) {
+			Point pt1 = new Point (Roome.getMapWidth () / 2, Roome.getMapHeight () / 2);
+			Point pt2 = getNearbyRoome (pt1, 1, 1);
+			Roome registerRoome = Roome.getRoom (pt1.x, pt1.y);
+			Roome slotRoome = Roome.getRoom (pt2.x, pt2.y);
+			int memNum = rand.nextInt (256);
+			//Register
+			Register r = new Register (memNum);
+			int[] regSpawn = registerRoome.biatch.getPosibleCoords ((int)r.hitbox ().getWidth (), (int)r.hitbox ().getHeight ());
+			r.declare (regSpawn [0] + pt1.x * 1080, regSpawn [1] + pt1.y * 720);
+			registerRoome.r = r;
+			System.out.println ("COORDS: " + r.getX () + ", " + r.getY ());
+			//Data slot
+			DataSlot ds = new DataSlot (memNum);
+			int[] dsSpawn = slotRoome.biatch.getPosibleCoords ((int)ds.hitbox ().getWidth (), (int)ds.hitbox ().getHeight ());
+			ds.declare (dsSpawn [0] + pt2.x * 1080, dsSpawn [1] + pt2.y * 720);
+			slotRoome.ds = ds;
+		}
+		
 		//Spawn in registers
 		int newRegisters = (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
 		for (int i = 0; i < newRegisters; i++) {

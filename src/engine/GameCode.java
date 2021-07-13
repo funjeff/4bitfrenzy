@@ -64,6 +64,9 @@ public class GameCode {
 	
 	private File loadFile = null;
 	
+	private static double scoreMultiplier = 1;
+	private static boolean hasPerk15 = false;
+	
 	public static void testBitch () {
 		
 		titleScreen = new TitleScreen ();
@@ -348,6 +351,17 @@ public class GameCode {
 		
 		Hud hud = new Hud ();
 		
+		//Check for perk 15 (score booster, no longer default)
+		int perk15Count = 0;
+		for (int i = 0; i < 4; i++) {
+			System.out.println(perks[i]);
+			if (perks [i] == 15) {
+				perk15Count++;
+			}
+		}
+		scoreMultiplier = 1 + (perk15Count * .05);
+		if (perk15Count > 0) hasPerk15 = true;
+		
 		//If generating a map,
 		if (TitleScreen.initialData == null) {
 			//Populate the map
@@ -419,6 +433,18 @@ public class GameCode {
 	
 	public static boolean devMode () {
 		return devMode;
+	}
+	
+	public static void setScoreMultiplier (double amt) {
+		scoreMultiplier = amt;
+	}
+	
+	public static double getScoreMultipler () {
+		return scoreMultiplier;
+	}
+	
+	public static boolean hasPerk15 () {
+		return hasPerk15;
 	}
 	
 	public static GameSettings getSettings () {

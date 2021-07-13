@@ -75,6 +75,7 @@ public class TitleScreen extends GameObject {
 		ipBox.declare ();
 		ipBox.changeWidth (128);
 		ipBox.changeHeight (128);
+		ipBox.setFont ("text (red)");
 		ipBox.changeBoxVisability ();
 		
 		ipBox.setRenderPriority(99);
