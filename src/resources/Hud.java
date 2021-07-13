@@ -384,7 +384,6 @@ public class Hud extends GameObject {
 	public static void setRoundTime (long roundTime) {
 		timeLeft = roundTime;
 	}
-<<<<<<< HEAD
 	
 	public static void gameOver () {
 		GameOverScreen screen = new GameOverScreen();
@@ -406,7 +405,6 @@ public class Hud extends GameObject {
 		}
 	}
 	
-=======
 	public static Point getNearbyRoome (Point start, int minDist, int maxDist) {
 		
 		Random rand = new Random ();
@@ -439,5 +437,4 @@ public class Hud extends GameObject {
 		return to;
 				
 	}
->>>>>>> b9e7d7bf482ac5ee82244d903569148d7aa48d93
 }
