@@ -21,6 +21,7 @@ import items.Cash;
 import items.DataScrambler;
 import items.Egg;
 import items.FakeScrambler;
+import items.FriedFood;
 import items.Glue;
 import items.Speed;
 import items.Teleporter;
@@ -397,8 +398,8 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-		Cash port = new Cash ();
-		port = new Cash ();
+		FriedFood port = new FriedFood ();
+		port = new FriedFood ();
 		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].biatch;
 		int spawnCoords[] = lolFunnyName.getPosibleCoords(port.hitbox().width, port.hitbox().height);
 		port.declare(spawnCoords[0] - 20, spawnCoords[1] - 20);

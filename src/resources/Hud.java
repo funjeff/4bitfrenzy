@@ -40,7 +40,7 @@ public class Hud extends GameObject {
 	public static int maxBlueRegisterDistance = 10;
 	
 	public static double blueRegisterOdds = .15;
-	public static double largeRegisterOdds = 1090;
+	public static double largeRegisterOdds = .2;
 
 	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
 
@@ -141,7 +141,7 @@ public class Hud extends GameObject {
 	public static void newWave() {	
 		
 		roundNum = roundNum + 1;
-		waveNum.changeText("REGISTERS LEFT: " + Integer.toString(roundNum));
+		waveNum.changeText("ROUND NUM: " + Integer.toString(roundNum));
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
 		if (roundNum != 1) {
@@ -150,11 +150,10 @@ public class Hud extends GameObject {
 				if (currentSlot.isCleared()) {
 					currentSlot.forget();
 				} else {
-					lives = lives - 1;
+					setLives(getLives() - 1);
 					if (lives <= 0) {
-						GameOverScreen screen = new GameOverScreen();
-						screen.declare(0,0);
-						GameCode.setView(0, 0);
+						gameOver();
+						
 					}
 				}
 			}
@@ -292,4 +291,25 @@ public class Hud extends GameObject {
 	public static void setRoundTime (long roundTime) {
 		timeLeft = roundTime;
 	}
+	
+	public static void gameOver () {
+		GameOverScreen screen = new GameOverScreen();
+		screen.declare(0,0);
+		GameCode.setView(0, 0);
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("GAME OVER");
+		}
+	}
+	
+	public static int getLives() {
+		return lives;
+	}
+
+	public static void setLives(int lives) {
+		Hud.lives = lives;
+		if (NetworkHandler.isHost()) {
+			NetworkHandler.getServer().sendMessage("LIVES" + lives);
+		}
+	}
+	
 }

@@ -1,7 +1,7 @@
 package items;
 
 import engine.Sprite;
-import map.Roome;
+
 import players.Bit;
 
 public class Cash extends Item {
@@ -18,9 +18,7 @@ public class Cash extends Item {
 	public boolean useItem (Bit user) {
 			
 			this.dropItem(user);
-			
-			System.out.println(user.getSpeed());
-			
+		
 			return true;
 	}
 	@Override

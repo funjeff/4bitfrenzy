@@ -161,6 +161,18 @@ public class Client extends Thread {
 				
 			}
 			
+			if (str.substring (0, 5).equals ("LIVES")) {
+				int lives = Integer.parseInt(str.substring(6));
+				
+				Hud.setLives(lives);
+				
+			}
+			
+			if (str.substring (0, 9).equals ("GAME OVER")) {
+				
+				Hud.gameOver();
+				
+			}
 			
 			if (str.substring (0, 5).equals ("POINT")) {
 				
