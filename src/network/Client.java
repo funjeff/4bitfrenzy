@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -136,8 +137,16 @@ public class Client extends Thread {
 	}
 	
 	public static void processMessages () {
+		
 		while (!inMessages.isEmpty ()) {
-			String str = inMessages.removeLast ();
+			String str = null;
+			try {
+				str = inMessages.removeLast ();
+			} catch (NoSuchElementException e) {
+				break;
+				//Prevents a rare NoSuchElemetException caused by removing from an empty list
+				//Probably a race condition
+			}
 		
 			//System.out.println ("Message recieved: " + str);
 			
@@ -289,16 +298,15 @@ public class Client extends Thread {
 				String[] args = str.split (" ");
 				if (args[1].equals ("CREATE")) {
 					NPC npc = NPC.getInstance (args[2]);
-					npc.declare (0, 0);
-					System.out.println (npc.id);
+					npc.declare ();
+					System.out.println (str);
 				} else if (args[1].equals ("UPDATE")) {
 					String[] data = args[2].split (":");
-					System.out.println(data[1]);
 					try {
 						NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
 						npc.updateNpc (args[2]);
 					} catch (NullPointerException e) {
-						System.out.println ("WARNING: NPC WAS NULL");
+						System.out.println ("WARNING: NPC " + data[1] + " WAS NULL");
 					}
 				} else if (args[1].equals ("FORGET")) {
 					NPC.getNpcById (Integer.parseInt (args[2])).forget ();

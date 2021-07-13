@@ -65,7 +65,8 @@ public class GameCode {
 	
 	private File loadFile = null;
 	
-	static boolean firstFrame = true;
+	private static double scoreMultiplier = 1;
+	private static boolean hasPerk15 = false;
 	
 	public static void testBitch () {
 		
@@ -205,14 +206,6 @@ public class GameCode {
 		}
 		frame++;
 		if (NetworkHandler.isHost () && gameStarted) {
-		
-			if (firstFrame) {
-				Baseball b = new Baseball ();
-				System.out.println (b.getNpcType());
-				b.setX (bits.get(0).getX ());
-				b.setY (bits.get(0).getY ());
-				firstFrame = false;
-			}
 			
 			int mouseX = bits.get (0).getCursorX () + getViewX ();
 			int mouseY = bits.get (0).getCursorY () + getViewY ();
@@ -359,8 +352,22 @@ public class GameCode {
 		
 		Hud hud = new Hud ();
 		
-		//Make a new wave if generating a map
+		//Check for perk 15 (score booster, no longer default)
+		int perk15Count = 0;
+		for (int i = 0; i < 4; i++) {
+			System.out.println(perks[i]);
+			if (perks [i] == 15) {
+				perk15Count++;
+			}
+		}
+		scoreMultiplier = 1 + (perk15Count * .05);
+		if (perk15Count > 0) hasPerk15 = true;
+		
+		//If generating a map,
 		if (TitleScreen.initialData == null) {
+			//Populate the map
+			Roome.populateRoomes ();
+			//Make a new wave
 			if (NetworkHandler.isHost()) {
 				Hud.newWave ();
 			}
@@ -427,6 +434,18 @@ public class GameCode {
 	
 	public static boolean devMode () {
 		return devMode;
+	}
+	
+	public static void setScoreMultiplier (double amt) {
+		scoreMultiplier = amt;
+	}
+	
+	public static double getScoreMultipler () {
+		return scoreMultiplier;
+	}
+	
+	public static boolean hasPerk15 () {
+		return hasPerk15;
 	}
 	
 	public static GameSettings getSettings () {

@@ -2,6 +2,7 @@ package resources;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import engine.GameCode;
@@ -32,27 +33,18 @@ public class Textbox extends GameObject {
 	String [] extentions = {"7Z","JAVA","MP3","AI","AVI","BAS","C","C++","CD","CDF","CLASS","CMD","CSV","CSPROJ","D","D64","DAF","DAT","DB","DCI","DEV","DFL","DHP","DLC","DMO","DMP","DOC","DOG","E","EXE","EXP","EXS","F01","F4V","FA","FLV","GBR","GGB","GIF","GO","GPX","H!","H","H++","HACK","HDMP","HTA","HTML","HUM","ICO","IGC","ISO","IT","JAR","JNLP","JPEG","JS","JSON","LISP","LUA","LZ","M","MDI","MDG","MDS","MEX","MID","MOB","MOD","MOV","MP2","MP4","MPEG","MPG","MSI","NC","NEO","NPR","NUMBERS","O","OBJ","OBS","OXT","OWL","OST","P","PAL","PACK","PAK","PAM","PAS","PDF","PDN","PHP","PIE","PIT","PMA","PPTX","PSD","PTF","PS1","PUP","PY","QT","RAD","RAM","RAR","RB","RBXM","RBXL","RC","RES","RTF","RUN","SAV","SB3","SEQ","SIG","SM","SPIN","ST","STD","SWF","SWIFT","TAK","TORRENT","TAR","TSF","TTF","UI","UT!","V","V64","VB","VFD","VMG","VOB","WAV","WMA","XAR","XCF","XEX","XLS","XP","XYZ","ZIP","ZS"};
 	boolean renderBox;
 	
+	private static HashMap<String, Sprite> resourceCache = new HashMap<String, Sprite> ();
 
 	
 	// put filepath of fontsheet to use as the font
 	public Textbox (String textToDisplay){
 		super();
 	renderBox = true;
-	ArrayList <String> parserQuantitys = new ArrayList<String> ();
-	parserQuantitys.add("grid 16 16");
-	ArrayList <String> parserQuantitiys2 = new ArrayList<String>();
-	parserQuantitiys2.add("rectangle 0 0 8 8");
-	ArrayList <String> parserQuantitiys3 = new ArrayList<String>();
-	parserQuantitiys3.add("rectangle 24 0 8 1");
-	ArrayList <String> parserQuantitiys4 = new ArrayList<String>();
-	parserQuantitiys4.add("rectangle 16 0 1 8");
-	ArrayList <String> parserQuantitiys5 = new ArrayList<String>();
-	parserQuantitiys5.add("rectangle 8 0 8 8");
-	textBoxTop = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys2));
-	fontSheet = new Sprite ("resources/sprites/Text/text (red).png", new SpriteParser(parserQuantitys));
-	textBoxBottum = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys3));
-	textBoxSides = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys4));
-	textBoxBackground = new Sprite ("resources/sprites/Text/windowspritesBlack.png", new SpriteParser(parserQuantitiys5));
+	textBoxTop = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "grid 16 16");
+	fontSheet = getTextboxResource ("resources/sprites/Text/text (red).png", "rectangle 0 0 8 8");
+	textBoxBottum = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "rectangle 24 0 8 1");
+	textBoxSides = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "rectangle 16 0 1 8");
+	textBoxBackground = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "rectangle 8 0 8 8");
 	spaceManipulation = 0;
 	text1 = textToDisplay;
 	width1 = 200;
@@ -85,10 +77,23 @@ public class Textbox extends GameObject {
 	public String getText () {
 		return text1;
 	}
+	public Sprite getTextboxResource (String path, String parseStr) {
+		//Construct the cache string
+		String cacheStr = path + ":" + parseStr;
+		if (resourceCache.containsKey (cacheStr)) {
+			//Resource is cached
+			return resourceCache.get (cacheStr);
+		} else {
+			//Resource is not cached, load it
+			ArrayList<String> parseStrs = new ArrayList<String> ();
+			parseStrs.add (parseStr);
+			Sprite spr = new Sprite (path, new SpriteParser (parseStrs));
+			resourceCache.put (cacheStr, spr);
+			return spr;
+		}
+	}
 	public void setFont (String fontName) {
-		ArrayList <String> parserQuantitys = new ArrayList<String> ();
-		parserQuantitys.add("grid 16 16");
-		fontSheet = new Sprite ("resources/sprites/Text/" + fontName + ".png", new SpriteParser(parserQuantitys));
+		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16");
 	}
 	public void giveName (String boxName) {
 		if (!boxName.equals("null")) {
@@ -98,18 +103,10 @@ public class Textbox extends GameObject {
 		}
 	}
 	public void setBox (String color) {
-		ArrayList <String> parserQuantitiys2 = new ArrayList<String>();
-		parserQuantitiys2.add("rectangle 0 0 8 8");
-		ArrayList <String> parserQuantitiys3 = new ArrayList<String>();
-		parserQuantitiys3.add("rectangle 24 0 8 1");
-		ArrayList <String> parserQuantitiys4 = new ArrayList<String>();
-		parserQuantitiys4.add("rectangle 16 0 1 8");
-		ArrayList <String> parserQuantitiys5 = new ArrayList<String>();
-		parserQuantitiys5.add("rectangle 8 0 8 8");
-		textBoxTop = new Sprite ("resources/sprites/Text/windowsprites" + color + ".png", new SpriteParser(parserQuantitiys2));
-		textBoxBottum = new Sprite ("resources/sprites/Text/windowsprites" + color + ".png", new SpriteParser(parserQuantitiys3));
-		textBoxSides= new Sprite ("resources/sprites/Text/windowsprites" + color + ".png", new SpriteParser(parserQuantitiys4));
-		textBoxBackground = new Sprite ("resources/sprites/Text/windowsprites" + color + ".png", new SpriteParser(parserQuantitiys5));
+		textBoxTop = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 0 0 8 8");
+		textBoxBottum = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 24 0 8 1");
+		textBoxSides= getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 16 0 1 8");
+		textBoxBackground = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 8 0 8 8");
 	}
 	
 	public int getSpace () {

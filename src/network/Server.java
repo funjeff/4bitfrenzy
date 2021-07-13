@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.NoSuchElementException;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -58,7 +59,7 @@ public class Server extends Thread {
 					while (s == null) {
 						try {
 							s = writeMessage.removeLast ();
-						} catch (ConcurrentModificationException e) {
+						} catch (ConcurrentModificationException | NoSuchElementException e) {
 							try {
 								Thread.sleep (1); //Wait and try again
 							} catch (InterruptedException e1) {

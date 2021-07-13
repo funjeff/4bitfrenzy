@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import engine.GameCode;
 import engine.RenderLoop;
@@ -69,7 +70,7 @@ public class ServerConnection extends Thread {
 					while (s == null) {
 						try {
 							s = message.removeLast ();
-						} catch (ConcurrentModificationException e) {
+						} catch (ConcurrentModificationException | NoSuchElementException e) {
 							try {
 								Thread.sleep (1); //Wait and try again
 							} catch (InterruptedException e1) {

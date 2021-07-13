@@ -1,32 +1,66 @@
 package npcs;
 
+import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import engine.GameObject;
+import items.Item;
 import network.NetworkHandler;
 
-public class NPC extends GameObject {
+public class NPC extends GameObject implements ItemGenerator {
 	
 	private String npcType;
+	private GameObject linkedQuestItem;
 	
 	private static HashMap<Integer, NPC> npcMap;
 	
-	public NPC () {
+	private static HashMap<Class<?>, Class<?>> collisionExceptions = new HashMap<Class<?>, Class<?>> ();
+	
+	private static HashMap<Class<?>, Dimension> hitboxDimensions;
+	
+	protected NPC () {
 		npcType = getClass ().getSimpleName ();
 		initNpc ();
 	}
 	
-	public NPC (String type) {
+	protected NPC (String type) {
 		this.npcType = type;
 		initNpc ();
 	}
 	
+	protected NPC (double x, double y) {
+		npcType = getClass ().getSimpleName ();
+		setX (x);
+		setY (y);
+		initNpc ();
+	}
+	
+	protected NPC (String type, double x, double y) {
+		npcType = type;
+		setX (x);
+		setY (y);
+		initNpc ();
+	}
+	
 	public void initNpc () {
+		System.out.println (getClass ());
 		if (NetworkHandler.isHost ()) {
-			declare (0, 0);
+			declare ((int)getX (), (int)getY ());
 			NetworkHandler.getServer ().sendMessage ("NPC CREATE " + toString ());
 		}
+	}
+	
+	public static void initHitboxDimensions () {
+		
+		//Make the hitbox dimensions
+		hitboxDimensions = new HashMap<Class<?>, Dimension> ();
+		
+		//Populate the hitbox dimensions
+		hitboxDimensions.put (Dirt.class, new Dimension (30, 31));
+		hitboxDimensions.put (Basketball.class, new Dimension (48, 48));
+		hitboxDimensions.put (Shovel.class, new Dimension (22, 48));
+		
 	}
 	
 	/**
@@ -38,13 +72,16 @@ public class NPC extends GameObject {
 		String[] params = s.split (":");
 		try {
 			//Make and return a new NPC with the given parameters
-			NPC newNpc = (NPC) Class.forName ("npcs." + params[0]).getConstructor ().newInstance ();
+			double sx = Double.parseDouble (params [2]);
+			double sy = Double.parseDouble (params [3]);
+			NPC newNpc = (NPC) Class.forName ("npcs." + params[0]).getConstructor (Double.TYPE, Double.TYPE).newInstance (sx, sy);
 			newNpc.id = Integer.parseInt (params [1]);
 			newNpc.updateNpc (s);
 			return newNpc;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			//Return null if instantiation fails
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -89,6 +126,18 @@ public class NPC extends GameObject {
 		return npcMap.get (id);
 	}
 	
+	protected void addCollisionException (Class c) {
+		collisionExceptions.put (c, c);
+	}
+	
+	public boolean canCollide (Class c) {
+		if (!collisionExceptions.containsKey (c)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	private void mapNpc () {
 		if (npcMap == null) {
 			npcMap = new HashMap<Integer, NPC> ();
@@ -96,9 +145,60 @@ public class NPC extends GameObject {
 		npcMap.put (getId (), this);
 	}
 	
+	public boolean spawnsQuestItem () {
+		return false;
+	}
+	
+	public Class<?> getQuestItemType () {
+		return null;
+	}
+	
+	public int getMinQuestItemDist () {
+		return 2;
+	}
+	
+	public int getMaxQuestItemDist () {
+		return 5;
+	}
+	
+	public double getQuestItemSpawnOdds () {
+		return 1.0;
+	}
+	
+	public int getMinQuestItems () {
+		return 0;
+	}
+	
+	public int getMaxQuestItems () {
+		return 4;
+	}
+	
+	public void linkQuestObject (GameObject questItem) {
+		//Only present to prevent duplicate quest spawns
+		this.linkedQuestItem = questItem;
+	}
+	
+	public GameObject getLinkedQuestsItem () {
+		return linkedQuestItem;
+	}
+	
+	public static Dimension getHitboxDimensions (Class<?> c) {
+		
+		if (hitboxDimensions == null) {
+			initHitboxDimensions ();
+		}
+		
+		if (!hitboxDimensions.containsKey (c)) {
+			return new Dimension (32, 32);
+		} else {
+			return hitboxDimensions.get (c);
+		}
+		
+	}
+	
 	@Override
 	public void declare () {
-		declare (0, 0);
+		declare ((int)getX (), (int)getY ());
 		mapNpc ();
 	}
 	
@@ -133,6 +233,20 @@ public class NPC extends GameObject {
 	public String toString () {
 		//If overriding, append to super.toString()
 		return getNpcType () + ":" + getId () + ":" + getX () + ":" + getY ();
+	}
+	
+	@Override
+	public void becomeItem (Class<?> c) {
+		Item it;
+		try {
+			it = (Item)c.getConstructor ().newInstance ();
+			it.declare ((int)getX (), (int)getY ());
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		forget ();
 	}
 
 }
