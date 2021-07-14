@@ -40,11 +40,8 @@ public class Textbox extends GameObject {
 	public Textbox (String textToDisplay){
 		super();
 	renderBox = true;
-	textBoxTop = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "grid 16 16");
-	fontSheet = getTextboxResource ("resources/sprites/Text/text (red).png", "rectangle 0 0 8 8");
-	textBoxBottum = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "rectangle 24 0 8 1");
-	textBoxSides = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "rectangle 16 0 1 8");
-	textBoxBackground = getTextboxResource ("resources/sprites/Text/windowspritesBlack.png", "rectangle 8 0 8 8");
+	this.setFont ("text (red)");
+	this.setBox ("Black");
 	spaceManipulation = 0;
 	text1 = textToDisplay;
 	width1 = 200;
