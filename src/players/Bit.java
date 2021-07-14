@@ -11,6 +11,7 @@ import engine.ObjectHandler;
 import engine.Sprite;
 import engine.SpriteParser;
 import gameObjects.Compass;
+import gameObjects.ControlsHint;
 import gameObjects.DataSlot;
 import gameObjects.Register;
 import gameObjects.WaveCompleteGraphic;
@@ -51,6 +52,9 @@ public class Bit extends GameObject {
 	
 	public int regNum = 0;
 	
+	private boolean firstFrame = true;
+	private ControlsHint controlsHint;
+	
 	public boolean isSecondaryBit() {
 		return secondaryBit;
 	}
@@ -69,12 +73,13 @@ public class Bit extends GameObject {
 	// 5 = dual processing
 	
 	public Bit () {
+		
+		//Init bit stuff
 		this.setSprite(new Sprite ("resources/sprites/config/bits.txt"));
 		this.getAnimationHandler().setAnimationFrame(playerNum);
 		this.setHitboxAttributes(21, 16);
 		this.setRenderPriority(1);
 		inventory.declare();
-		
 	
 	}
 	
@@ -112,6 +117,33 @@ public class Bit extends GameObject {
 
 	@Override
 	public void frameEvent () {	
+		
+		if (firstFrame) {
+			
+			//Init the controlsHint
+			if (NetworkHandler.getPlayerNum () == playerNum) {
+				controlsHint = new ControlsHint ();
+				controlsHint.declare (32, 180);
+			}
+			
+			//Setup for next frame
+			firstFrame = false;
+		}
+		
+		//Handle the controlsHint
+		this.setX (getX () - this.getSpeed ());
+		this.setY (getY () - this.getSpeed ());
+		this.setHitboxAttributes (hitbox ().width + this.getSpeed () * 2, hitbox ().height + this.getSpeed () * 2);
+		if (this.isColliding ("Register") && regestersBeingCarried == null) {
+			//GRAB FOR REGISTER
+			controlsHint.showGrabHint ();
+		} else {
+			controlsHint.showNoHint ();
+		}
+		this.setX (getX () + this.getSpeed ());
+		this.setY (getY () + this.getSpeed ());
+		this.setHitboxAttributes (hitbox ().width - this.getSpeed () * 2, hitbox ().getHeight () - this.getSpeed () * 2);
+		
 			String keys;
 			if (keyPressed('T') && NetworkHandler.isHost () && NetworkHandler.getPlayerNum () == playerNum) {
 				ArrayList<ArrayList<GameObject>> npcs = ObjectHandler.getChildrenByName ("NPC");

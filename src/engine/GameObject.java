@@ -305,7 +305,9 @@ public abstract class GameObject extends GameAPI {
 	/**
 	 */
 	public void drawAbsolute () {
-		animationHandler.draw (x, y);
+		if (visable) {
+			animationHandler.draw (x, y);
+		}
 	}
 	public void frameEvent () {
 		
