@@ -165,7 +165,6 @@ public class Roome extends GameObject {
 			}
 			int picked = deck.get ((int)(Math.random () * deck.size ()));
 			idVal += 100 * picked;
-			System.out.println ("OOP " + idVal);
 		}
 		
 		//Return the id
@@ -225,12 +224,17 @@ public class Roome extends GameObject {
 				Roome r = map[wy][wx];
 				String dat = roomData.get (Roome.getBaseRoomeId (r.id));
 				s1 = new Scanner (dat);
-				s1.next ();
-				s1.next ();
+				String basePath = s1.next ();
+				String fullPath = basePath;
+				if (getRoomeAltMap ().containsKey (Roome.getBaseRoomeId (r.id))) {
+					String modPath = getRoomeAltMap ().get (Roome.getBaseRoomeId (r.id)).get (Roome.getRoomVariantId (r.id)).split (" ")[0];
+					fullPath += modPath + "/";
+				}
+				fullPath += "objs.txt";
 				
 				//Find the object file and make the object
-				if (s1.hasNext ()) {
-					File f2 = new File (s1.next ());
+				File f2 = new File (fullPath);
+				if (f2.exists ()) {
 					try {
 						s2 = new Scanner (f2);
 						//Scan through the object list
@@ -333,10 +337,10 @@ public class Roome extends GameObject {
 			for (int wx = 0; wx < getMapWidth (); wx++) {
 				for (int wy = 0; wy < getMapHeight (); wy++) {
 					Roome r = map[wy][wx];
-					ArrayList<Roome> currList = roomeIdMap.get (r.id);
+					ArrayList<Roome> currList = roomeIdMap.get (Roome.getBaseRoomeId (r.id));
 					if (currList == null) {
 						currList = new ArrayList<Roome> ();
-						roomeIdMap.put (r.id, currList);
+						roomeIdMap.put (Roome.getBaseRoomeId (r.id), currList);
 					}
 					currList.add (r);
 				}

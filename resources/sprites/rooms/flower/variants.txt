@@ -1,0 +1,2 @@
+default 68
+blue 1
