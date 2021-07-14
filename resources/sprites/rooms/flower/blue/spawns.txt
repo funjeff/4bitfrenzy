@@ -1,0 +1,4 @@
+420 200 npcs.NPC
+620 200 npcs.NPC
+420 400 npcs.NPC
+620 400 npcs.NPC
