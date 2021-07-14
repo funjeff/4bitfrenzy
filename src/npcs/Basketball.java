@@ -10,7 +10,6 @@ public class Basketball extends PushableNPC {
 	public Basketball (double x, double y) {
 		super (x, y);
 		setSprite (basketballSprite);
-		setHitboxAttributes (48, 48);
 		this.addCollisionException(Hoop.class);
 	}
 	

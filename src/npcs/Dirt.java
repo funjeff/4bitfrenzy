@@ -77,12 +77,12 @@ public class Dirt extends NPC {
 	
 	@Override
 	public int getMinQuestItemDist () {
-		return 0;
+		return 4;
 	}
 	
 	@Override
 	public int getMaxQuestItemDist () {
-		return 0;
+		return 7;
 	}
 	
 }

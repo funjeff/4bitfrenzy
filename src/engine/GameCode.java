@@ -411,11 +411,7 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-		FriedFood port = new FriedFood ();
-		port = new FriedFood ();
-		PixelBitch lolFunnyName =  Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].getSpawningMask ();
-		int spawnCoords[] = lolFunnyName.getPosibleCoords(port.hitbox().width, port.hitbox().height);
-		port.declare(spawnCoords[0] - 20, spawnCoords[1] - 20);
+		Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (FriedFood.class);
 //		
 //		Register regBig = new Register (45);
 //		

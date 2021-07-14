@@ -17,8 +17,6 @@ public class NPC extends GameObject implements ItemGenerator {
 	
 	private static HashMap<Class<?>, Class<?>> collisionExceptions = new HashMap<Class<?>, Class<?>> ();
 	
-	private static HashMap<Class<?>, Dimension> hitboxDimensions;
-	
 	protected NPC () {
 		npcType = getClass ().getSimpleName ();
 		initNpc ();
@@ -49,18 +47,6 @@ public class NPC extends GameObject implements ItemGenerator {
 			declare ((int)getX (), (int)getY ());
 			NetworkHandler.getServer ().sendMessage ("NPC CREATE " + toString ());
 		}
-	}
-	
-	public static void initHitboxDimensions () {
-		
-		//Make the hitbox dimensions
-		hitboxDimensions = new HashMap<Class<?>, Dimension> ();
-		
-		//Populate the hitbox dimensions
-		hitboxDimensions.put (Dirt.class, new Dimension (30, 31));
-		hitboxDimensions.put (Basketball.class, new Dimension (48, 48));
-		hitboxDimensions.put (Shovel.class, new Dimension (22, 48));
-		
 	}
 	
 	/**
@@ -180,20 +166,6 @@ public class NPC extends GameObject implements ItemGenerator {
 	
 	public GameObject getLinkedQuestsItem () {
 		return linkedQuestItem;
-	}
-	
-	public static Dimension getHitboxDimensions (Class<?> c) {
-		
-		if (hitboxDimensions == null) {
-			initHitboxDimensions ();
-		}
-		
-		if (!hitboxDimensions.containsKey (c)) {
-			return new Dimension (32, 32);
-		} else {
-			return hitboxDimensions.get (c);
-		}
-		
 	}
 	
 	@Override

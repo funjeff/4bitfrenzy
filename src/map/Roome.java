@@ -1,6 +1,7 @@
 package map;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -13,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -75,6 +77,7 @@ public class Roome extends GameObject {
 	public static ArrayList<String> codeWallColors;
 	public static HashMap<Integer, ArrayList<Roome>> roomeIdMap;
 	public static HashMap<Integer, ArrayList<String>> roomeAltMap;
+	public static HashMap<Integer, ArrayList<String>> spawnsMap;
 	
 	public Roome ()
 	{
@@ -142,6 +145,70 @@ public class Roome extends GameObject {
 		
 	}
 	
+	public static String getRoomePathFromId (int id) {
+		
+		//Get the base path
+		Scanner s = new Scanner (getRoomeData ().get (Roome.getBaseRoomeId (id)));
+		String path = s.next ();
+		s.close ();
+		
+		//Get the alt path
+		if (Roome.getRoomVariantId (id) != 0) {
+			ArrayList<String> alts = getRoomeAltMap ().get (Roome.getBaseRoomeId (id));
+			String altVal = alts.get (Roome.getRoomVariantId (id));
+			s = new Scanner (altVal);
+			path += s.next () + "/";
+			s.close ();
+		}
+		
+		return path;
+		
+	}
+	
+	public ArrayList<String> getSpawnParameters () {
+		
+		//Init the spawns map if it is null
+		if (spawnsMap == null) {
+			spawnsMap = new HashMap<Integer, ArrayList<String>> ();
+		}
+		
+		//Fill the spawn params for the given id (if needed)
+		ArrayList<String> spawnParams = spawnsMap.get (this.id);
+		if (spawnParams == null) {
+			
+			//Add a new entry to spawnsMap
+			spawnParams = new ArrayList<String> ();
+			spawnsMap.put (this.id, spawnParams);
+			
+			//Populate the spawn params for this id
+			String basePath = getRoomePathFromId (this.id);
+			File f = new File (basePath + "spawns.txt");
+			
+			//Fill the spawn params from the file
+			if (f.exists ()) {
+				try {
+					Scanner s = new Scanner (f);
+					while (s.hasNextLine ()) {
+						spawnParams.add (s.nextLine ());
+					}
+					s.close ();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		//Return the correct spawn params
+		if (spawnParams.size () == 0) {
+			return null;
+		} else {
+			return spawnParams;
+		}
+		
+	}
+	
 	public static int rollRoomeId () {
 		
 		//Get the id for the roome
@@ -152,7 +219,6 @@ public class Roome extends GameObject {
 		//Assign possible variants
 		HashMap<Integer, ArrayList<String>> altMap = getRoomeAltMap ();
 		ArrayList<String> alt = altMap.get (idVal);
-		System.out.println (idVal);
 		if (alt != null) {
 			ArrayList<Integer> deck = new ArrayList<Integer> ();
 			for (int i = 0; i < alt.size (); i++) {
@@ -213,7 +279,6 @@ public class Roome extends GameObject {
 		
 		Scanner s1 = null;
 		Scanner s2 = null;
-		Scanner s3 = null;
 		
 		HashMap<Integer, ArrayList<Roome>> roomeMap;
 		
@@ -222,28 +287,20 @@ public class Roome extends GameObject {
 				
 				//Get the roome data
 				Roome r = map[wy][wx];
-				String dat = roomData.get (Roome.getBaseRoomeId (r.id));
-				s1 = new Scanner (dat);
-				String basePath = s1.next ();
-				String fullPath = basePath;
-				if (getRoomeAltMap ().containsKey (Roome.getBaseRoomeId (r.id))) {
-					String modPath = getRoomeAltMap ().get (Roome.getBaseRoomeId (r.id)).get (Roome.getRoomVariantId (r.id)).split (" ")[0];
-					fullPath += modPath + "/";
-				}
-				fullPath += "objs.txt";
+				String fullPath = getRoomePathFromId (r.id) + "objs.txt";
 				
 				//Find the object file and make the object
 				File f2 = new File (fullPath);
 				if (f2.exists ()) {
 					try {
-						s2 = new Scanner (f2);
+						s1 = new Scanner (f2);
 						//Scan through the object list
-						while (s2.hasNextLine ()) {
+						while (s1.hasNextLine ()) {
 							//Scan through the object text and create the appropraite object
-							s3 = new Scanner (s2.nextLine ());
-							String objType = s3.next ();
-							double objX = r.getX () + s3.nextInt ();
-							double objY = r.getY () + s3.nextInt ();
+							s2 = new Scanner (s1.nextLine ());
+							String objType = s2.next ();
+							double objX = r.getX () + s2.nextInt ();
+							double objY = r.getY () + s2.nextInt ();
 							GameObject obj = GameCode.makeInstanceOfGameObject (objType, objX, objY);
 							System.out.println (obj);
 						}
@@ -255,7 +312,6 @@ public class Roome extends GameObject {
 				try {
 					s1.close ();
 					s2.close ();
-					s3.close ();
 				} catch (Exception e) {
 					//Do nothing, s2-4 were never made
 				}
@@ -270,10 +326,8 @@ public class Roome extends GameObject {
 			do {
 				room2 = rand.nextInt (flowerRooms.size ());
 			} while (room1 == room2);
-			int[] coords1 = flowerRooms.get (room1).spawningBitch.getPosibleCoords (31, 32);
-			int[] coords2 = flowerRooms.get (room2).spawningBitch.getPosibleCoords (31, 32);
-			new Dirt (coords1[0], coords1[1]);
-			new Dirt (coords2[0], coords2[1]);
+			flowerRooms.get (room1).spawnObject (Dirt.class);
+			flowerRooms.get (room2).spawnObject (Dirt.class);
 		}
 		
 	}
@@ -357,12 +411,7 @@ public class Roome extends GameObject {
 			this.id = id;
 
 			//Get the room path
-			String roomPath = getRoomeData ().get (lineNum).split (" ")[0];
-			System.out.println ("YEETUS " + getRoomVariantId (id));
-			if (getRoomVariantId (id) != 0) {
-				Scanner s = new Scanner (getRoomeAltMap ().get (lineNum).get (getRoomVariantId (id + 1)));
-				roomPath += s.next () + "/";
-			}
+			String roomPath = getRoomePathFromId (id);
 			
 			Sprite bgSprite = new Sprite (roomPath + "background.png");
 			Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
@@ -943,6 +992,57 @@ public class Roome extends GameObject {
 		return spawningBitch;
 	}
 	
+	public GameObject spawnObject (Class<?> obj) {
+		
+		//NOTE: ONLY WORKS WITH OBJECTS THAT HAVE DEFINED HITBOX DIMENSIONS VIA GameObject.getHitboxDimensions (Class<?> c)
+		
+		Dimension defaultHitbox = GameObject.getHitboxDimensions (obj);
+		if (defaultHitbox == null) {
+			throw new IllegalStateException ("Cannot spawn " + obj.getName () + " because its default hitbox dimensions are undefined.");
+		}
+		ArrayList<String> spawnParams = this.getSpawnParameters ();
+		if (spawnParams == null) {
+			int[] spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
+			return GameCode.makeInstanceOfGameObject (obj, spawnCoords [0], spawnCoords [1]);
+		} else {
+			boolean spawnAllowed = false;
+			int attempts = 0;
+			ArrayList<Integer> indices = new ArrayList<Integer> ();
+			for (int i = 0; i < spawnParams.size (); i++) {
+				indices.add (i);
+			}
+			Collections.shuffle (indices);
+			int x = 0;
+			int y = 0;
+			do {
+				int idx = indices.remove (0);
+				String params = spawnParams.get (idx);
+				System.out.println (params);
+				Scanner s = new Scanner (params);
+				x = s.nextInt () + (int)this.getX ();
+				y = s.nextInt () + (int)this.getY ();
+				while (s.hasNext ()) {
+					try {
+						Class<?> parentClass = Class.forName (s.next ());
+						if (parentClass.isAssignableFrom (obj)) {
+							DummyCollider collider = new DummyCollider (x, y, defaultHitbox.width, defaultHitbox.height);
+							if (!collider.isColliding ("NPC") && !collider.isColliding ("Item") && !getSpawningMask ().isColliding (collider)) spawnAllowed = true;
+						}
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} while (!spawnAllowed && !indices.isEmpty ());
+			if (spawnAllowed) {
+				return GameCode.makeInstanceOfGameObject (obj, x, y);
+			}
+		}
+		
+		return null;
+		
+	}
+	
 	@Override
 	public boolean isColliding (GameObject obj) {
 		Rectangle objHitbox = new Rectangle (obj.hitbox());
@@ -1001,6 +1101,16 @@ public class Roome extends GameObject {
 			return false;
 		} else {
 			return true;
+		}
+		
+	}
+	
+	public class DummyCollider extends GameObject {
+		
+		public DummyCollider (int x, int y, int width, int height) {
+			setX (x);
+			setY (y);
+			setHitboxAttributes (width, height);
 		}
 		
 	}

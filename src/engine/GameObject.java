@@ -1,14 +1,19 @@
 package engine;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.Raster;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 
 import map.Roome;
+import npcs.Basketball;
+import npcs.Dirt;
+import npcs.Shovel;
 import players.Bit;
 
 /**
@@ -71,6 +76,8 @@ public abstract class GameObject extends GameAPI {
 	static int lastID;
 	
 	private boolean visable = true;
+	
+	private static HashMap<Class<?>, Dimension> hitboxDimensions;
 	
 	/**
 	 * Container and utility class for GameObject variants
@@ -208,7 +215,10 @@ public abstract class GameObject extends GameAPI {
 	 * No-argument constructor for ease of inheretence
 	 */
 	public GameObject () {
-		
+		Dimension d = getHitboxDimensions (this.getClass());
+		if (d != null) {
+			this.setHitboxAttributes (d.getWidth (), d.getHeight ());
+		}
 	}
 	
 	/**
@@ -255,6 +265,18 @@ public abstract class GameObject extends GameAPI {
 	public void forget () {
 		declared = false;
 		ObjectHandler.remove (this);
+	}
+	
+	public static void initHitboxDimensions () {
+		
+		//Make the hitbox dimensions
+		hitboxDimensions = new HashMap<Class<?>, Dimension> ();
+		
+		//Populate the hitbox dimensions
+		hitboxDimensions.put (Dirt.class, new Dimension (30, 31));
+		hitboxDimensions.put (Basketball.class, new Dimension (48, 48));
+		hitboxDimensions.put (Shovel.class, new Dimension (22, 48));
+		
 	}
 	
 	public int getGamelogicPriority() {
@@ -537,6 +559,19 @@ public abstract class GameObject extends GameAPI {
 	public void setHitboxAttributes(double hitboxWidth, double hitboxHeight) {
 		this.hitboxWidth = hitboxWidth;
 		this.hitboxHeight = hitboxHeight;
+	}
+	public static Dimension getHitboxDimensions (Class<?> c) {
+		
+		if (hitboxDimensions == null) {
+			initHitboxDimensions ();
+		}
+		
+		if (!hitboxDimensions.containsKey (c)) {
+			return new Dimension (32, 32);
+		} else {
+			return hitboxDimensions.get (c);
+		}
+		
 	}
 	/**
 	 * Gets the variant object representing this GameObject's variant.

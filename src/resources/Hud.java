@@ -181,29 +181,24 @@ public class Hud extends GameObject {
 		for (int i = 0; i < numItems; i++) {
 			int wx = rand.nextInt (Roome.getMapWidth ());
 			int wy = rand.nextInt (Roome.getMapHeight ());
-			int [] spawnCoords = Roome.map[wy][wx].getSpawningMask ().getPosibleCoords(32, 32);
+			Roome r = Roome.map[wy][wx];
 		
 			//IMPORTANT client is unresponsive if there are no items
 			switch (rand.nextInt(5)) {
 				case 0:
-					Glue glue = new Glue ();
-					glue.declare(spawnCoords[0], spawnCoords[1]);
+					r.spawnObject (Glue.class);
 					break;
 				case 1:
-					Bombs bombs = new Bombs ();
-					bombs.declare(spawnCoords[0], spawnCoords[1]);
+					r.spawnObject (Bombs.class);
 					break;
 				case 2:
-					Speed speed = new Speed ();
-					speed.declare(spawnCoords[0], spawnCoords[1]);
+					r.spawnObject (Speed.class);
 					break;
 				case 3:
-					Teleporter tele = new Teleporter ();
-					tele.declare(spawnCoords[0], spawnCoords[1]);
+					r.spawnObject (Teleporter.class);
 					break;
 				case 4:
-					DataScrambler scrambler = new DataScrambler ();
-					scrambler.declare(spawnCoords[0], spawnCoords[1]);
+					r.spawnObject (DataScrambler.class);
 					break;
 			}
 		}
@@ -337,12 +332,9 @@ public class Hud extends GameObject {
 						int roomY = (int)(currNpc.getY () / 720);
 						Point p1 = new Point (roomX, roomY);
 						Point p2 = getNearbyRoome (p1, currNpc.getMinQuestItemDist (), currNpc.getMaxQuestItemDist ());
-						PixelBitch biatch = Roome.map [p2.y][p2.x].getSpawningMask ();
-						Dimension d = NPC.getHitboxDimensions (spawnClass);
-						int[] spawnCoords = biatch.getPosibleCoords (d.width, d.height);
 						
 						//Spawn the quest item
-						GameObject newObj = GameCode.makeInstanceOfGameObject (spawnClass, spawnCoords [0], spawnCoords [1]);
+						GameObject newObj = Roome.map [p2.y][p2.x].spawnObject (spawnClass);
 						if (newObj != null) currNpc.linkQuestObject (newObj);
 						
 					}
