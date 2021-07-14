@@ -342,27 +342,8 @@ public class Hud extends GameObject {
 						int[] spawnCoords = biatch.getPosibleCoords (d.width, d.height);
 						
 						//Spawn the quest item
-						try {
-							GameObject newObj = (GameObject)spawnClass.getConstructor (Double.TYPE, Double.TYPE).newInstance (spawnCoords [0], spawnCoords [1]);
-							currNpc.linkQuestObject (newObj);
-						} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-								| InvocationTargetException | SecurityException e) {
-							e.printStackTrace();
-							// TODO Auto-generated catch block
-						} catch (NoSuchMethodException e) {
-							//Not an NPC
-							GameObject newObj;
-							try {
-								newObj = (GameObject)spawnClass.getConstructor ().newInstance ();
-								newObj.setX (spawnCoords [0]);
-								newObj.setY (spawnCoords [1]);
-								currNpc.linkQuestObject (newObj);
-							} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-									| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
+						GameObject newObj = GameCode.makeInstanceOfGameObject (spawnClass, spawnCoords [0], spawnCoords [1]);
+						if (newObj != null) currNpc.linkQuestObject (newObj);
 						
 					}
 					

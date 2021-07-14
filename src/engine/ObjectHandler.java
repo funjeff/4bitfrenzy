@@ -24,7 +24,7 @@ public class ObjectHandler {
 	/**
 	 * Set to true when objects can be removed without an error; false otherwise
 	 */
-	private static boolean mutable = true;
+	private static volatile boolean mutable = true;
 	// Set to true when running pauseEvent false when running frameEvent
 	private static boolean isPaused = false;
 	/**

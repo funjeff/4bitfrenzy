@@ -244,14 +244,8 @@ public class Roome extends GameObject {
 							String objType = s3.next ();
 							double objX = r.getX () + s3.nextInt ();
 							double objY = r.getY () + s3.nextInt ();
-							try {
-								Class.forName ("npcs." + objType).getConstructor (Double.TYPE, Double.TYPE).newInstance (objX, objY);
-							} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-									| InvocationTargetException | NoSuchMethodException | SecurityException
-									| ClassNotFoundException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							GameObject obj = GameCode.makeInstanceOfGameObject (objType, objX, objY);
+							System.out.println (obj);
 						}
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block

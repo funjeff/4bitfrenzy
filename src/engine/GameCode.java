@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -23,6 +24,7 @@ import items.Egg;
 import items.FakeScrambler;
 import items.FriedFood;
 import items.Glue;
+import items.Item;
 import items.Speed;
 import items.Teleporter;
 import items.Water;
@@ -33,6 +35,8 @@ import map.Roome;
 import network.Client;
 import network.NetworkHandler;
 import npcs.Baseball;
+import npcs.Basketball;
+import npcs.NPC;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
@@ -67,6 +71,8 @@ public class GameCode {
 	
 	private static double scoreMultiplier = 1;
 	private static boolean hasPerk15 = false;
+	
+	public static final String[] packageList = new String[] {"items", "npcs"};
 	
 	public static void testBitch () {
 		
@@ -453,6 +459,45 @@ public class GameCode {
 			settings = new GameSettings ();
 		}
 		return settings;
+	}
+	
+	public static GameObject makeInstanceOfGameObject (String type, double x, double y) {
+		
+		//Check all the packages
+		for (int i = 0; i < packageList.length; i++) {
+			try {
+				String prefix = packageList [i];
+				return makeInstanceOfGameObject (Class.forName (prefix + '.' + type), x, y);
+			} catch (ClassNotFoundException e) {
+				//Do nothing
+			}
+		}
+		
+		//Return null if class is not found
+		return null;
+		
+	}
+	
+	public static GameObject makeInstanceOfGameObject (Class<?> type, double x, double y) {
+		
+		try {
+			
+			if (NPC.class.isAssignableFrom (type)) {
+				NPC npc = (NPC) type.getConstructor (Double.TYPE, Double.TYPE).newInstance (x, y);
+				return npc;
+			} else if (Item.class.isAssignableFrom (type)) {
+				Item item = (Item) type.getConstructor ().newInstance ();
+				item.declare ((int) x, (int) y);
+				return item;
+			} else {
+				return null;
+			}
+			
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			return null;
+		}
+		
 	}
 	
 	public static class GameSettings {
