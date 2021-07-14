@@ -74,6 +74,7 @@ public class Roome extends GameObject {
 	public static ArrayList<String> codeWallLines;
 	public static ArrayList<String> codeWallColors;
 	public static HashMap<Integer, ArrayList<Roome>> roomeIdMap;
+	public static HashMap<Integer, ArrayList<String>> roomeAltMap;
 	
 	public Roome ()
 	{
@@ -103,10 +104,81 @@ public class Roome extends GameObject {
 		
 	}
 	
+	public static HashMap<Integer, ArrayList<String>> getRoomeAltMap () {
+		
+		//Init the alt map if null
+		if (roomeAltMap == null) {
+		
+			roomeAltMap = new HashMap<Integer, ArrayList<String>> ();
+			ArrayList<String> roomeData = getRoomeData ();
+			for (int i = 0; i < roomeData.size (); i++) {
+				
+				Scanner s = new Scanner (roomeData.get (i));
+				String path = s.next ();
+				String variantPath = path + "variants.txt";
+				File f = new File (variantPath);
+				if (f.exists ()) {
+					
+					ArrayList<String> lines = new ArrayList<String> ();
+					Scanner s2;
+					try {
+						s2 = new Scanner (f);
+						while (s2.hasNextLine ()) {
+							lines.add (s2.nextLine ());
+						}
+						roomeAltMap.put (i, lines);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return roomeAltMap;
+		
+	}
+	
 	public static int rollRoomeId () {
+		
+		//Get the id for the roome
 		ArrayList<Integer> ids = getRoomeIdPool ();
 		int idx = (int)(Math.random () * ids.size ());
-		return ids.get (idx);
+		int idVal = ids.get (idx);
+		
+		//Assign possible variants
+		HashMap<Integer, ArrayList<String>> altMap = getRoomeAltMap ();
+		ArrayList<String> alt = altMap.get (idVal);
+		System.out.println (idVal);
+		if (alt != null) {
+			ArrayList<Integer> deck = new ArrayList<Integer> ();
+			for (int i = 0; i < alt.size (); i++) {
+				Scanner s = new Scanner (alt.get (i));
+				s.next ();
+				int amt = s.nextInt ();
+				for (int j = 0; j < amt; j++) {
+					deck.add (i);
+				}
+			}
+			int picked = deck.get ((int)(Math.random () * deck.size ()));
+			idVal += 100 * picked;
+			System.out.println ("OOP " + idVal);
+		}
+		
+		//Return the id
+		return idVal;
+		
+	}
+	
+	public static int getBaseRoomeId (int id) {
+		return id % 100;
+	}
+	
+	public static int getRoomVariantId (int id) {
+		return id / 100;
 	}
 	
 	public static ArrayList<Integer> getRoomeIdPool () {
@@ -151,7 +223,7 @@ public class Roome extends GameObject {
 				
 				//Get the roome data
 				Roome r = map[wy][wx];
-				String dat = roomData.get (r.id);
+				String dat = roomData.get (Roome.getBaseRoomeId (r.id));
 				s1 = new Scanner (dat);
 				s1.next ();
 				s1.next ();
@@ -283,10 +355,17 @@ public class Roome extends GameObject {
 			
 			String toUse = "";
 
-			int lineNum = id; // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+			int lineNum = getBaseRoomeId (id); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
 			this.id = id;
 
+			//Get the room path
 			String roomPath = getRoomeData ().get (lineNum).split (" ")[0];
+			System.out.println ("YEETUS " + getRoomVariantId (id));
+			if (getRoomVariantId (id) != 0) {
+				Scanner s = new Scanner (getRoomeAltMap ().get (lineNum).get (getRoomVariantId (id + 1)));
+				roomPath += s.next () + "/";
+			}
+			
 			Sprite bgSprite = new Sprite (roomPath + "background.png");
 			Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
 			Sprite collisionMask = new Sprite (roomPath + "collision_mask.png");
