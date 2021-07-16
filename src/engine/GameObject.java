@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
+import gameObjects.DataSlot;
+import gameObjects.Register;
 import map.Roome;
 import npcs.Basketball;
 import npcs.Dirt;
@@ -276,6 +277,8 @@ public abstract class GameObject extends GameAPI {
 		hitboxDimensions.put (Dirt.class, new Dimension (30, 31));
 		hitboxDimensions.put (Basketball.class, new Dimension (48, 48));
 		hitboxDimensions.put (Shovel.class, new Dimension (22, 48));
+		hitboxDimensions.put (DataSlot.class, new Dimension (84, 90));
+		hitboxDimensions.put (Register.class, new Dimension (98, 42));
 		
 	}
 	

@@ -50,6 +50,13 @@ public class Item extends GameObject {
 	}
 	
 	@Override
+	public void frameEvent () {
+		if (dropper != null && !this.isColliding (dropper)) {
+			dropper = null;
+		}
+	}
+	
+	@Override
 	public String toString () {
 		return getId () + " " + this.getClass().getName() + " " + (int)this.getX() + " " + (int)this.getY() + " " + uses;
 	}

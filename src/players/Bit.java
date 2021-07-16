@@ -124,21 +124,24 @@ public class Bit extends GameObject {
 			if (NetworkHandler.getPlayerNum () == playerNum) {
 				controlsHint = new ControlsHint ();
 				controlsHint.declare (32, 180);
+				
+				//Setup for next frame
+				firstFrame = false;
 			}
 			
-			//Setup for next frame
-			firstFrame = false;
 		}
 		
 		//Handle the controlsHint
 		this.setX (getX () - this.getSpeed ());
 		this.setY (getY () - this.getSpeed ());
 		this.setHitboxAttributes (hitbox ().width + this.getSpeed () * 2, hitbox ().height + this.getSpeed () * 2);
-		if (this.isColliding ("Register") && regestersBeingCarried == null) {
-			//GRAB FOR REGISTER
-			controlsHint.showGrabHint ();
-		} else {
-			controlsHint.showNoHint ();
+		if (NetworkHandler.getPlayerNum () == playerNum) {
+			if (this.isColliding ("Register") && regestersBeingCarried == null) {
+				//GRAB FOR REGISTER
+				controlsHint.showGrabHint ();
+			} else {
+				controlsHint.showNoHint ();
+			}
 		}
 		this.setX (getX () + this.getSpeed ());
 		this.setY (getY () + this.getSpeed ());
@@ -178,7 +181,7 @@ public class Bit extends GameObject {
 			}
 			if (this.isCollidingChildren("Item") && NetworkHandler.isHost()) {
 				Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
-				if (toUse.pickupablity) {
+				if (toUse.pickupablity && toUse.getDropper () != this) {
 					if (inventory.getItem() != null) {
 						Item it = inventory.getItem();
 						it.dropItem(this);

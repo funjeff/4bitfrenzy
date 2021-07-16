@@ -176,7 +176,7 @@ public class Hud extends GameObject {
 		Random rand = new Random ();
 		
 		//Spawn in items
-		int numItems = rand.nextInt (TitleScreen.getNumberOfPlayers () + 1);
+		int numItems = rand.nextInt (TitleScreen.getNumberOfPlayers () + 4);
 			
 		for (int i = 0; i < numItems; i++) {
 			int wx = rand.nextInt (Roome.getMapWidth ());
