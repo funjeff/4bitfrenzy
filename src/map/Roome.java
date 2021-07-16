@@ -1026,7 +1026,7 @@ public class Roome extends GameObject {
 						Class<?> parentClass = Class.forName (s.next ());
 						if (parentClass.isAssignableFrom (obj)) {
 							DummyCollider collider = new DummyCollider (x, y, defaultHitbox.width, defaultHitbox.height);
-							if (!collider.isColliding ("NPC") && !collider.isColliding ("Item") && !getSpawningMask ().isColliding (collider)) spawnAllowed = true;
+							if (!GameCode.isCollidingWithInteractable (collider) && !getSpawningMask ().isColliding (collider)) spawnAllowed = true;
 						}
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -1036,10 +1036,11 @@ public class Roome extends GameObject {
 			} while (!spawnAllowed && !indices.isEmpty ());
 			if (spawnAllowed) {
 				return GameCode.makeInstanceOfGameObject (obj, x, y);
+			} else {
+				int[] spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
+				return GameCode.makeInstanceOfGameObject (obj, spawnCoords [0], spawnCoords [1]);
 			}
 		}
-		
-		return null;
 		
 	}
 	

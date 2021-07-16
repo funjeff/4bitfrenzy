@@ -481,12 +481,10 @@ public class GameCode {
 			if (NPC.class.isAssignableFrom (type)) {
 				NPC npc = (NPC) type.getConstructor (Double.TYPE, Double.TYPE).newInstance (x, y);
 				return npc;
-			} else if (Item.class.isAssignableFrom (type)) {
-				Item item = (Item) type.getConstructor ().newInstance ();
-				item.declare ((int) x, (int) y);
-				return item;
 			} else {
-				return null;
+				GameObject obj = (GameObject) type.getConstructor ().newInstance ();
+				obj.declare ((int) x, (int) y);
+				return obj;
 			}
 			
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -494,6 +492,13 @@ public class GameCode {
 			return null;
 		}
 		
+	}
+	
+	public static boolean isCollidingWithInteractable (GameObject obj) {
+		return obj.isCollidingChildren ("NPC") ||
+			   obj.isCollidingChildren ("Item") ||
+			   obj.isColliding ("Register") ||
+			   obj.isColliding ("DataSlot");
 	}
 	
 	public static class GameSettings {

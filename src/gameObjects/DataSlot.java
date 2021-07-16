@@ -35,19 +35,24 @@ public class DataSlot extends GameObject {
 	}
 
 	public void setMemAddress(int memAddress) {
+		display.changeText (Integer.toHexString(memAddress).toUpperCase());
 		this.memAddress = memAddress;
 	}
 
-	public DataSlot (int memAdress) {
-		this.memAddress = memAdress;
+	public DataSlot () {
 		this.setSprite (driveSprite);
 		this.getAnimationHandler().setAnimationFrame(0);
-		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
+		display = new Textbox ("00");
 		display.changeBoxVisability();
 		display.setRenderPriority(3);
 		this.setRenderPriority(2);
 		display.setFont("text (red)");
 		this.setHitboxAttributes(84, 90);
+	}
+	
+	public DataSlot (int memAdress) {
+		this ();
+		setMemAddress (memAddress);
 	}
 	
 	public Register getRegester() {

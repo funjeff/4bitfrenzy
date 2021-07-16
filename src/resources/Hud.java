@@ -211,14 +211,12 @@ public class Hud extends GameObject {
 			Roome slotRoome = Roome.map [pt2.y][pt2.x];
 			int memNum = rand.nextInt (256);
 			//Register
-			Register r = new Register (memNum);
-			int[] regSpawn = registerRoome.getSpawningMask ().getPosibleCoords ((int)r.hitbox ().getWidth (), (int)r.hitbox ().getHeight ());
-			r.declare (regSpawn [0], regSpawn [1]);
+			Register r = (Register)registerRoome.spawnObject (Register.class);
+			r.setMemAddress (memNum);
 			registerRoome.r = r;
 			//Data slot
-			DataSlot ds = new DataSlot (memNum);
-			int[] dsSpawn = slotRoome.getSpawningMask ().getPosibleCoords ((int)ds.hitbox ().getWidth (), (int)ds.hitbox ().getHeight ());
-			ds.declare (dsSpawn [0], dsSpawn [1]);
+			DataSlot ds = (DataSlot)slotRoome.spawnObject (DataSlot.class);
+			ds.setMemAddress (memNum);
 			slotRoome.ds = ds;
 		}
 		
@@ -248,12 +246,9 @@ public class Hud extends GameObject {
 						memNum = rand.nextInt(256);
 				}
 			}
-			Register r = new Register(memNum);
 			
-			int [] spawnPoint = Roome.map[wy][wx].getSpawningMask ().getPosibleCoords(r.hitbox().width, r.hitbox().height);
-			
-			r.declare((int)spawnPoint[0], (int) spawnPoint[1]);
-			
+			Register r = (Register)Roome.map[wx][wy].spawnObject (Register.class);
+			r.setMemAddress (memNum);
 			Roome.map[wy][wx].r = r;
 			
 			int xCoord, yCoord;
@@ -283,14 +278,10 @@ public class Hud extends GameObject {
 			yCoord = p2.y;
 			
 			Roome dataRoom = Roome.map [yCoord][xCoord];
-			DataSlot ds = new DataSlot (memNum);
+			DataSlot slot = (DataSlot)dataRoom.spawnObject (DataSlot.class);
+			slot.setMemAddress (memNum);
+			dataRoom.ds = slot;
 			
-			int [] otherPoint = dataRoom.getSpawningMask ().getPosibleCoords(ds.hitbox().width, ds.hitbox().height);
-			
-			
-			ds.declare((int)otherPoint[0],(int) otherPoint[1]);
-			
-			dataRoom.ds = ds;
 		}
 		
 		//Spawn in quest NPCs/Quest items

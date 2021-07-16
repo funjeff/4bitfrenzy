@@ -10,6 +10,8 @@ public class Item extends GameObject {
 	
 	public int uses = 2;
 	
+	private Bit dropper;
+	
 	public Item () {
 		
 	}
@@ -23,14 +25,15 @@ public class Item extends GameObject {
 	}
 	
 	public void pickUpItem (Bit pickUper) {
-		
+		Thread.dumpStack ();
 	}
 
 	public void dropItem (Bit droper) {
 		
 		Roome romm = Roome.getRoom(droper.getX(), droper.getY());
-		int [] spawnCoords = romm.getSpawningMask().getPosibleCoords(this.hitbox().width, this.hitbox().height);
-		this.declare(spawnCoords[0], spawnCoords[1]);
+		this.dropper = droper;
+		this.declare ((int)droper.getX (), (int)droper.getY ());
+		
 	}
 	
 	public void refreshItem (String str) {
@@ -40,6 +43,10 @@ public class Item extends GameObject {
 		this.setY(Integer.parseInt(args[3]));
 		
 		uses = Integer.parseInt(args[4]);
+	}
+	
+	public Bit getDropper () {
+		return dropper;
 	}
 	
 	@Override

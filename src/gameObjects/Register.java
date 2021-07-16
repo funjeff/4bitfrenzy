@@ -35,14 +35,18 @@ public class Register extends GameObject {
 	
 	boolean modified;
 	
-	public Register (int memAdress) {
-		this.memAddress = memAdress;
+	public Register () {
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
-		display = new Textbox (Integer.toHexString(memAddress).toUpperCase());
+		display = new Textbox ("00");
 		display.changeBoxVisability();
 		display.setFont("text (lime green)");
 		this.setRenderPriority(1);
 		this.setHitboxAttributes(98, 42);
+	}
+	
+	public Register (int memAdress) {
+		this ();
+		setMemAddress (memAdress);
 	}
 	
 	public void refreshRegister (String info) {
@@ -87,6 +91,7 @@ public class Register extends GameObject {
 		return memAddress;
 	}
 	public void setMemAddress(int memAddress) {
+		display.changeText (Integer.toHexString(memAddress).toUpperCase());
 		this.memAddress = memAddress;
 	}
 	@Override

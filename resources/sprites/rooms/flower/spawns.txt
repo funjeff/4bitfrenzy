@@ -1,4 +1,4 @@
-420 200 npcs.NPC
-620 200 npcs.NPC
-420 400 npcs.NPC
-620 400 npcs.NPC
+420 200 npcs.NPC items.Item gameObjects.Register gameObjects.DataSlot
+620 200 npcs.NPC items.Item gameObjects.Register gameObjects.DataSlot
+420 400 npcs.NPC items.Item gameObjects.Register gameObjects.DataSlot
+620 400 npcs.NPC items.Item gameObjects.Register gameObjects.DataSlot
