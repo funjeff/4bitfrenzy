@@ -21,6 +21,7 @@ import map.Map;
 import map.Roome;
 import network.NetworkHandler;
 import npcs.Hoop;
+import npcs.LoadedDice;
 import resources.SoundPlayer;
 
 
@@ -136,12 +137,26 @@ public class Bit extends GameObject {
 		this.setY (getY () - this.getSpeed ());
 		this.setHitboxAttributes (hitbox ().width + this.getSpeed () * 2, hitbox ().height + this.getSpeed () * 2);
 		if (NetworkHandler.getPlayerNum () == playerNum) {
+			
+			boolean showHint = false;
+			//Check for colliding with register
 			if (this.isColliding ("Register") && regestersBeingCarried == null) {
 				//GRAB FOR REGISTER
 				controlsHint.showGrabHint ();
-			} else {
+				showHint = true;
+			}
+			
+			//Check for colliding with loaded dice
+			if (this.isColliding ("LoadedDice")) {
+				controlsHint.showGambleHint ();
+				showHint = true;
+			}
+			
+			//Get rid of the hint if unused
+			if (!showHint) {
 				controlsHint.showNoHint ();
 			}
+			
 		}
 		this.setX (getX () + this.getSpeed ());
 		this.setY (getY () + this.getSpeed ());
@@ -287,6 +302,11 @@ public class Bit extends GameObject {
 				this.setX(this.getX() - (speed + 1));
 				this.setY(this.getY() - (speed + 1));
 					if (keys != null && keys.contains ("v")) {
+						
+						if (this.isColliding ("LoadedDice")) {
+							LoadedDice dice = (LoadedDice) this.getCollisionInfo ().getCollidingObjects ().get (0);
+							dice.roll ();
+						}
 						
 						if (this.isColliding ("Register")) {
 							boolean startedCarring = false;

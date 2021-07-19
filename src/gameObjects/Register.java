@@ -14,9 +14,9 @@ import util.Vector2D;
 
 public class Register extends GameObject {
 	
-	int memAddress = 17;
+	public int memAddress = 17;
 	
-	int secondAddress = -1;
+	public int secondAddress = -1;
 	
 	Textbox display;
 	

@@ -25,40 +25,53 @@ public class ControlsHint extends GameObject {
 	@Override
 	public void draw () {
 		
-		if (this.isVisable()) {
+		if (this.isVisable() && mode != MODE_NOT_VISIBLE) {
 			
 			Graphics g = RenderLoop.wind.getBufferGraphics();
 			
+			//Border attributes
+			int borderWidth = 2;
+			int borderHeight = 2;
+			int boxWidth = 78;
+			int boxHeight = 42;
+			Color innerColor = new Color (0x001000);
+			Color outerColor = new Color (0x005000);
+			
+			//Text attributes
+			int textOffsetX = borderWidth + 4;
+			int textOffsetY = borderHeight + 4;
+			Color textColor = new Color (0xFFFFFF);
+			
+			//Draw border
+			g.setColor (outerColor);
+			g.fillRect ((int)getX (), (int)getY (), boxWidth, boxHeight);
+			g.setColor (innerColor);
+			g.fillRect ((int)getX () + borderWidth, (int)getY () + borderHeight, boxWidth - borderWidth * 2, boxHeight - borderHeight * 2);
+			
 			if (mode == MODE_GRAB_REGISTER) {
-				
-				//Border attributes
-				int borderWidth = 2;
-				int borderHeight = 2;
-				int boxWidth = 78;
-				int boxHeight = 42;
-				Color innerColor = new Color (0x001000);
-				Color outerColor = new Color (0x005000);
-				
-				//Text attributes
-				int textOffsetX = borderWidth + 4;
-				int textOffsetY = borderHeight + 4;
-				Color textColor = new Color (0xFFFFFF);
-				
-				//Draw border
-				g.setColor (outerColor);
-				g.fillRect ((int)getX (), (int)getY (), boxWidth, boxHeight);
-				g.setColor (innerColor);
-				g.fillRect ((int)getX () + borderWidth, (int)getY () + borderHeight, boxWidth - borderWidth * 2, boxHeight - borderHeight * 2);
 				
 				//Draw button
 				buttonSprite.draw ((int)getX () + textOffsetX + 30, (int)getY () + textOffsetY);
 				g.setColor (textColor);
-				g.drawString("shift", (int)this.getX() + textOffsetX + 33, (int)this.getY() + textOffsetY + 12);
+				g.drawString("shift", (int)this.getX() + textOffsetX + 34, (int)this.getY() + textOffsetY + 12);
 				
 				//Draw text
 				g.drawString("hold", (int)this.getX () + textOffsetX + 1, (int)this.getY () + textOffsetY + 14);
 				g.drawString("to grab", (int)this.getX () + textOffsetX + 10, (int)this.getY () + textOffsetY + 28);
 			
+			}
+			
+			if (mode == MODE_GAMBLE) {
+				
+				//Draw button
+				buttonSprite.draw ((int)getX () + textOffsetX + 34, (int)getY () + textOffsetY);
+				g.setColor (textColor);
+				g.drawString("shift", (int)this.getX() + textOffsetX + 37, (int)this.getY() + textOffsetY + 12);
+				
+				//Draw text
+				g.drawString("press", (int)this.getX () + textOffsetX + 1, (int)this.getY () + textOffsetY + 14);
+				g.drawString("to gamble", (int)this.getX () + textOffsetX + 5, (int)this.getY () + textOffsetY + 28);
+				
 			}
 		
 		}

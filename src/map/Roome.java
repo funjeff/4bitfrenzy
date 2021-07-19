@@ -681,9 +681,15 @@ public class Roome extends GameObject {
 		
 		Random r = new Random ();
 		ArrayList <GameObject> finalRooms = ObjectHandler.getObjectsByName("Roome");
+		
+		//Place in the casino
+		Roome working = null;
+		while (working == null) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
+		working.init (13, r.nextInt (5)); //Casino ID is 13
+		
 		for (int i = 0; i < finalRooms.size(); i++) {
-			Roome working = (Roome)finalRooms.get(i);
-			if (working != null) {
+			working = (Roome)finalRooms.get(i);
+			if (working != null && working.getSprite () == null) {
 				working.init(rollRoomeId (), r.nextInt (5));
 			}
 		}

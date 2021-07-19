@@ -11,3 +11,4 @@ resources/sprites/rooms/noise/ 100
 resources/sprites/rooms/ram_fields/ 100
 resources/sprites/rooms/snakes/ 100
 resources/sprites/rooms/basketball/ 20
+resources/sprites/rooms/casino/ 0

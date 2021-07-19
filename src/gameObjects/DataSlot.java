@@ -16,7 +16,7 @@ import resources.Textbox;
 
 public class DataSlot extends GameObject {
 	
-	int memAddress = 0;
+	public int memAddress = 0;
 	
 	boolean cleared = false;
 	
