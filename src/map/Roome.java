@@ -299,11 +299,38 @@ public class Roome extends GameObject {
 							//Scan through the object text and create the appropraite object
 							s2 = new Scanner (s1.nextLine ());
 							String objType = s2.next ();
-							double objX = r.getX () + s2.nextInt ();
-							double objY = r.getY () + s2.nextInt ();
-							GameObject obj = GameCode.makeInstanceOfGameObject (objType, objX, objY);
-							System.out.println (obj);
+							
+							double objX;
+							double objY;
+							
+							GameObject obj;
+							
+							if (objType.length() - 6 > 0 && objType.substring(objType.length() - 6).equals("Random")) {
+								
+								objX = r.getX() + rand.nextInt(1080);
+								objY = r.getY() + rand.nextInt (720);
+								
+								obj = GameCode.makeInstanceOfGameObject (objType.substring(0, objType.length() - 6), objX, objY);
+								
+								while (r.isColliding(obj)) {
+									
+									objX = r.getX() + rand.nextInt(1080);
+									objY = r.getY() + rand.nextInt (720);
+									obj.setX(objX);
+									obj.setY(objY);
+									
+								}
+								
+							} else {
+						
+								objX = r.getX () + s2.nextInt ();
+								objY = r.getY () + s2.nextInt ();
+								obj = GameCode.makeInstanceOfGameObject (objType, objX, objY);
+							}
+							
+							
 						}
+					
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -320,7 +347,7 @@ public class Roome extends GameObject {
 		
 		//Load in hardcoded objects (with special conditions)
 		ArrayList<Roome> flowerRooms = getRoomeIdMap ().get (3);
-		if (flowerRooms != null && flowerRooms.size () >= 1) {
+		if (flowerRooms != null && flowerRooms.size () > 1) {
 			int room1 = rand.nextInt (flowerRooms.size ());
 			int room2;
 			do {

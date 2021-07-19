@@ -286,54 +286,55 @@ public class Hud extends GameObject {
 		
 		//Spawn in quest NPCs/Quest items
 		ArrayList<ArrayList<GameObject>> npcs = ObjectHandler.getChildrenByName ("NPC");
-		for (int i = 0; i < npcs.size (); i++) {
-			ArrayList<GameObject> currNpcs = npcs.get (i);
-			NPC firstNpc = (NPC)currNpcs.get (0);
-			if (firstNpc.spawnsQuestItem()) {
-				
-				//Uhhh
-				
-				for (int j = 0; j < currNpcs.size (); j++) {
+		if (npcs != null) {
+			for (int i = 0; i < npcs.size (); i++) {
+				ArrayList<GameObject> currNpcs = npcs.get (i);
+				NPC firstNpc = (NPC)currNpcs.get (0);
+				if (firstNpc.spawnsQuestItem()) {
 					
-					//Get the curr npc
-					NPC currNpc = (NPC)currNpcs.get (j);
+					//Uhhh
 					
-					//Establish quest item parameters
-					boolean canSpawn = true;
-					double spawnOdds = currNpc.getQuestItemSpawnOdds ();
-					Class<?> spawnClass = currNpc.getQuestItemType ();
-					ArrayList<GameObject> alreadySpawned = ObjectHandler.getObjectsByName (spawnClass.getSimpleName ());
-					int spawnedSize = alreadySpawned == null ? 0 : alreadySpawned.size ();
-					if (spawnedSize >= currNpc.getMaxQuestItems ()) {
-						canSpawn = false; //Ensure no more than the maximum # of items are present
-					}
-					if (spawnedSize < currNpc.getMinQuestItems () && roundNum == 1) {
-						spawnOdds = 1.0;
-					}
-					
-					//Prevent spawning if this already has a spawn
-					if (currNpc.getLinkedQuestsItem() != null && currNpc.getLinkedQuestsItem ().declared ()) {
-						canSpawn = false;
-					}
-					
-					if (canSpawn && Math.random () < spawnOdds) {
+					for (int j = 0; j < currNpcs.size (); j++) {
 						
-						//Find the spawn location
-						int roomX = (int)(currNpc.getX () / 1080);
-						int roomY = (int)(currNpc.getY () / 720);
-						Point p1 = new Point (roomX, roomY);
-						Point p2 = getNearbyRoome (p1, currNpc.getMinQuestItemDist (), currNpc.getMaxQuestItemDist ());
+						//Get the curr npc
+						NPC currNpc = (NPC)currNpcs.get (j);
 						
-						//Spawn the quest item
-						GameObject newObj = Roome.map [p2.y][p2.x].spawnObject (spawnClass);
-						if (newObj != null) currNpc.linkQuestObject (newObj);
+						//Establish quest item parameters
+						boolean canSpawn = true;
+						double spawnOdds = currNpc.getQuestItemSpawnOdds ();
+						Class<?> spawnClass = currNpc.getQuestItemType ();
+						ArrayList<GameObject> alreadySpawned = ObjectHandler.getObjectsByName (spawnClass.getSimpleName ());
+						int spawnedSize = alreadySpawned == null ? 0 : alreadySpawned.size ();
+						if (spawnedSize >= currNpc.getMaxQuestItems ()) {
+							canSpawn = false; //Ensure no more than the maximum # of items are present
+						}
+						if (spawnedSize < currNpc.getMinQuestItems () && roundNum == 1) {
+							spawnOdds = 1.0;
+						}
+						
+						//Prevent spawning if this already has a spawn
+						if (currNpc.getLinkedQuestsItem() != null && currNpc.getLinkedQuestsItem ().declared ()) {
+							canSpawn = false;
+						}
+						
+						if (canSpawn && Math.random () < spawnOdds) {
+							
+							//Find the spawn location
+							int roomX = (int)(currNpc.getX () / 1080);
+							int roomY = (int)(currNpc.getY () / 720);
+							Point p1 = new Point (roomX, roomY);
+							Point p2 = getNearbyRoome (p1, currNpc.getMinQuestItemDist (), currNpc.getMaxQuestItemDist ());
+							
+							//Spawn the quest item
+							GameObject newObj = Roome.map [p2.y][p2.x].spawnObject (spawnClass);
+							if (newObj != null) currNpc.linkQuestObject (newObj);
+							
+						}
 						
 					}
-					
 				}
 			}
 		}
-		
 		timeLeft = 60000 * 5 + 60000 * roundNum;
 	}
 	public static void waveOver () {
