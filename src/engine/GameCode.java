@@ -480,6 +480,7 @@ public class GameCode {
 			
 			if (NPC.class.isAssignableFrom (type)) {
 				NPC npc = (NPC) type.getConstructor (Double.TYPE, Double.TYPE).newInstance (x, y);
+				
 				return npc;
 			} else {
 				GameObject obj = (GameObject) type.getConstructor ().newInstance ();

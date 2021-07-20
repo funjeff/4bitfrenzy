@@ -12,3 +12,6 @@ resources/sprites/rooms/ram_fields/ 100
 resources/sprites/rooms/snakes/ 100
 resources/sprites/rooms/basketball/ 20
 resources/sprites/rooms/casino/ 0
+resources/sprites/rooms/italy/ 0
+resources/sprites/rooms/dump/ 100
+resources/sprites/rooms/popcorn/ 100

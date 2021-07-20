@@ -25,7 +25,11 @@ public class Item extends GameObject {
 	}
 	
 	public void pickUpItem (Bit pickUper) {
+<<<<<<< HEAD
 
+=======
+		//Thread.dumpStack ();
+>>>>>>> ace6d299a43667776503910c2d1ad4b229132abd
 	}
 
 	public void dropItem (Bit droper) {
