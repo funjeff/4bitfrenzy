@@ -14,7 +14,9 @@ import gameObjects.Register;
 import map.Roome;
 import npcs.Basketball;
 import npcs.Dirt;
+import npcs.Popcorn;
 import npcs.Shovel;
+import npcs.Trash;
 import players.Bit;
 
 /**
@@ -279,6 +281,8 @@ public abstract class GameObject extends GameAPI {
 		hitboxDimensions.put (Shovel.class, new Dimension (22, 48));
 		hitboxDimensions.put (DataSlot.class, new Dimension (84, 90));
 		hitboxDimensions.put (Register.class, new Dimension (98, 42));
+		hitboxDimensions.put (Popcorn.class, new Dimension (16, 16));
+		hitboxDimensions.put (Trash.class, new Dimension (64, 64));
 		
 	}
 	

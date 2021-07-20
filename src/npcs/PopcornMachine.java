@@ -43,7 +43,6 @@ public class PopcornMachine extends NPC {
 			
 			Popcorn corn = new Popcorn (this.getX() + (rand.nextInt(200) * negX),this.getY() + (rand.nextInt(200) * negY));
 			
-			corn.declare();
 		}
 	}
 	

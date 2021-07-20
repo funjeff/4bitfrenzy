@@ -307,19 +307,29 @@ public class Roome extends GameObject {
 							
 							if (objType.length() - 6 > 0 && objType.substring(objType.length() - 6).equals("Random")) {
 								
+								String objTypeName = objType.substring (0, objType.length () - 6);
+								
 								objX = r.getX() + rand.nextInt(1080);
 								objY = r.getY() + rand.nextInt (720);
 								
-								obj = GameCode.makeInstanceOfGameObject (objType.substring(0, objType.length() - 6), objX, objY);
+								Dimension d = null;
+								try {
+									d = GameObject.getHitboxDimensions (Class.forName("npcs." + objTypeName));
+								} catch (ClassNotFoundException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								DummyCollider collider = new DummyCollider ((int)objX, (int)objY, (int)d.getWidth (), (int)d.getHeight ());
 								
-								while (r.isColliding(obj)) {
+								while (r.isColliding(collider)) {
 									
 									objX = r.getX() + rand.nextInt(1080);
 									objY = r.getY() + rand.nextInt (720);
-									obj.setX(objX);
-									obj.setY(objY);
+									collider.setX(objX);
+									collider.setY(objY);
 									
 								}
+								obj = GameCode.makeInstanceOfGameObject (objTypeName, objX, objY);
 								
 							} else {
 						
@@ -1139,7 +1149,7 @@ public class Roome extends GameObject {
 		
 	}
 	
-	public class DummyCollider extends GameObject {
+	public static class DummyCollider extends GameObject {
 		
 		public DummyCollider (int x, int y, int width, int height) {
 			setX (x);
