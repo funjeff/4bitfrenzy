@@ -52,11 +52,6 @@ public class PushableNPC extends NPC {
 				vy *= -.5; //Bounce (NOTE: not a "proper" bounce for diagonal directions)
 			}
 			
-			//Stuck check
-			if (stuckCount > 500) {
-				
-			}
-			
 			//Assert position if necessary
 			assertPosition (getX (), getY ());
 		}
@@ -82,27 +77,8 @@ public class PushableNPC extends NPC {
 			ArrayList<GameObject> objs = getCollisionInfo ().getCollidingObjects ();
 			for (int i = 0; i < objs.size (); i++) {
 				Bit curr = (Bit)objs.get (i);
-				int dir = curr.lastMove;
-				switch (dir) {
-					case 0:
-						//Up
-						vy = -curr.getCarrySpeed() * pushMultiplier;
-						break;
-					case 1:
-						//Down
-						vy = curr.getCarrySpeed() * pushMultiplier;
-						break;
-					case 2:
-						//Right
-						vx = curr.getCarrySpeed() * pushMultiplier;
-						break;
-					case 3:
-						//Left
-						vx = -curr.getCarrySpeed() * pushMultiplier;
-						break;
-					default:
-						break;
-				}
+				vx = Math.abs (curr.getPushVector ().x) > Math.abs (vx) ? curr.getPushVector ().x : vx;
+				vy = Math.abs (curr.getPushVector ().y) > Math.abs (vy) ? curr.getPushVector ().y : vy;
 			}
 		}
 		

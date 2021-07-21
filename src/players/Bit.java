@@ -23,6 +23,7 @@ import network.NetworkHandler;
 import npcs.Hoop;
 import npcs.LoadedDice;
 import resources.SoundPlayer;
+import util.Vector2D;
 
 
 public class Bit extends GameObject {
@@ -55,6 +56,10 @@ public class Bit extends GameObject {
 	
 	private boolean firstFrame = true;
 	private ControlsHint controlsHint;
+	
+	private double prevFrameX;
+	private double prevFrameY;
+	private Vector2D pushVector;
 	
 	public boolean isSecondaryBit() {
 		return secondaryBit;
@@ -118,6 +123,14 @@ public class Bit extends GameObject {
 
 	@Override
 	public void frameEvent () {	
+		
+		pushVector = new Vector2D (getX () - prevFrameX, getY () - prevFrameY);
+		if (pushVector.getLength () > 25) {
+			pushVector.normalize ();
+			pushVector.scale (15);
+		}
+		prevFrameX = getX ();
+		prevFrameY = getY ();
 		
 		if (firstFrame) {
 			
@@ -500,6 +513,10 @@ public class Bit extends GameObject {
 		}
 		
 		return speed;
+	}
+	
+	public Vector2D getPushVector () {
+		return pushVector;
 	}
 	
 	public void updateScroll () {
