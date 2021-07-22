@@ -411,7 +411,7 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-		Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (FriedFood.class);
+//		Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (FriedFood.class);
 //		
 //		Register regBig = new Register (45);
 //		

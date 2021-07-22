@@ -506,7 +506,7 @@ public abstract class GameObject extends GameAPI {
 	 * @return the x-coordinate of this GameObject's center point
 	 */
 	public double getCenterX () {
-		return x + hitbox ().getX () + hitbox ().getWidth () / 2;
+		return hitbox ().getX () + hitbox ().getWidth () / 2;
 	}
 	
 	/**
@@ -514,7 +514,7 @@ public abstract class GameObject extends GameAPI {
 	 * @return the y-coordinate of this GameObject's center point
 	 */
 	public double getCenterY () {
-		return y + hitbox ().getY () + hitbox ().getHeight () / 2;
+		return hitbox ().getY () + hitbox ().getHeight () / 2;
 	}
 	
 	/**
