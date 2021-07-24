@@ -247,7 +247,7 @@ public class Hud extends GameObject {
 				}
 			}
 			
-			Register r = (Register)Roome.map[wx][wy].spawnObject (Register.class);
+			Register r = (Register)Roome.map[wy][wx].spawnObject (Register.class);
 			r.setMemAddress (memNum);
 			Roome.map[wy][wx].r = r;
 			
