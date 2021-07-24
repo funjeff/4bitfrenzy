@@ -11,9 +11,16 @@ import resources.SoundPlayer;
 
 public class TitleBit extends GameObject {
 
+	public static final int HINT_TIME = 200;
+	
 	Sprite sprite = new Sprite ("resources/sprites/config/bits.txt");
 	
+	private MoveHint hint;
+	
 	private TitleRegister carried = null;
+	
+	private int stillTime = 0;
+	private boolean moved = false;
 
 	public TitleBit () {
 		setSprite (sprite);
@@ -24,6 +31,23 @@ public class TitleBit extends GameObject {
 	
 	@Override
 	public void frameEvent () {
+		
+		//Make the move hint if needed
+		if (!moved) {
+			stillTime++;
+		} else {
+			stillTime = Integer.MIN_VALUE;
+		}
+		if (stillTime > HINT_TIME && hint == null) {
+			hint = new MoveHint ();
+			hint.declare ((int)getX () - 44, (int)getY () - 92);
+		}
+		if (hint != null && moved) {
+			hint.forget ();
+			hint = null;
+			stillTime = Integer.MIN_VALUE;
+		}
+		moved = false;
 		
 		//Assert the default speed
 		double speed = 5;
@@ -72,6 +96,9 @@ public class TitleBit extends GameObject {
 		//Handle the pushing and pulling of the TitleRegister
 		double diffX = getX () - startX;
 		double diffY = getY () - startY;
+		if (diffX != 0 || diffY != 0) {
+			moved = true;
+		}
 		if (carried != null) {
 			if (!carried.goX (carried.getX () + diffX)) {
 				setX (startX);
