@@ -13,7 +13,6 @@ import gameObjects.DataSlot;
 import gameObjects.GameOverScreen;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
-import gameObjects.TitleScreen;
 import gameObjects.WaveCompleteGraphic;
 import items.Bombs;
 import items.DataScrambler;
@@ -23,6 +22,7 @@ import items.Teleporter;
 import map.Roome;
 import network.NetworkHandler;
 import npcs.NPC;
+import titleScreen.TitleScreen;
 
 public class Hud extends GameObject {
 	

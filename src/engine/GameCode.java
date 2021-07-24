@@ -28,7 +28,6 @@ import items.Item;
 import items.Speed;
 import items.Teleporter;
 import items.Water;
-import gameObjects.TitleScreen;
 import map.Ribbon;
 import map.RibbonPulse;
 import map.Roome;
@@ -41,6 +40,7 @@ import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
 import resources.Textbox;
+import titleScreen.TitleScreen;
 
 public class GameCode {
 	

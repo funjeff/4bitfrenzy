@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 import engine.GameCode;
 import engine.RenderLoop;
-import gameObjects.TitleScreen;
+import titleScreen.TitleScreen;
 
 public class ServerConnection extends Thread {
 	
