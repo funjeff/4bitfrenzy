@@ -3,6 +3,7 @@ package titleScreen;
 import engine.GameCode;
 import engine.GameObject;
 import engine.Sprite;
+import gameObjects.PointyBoi;
 
 public class TitleRegister extends GameObject {
 
@@ -19,6 +20,7 @@ public class TitleRegister extends GameObject {
 		setSprite (sprite);
 		setRenderPriority (100);
 		setHitboxAttributes (98, 42);
+		new PointyBoi ().declare (0, 0);
 		
 	}
 	

@@ -241,6 +241,18 @@ public class Sprite {
 			RenderLoop.wind.getBufferGraphics ().drawImage (	images[frame].getSubimage(0, 0, width, height), usedX, usedY, null);
 		}
 	}
+	public void drawRotated (int x, int y, int frame, double anchorX, double anchorY, double rotation) {
+		AffineTransform transform = new AffineTransform ();
+		transform.translate (x, y);
+		transform.rotate (rotation, anchorX, anchorY);
+		
+		draw (x, y, frame, transform);
+	}
+	public void draw (double usedX, double usedY, int frame, AffineTransform transform) {
+		Graphics2D windowGraphics;
+		windowGraphics = (Graphics2D)RenderLoop.wind.getBufferGraphics ();
+		windowGraphics.drawImage (getFrame (frame), transform, null);
+	}
 	/**
 	 * Draws the given frame of this sprite at the given x and y coordinates.
 	 * @param usedX The x coordinate to draw this sprite at
