@@ -1,5 +1,7 @@
 package gameObjects;
 
+import java.util.ArrayList;
+
 import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
@@ -7,7 +9,6 @@ import engine.Sprite;
 import network.NetworkHandler;
 import players.Bit;
 import resources.Textbox;
-import sun.tools.tree.ThisExpression;
 import util.Vector2D;
 
 public class Compass extends GameObject {
@@ -20,7 +21,9 @@ public class Compass extends GameObject {
 	public static final Sprite UP_RIGHTR = new Sprite ("resources/sprites/arrow upRight red.png");
 	public static final Sprite RIGHTR = new Sprite ("resources/sprites/arrow right red.png");
 	
+	public static final int ARROW_NOTCHES = 60;
 	
+	private double pointDir = 0;
 	
 	GameObject pointObject; // the object the compass is pointing too
 	
@@ -29,29 +32,33 @@ public class Compass extends GameObject {
 	public Compass (Bit owner) {
 		this.owner = owner;
 		this.setRenderPriority(3);
+		setSprite (RIGHT);
 	}
 	
 	@Override
 	public void frameEvent () {
 		
 		//Set this arrow's sprite
-		double ang = Math.atan2 (owner.getCenterX () - pointObject.getCenterX (), owner.getCenterY () - pointObject.getCenterY ());
-		ang += Math.PI / 2; //Start point correction
+		double ang = -Math.atan2 (owner.getCenterX () - pointObject.getCenterX (), owner.getCenterY () - pointObject.getCenterY ());
+		ang -= Math.PI / 2; //Start point correction
 		setArrowParams (ang);
 		
-		//Not really sure what this does, Jeffrey explain pls
-		//checks if it is pointing to a cleared data slot and makes it not do that (because pointing to a cleared data slot is a waste of time)
-		try {
-			DataSlot ds = (DataSlot) pointObject;
-			if (ds.cleared) {
-				if (ObjectHandler.getObjectsByName("Register") != null && ObjectHandler.getObjectsByName("Register").size() != 0) {
-					this.pointObject = ObjectHandler.getObjectsByName("Register").get(0);
-					owner.regNum = 0;
+		//Points to the nearest register when you turn in the current one
+		if (!pointObject.declared ()) {
+			ArrayList<GameObject> registers = ObjectHandler.getObjectsByName ("Register");
+			double minDist = Double.POSITIVE_INFINITY;
+			Register minReg = null;
+			for (int i = 0; i < registers.size (); i++) {
+				if (registers.get (i).getDistance (this) < minDist) {
+					minReg = (Register)registers.get (i);
+					minDist = minReg.getDistance (this);
 				}
 			}
-		} catch (ClassCastException e) {
-			
+			if (minReg != null) {
+				pointObject = minReg;
+			}
 		}
+		
 	}
 
 	public GameObject getPointObject() {
@@ -64,7 +71,9 @@ public class Compass extends GameObject {
 	
 	public void setArrowParams (double direction) {
 		
-		//Convert the angle to the domain 0-7
+		pointDir = getNotchedDirection (direction, ARROW_NOTCHES);
+		
+		/*//Convert the angle to the domain 0-7
 		direction += direction < 0 ? Math.PI * 2 : 0; //Convert to 0-2pi range
 		direction *= (4 / Math.PI); //Map to [0,8)
 		direction = Math.round (direction); //Snap to one of (9) angles
@@ -127,60 +136,56 @@ public class Compass extends GameObject {
 			if (getSprite () == RIGHT) {
 				setSprite (RIGHTR);
 			}
-		}
+		}*/
 		
 	}
 	
 	
 	@Override
 	public void draw () {
+		this.setX(50);
+		this.setY(50);
+		
+		String memAdress = "";
+		boolean regOrDs = false; //true for reg false for ds
 		try {
-			
-			Register arrowHolder = (Register) this.owner.regestersBeingCarried.get(0);
-			
-			this.setX(arrowHolder.hitbox().x + arrowHolder.hitbox().width);
-			this.setY(arrowHolder.getY() - 16);
-			
-	//		String memAdress = "";
-	//		boolean regOrDs = false; //true for reg false for ds
-	//		try {
-	//			Register reg = (Register) pointObject;
-	//			memAdress = Integer.toHexString(reg.memAddress).toUpperCase();
-	//			regOrDs = true;
-	//		} catch (ClassCastException e) {
-	//			
-	//		}
-	//		try {
-	//			DataSlot ds = (DataSlot) pointObject;
-	//			memAdress = Integer.toHexString(ds.memAddress).toUpperCase();
-	//			regOrDs = false;
-	//		} catch (ClassCastException e) {
-	//			
-	//		}
-	//		
-	//		Textbox t = new Textbox ("   " + memAdress);
-	//		
-	//		if (regOrDs) {
-	//			t.setFont("text (lime green)");
-	//		} else {
-	//			t.setFont("text (red)");
-	//		}
-	//		t.changeWidth(144);
-	//		t.changeHeight(32);
-	//		
-	//		t.setX(this.getX());
-	//		try {
-	//			t.setY(this.getY() + this.getSprite().getHeight());
-	//		} catch (NullPointerException e) {
-	//			
-	//		}
-	//		t.draw();
-	//		
-			
-			super.draw();
-			
-		} catch (NullPointerException | IndexOutOfBoundsException e ) {
+			Register reg = (Register) pointObject;
+			memAdress = Integer.toHexString(reg.memAddress).toUpperCase();
+			regOrDs = true;
+		} catch (ClassCastException e) {
 			
 		}
+		try {
+			DataSlot ds = (DataSlot) pointObject;
+			memAdress = Integer.toHexString(ds.memAddress).toUpperCase();
+			regOrDs = false;
+		} catch (ClassCastException e) {
+			
+		}
+		
+		Textbox t = new Textbox ("   " + memAdress);
+		
+		if (regOrDs) {
+			t.setFont("text (lime green)");
+		} else {
+			t.setFont("text (red)");
+		}
+		t.changeWidth(144);
+		t.changeHeight(32);
+		
+		t.setX(this.getX() + GameCode.getViewX ());
+		try {
+			t.setY(this.getY() + GameCode.getViewY () + 110);
+		} catch (NullPointerException e) {
+			
+		}
+		t.draw();
+		
+		this.getSprite ().drawRotated ((int)getX (), (int)getY (), 0, 60, 36, pointDir);
+	}
+	
+	public static double getNotchedDirection (double dir, int notches) {
+		int intDir = ((int)(dir / (2 * Math.PI) * notches));
+		return ((2 * Math.PI) * intDir) / notches;
 	}
 }

@@ -78,6 +78,7 @@ public class Roome extends GameObject {
 	public static HashMap<Integer, ArrayList<Roome>> roomeIdMap;
 	public static HashMap<Integer, ArrayList<String>> roomeAltMap;
 	public static HashMap<Integer, ArrayList<String>> spawnsMap;
+	public static HashMap<Integer, ArrayList<Boolean>> allowedWallsMap;
 	
 	public Roome ()
 	{
@@ -209,12 +210,77 @@ public class Roome extends GameObject {
 		
 	}
 	
-	public static int rollRoomeId () {
+	public static ArrayList<Boolean> getAllowedWalls (int roomeId) {
+		
+		if (allowedWallsMap == null) {
+			allowedWallsMap = new HashMap<Integer, ArrayList<Boolean>> ();
+		}
+		
+		if (allowedWallsMap.containsKey (roomeId)) {
+			return allowedWallsMap.get (roomeId);
+		} else {
+			ArrayList<Boolean> allowedWalls = new ArrayList<Boolean> ();
+			String path = getRoomePathFromId (roomeId) + "wall_excludes.txt";
+			File f = new File (path);
+			if (f.exists ()) {
+				try {
+					Scanner s = new Scanner (f);
+					ArrayList<String> excludes = new ArrayList<String> ();
+					while (s.hasNext ()) {
+						excludes.add (s.next ());
+					}
+					allowedWalls.add (!excludes.contains ("top"));
+					allowedWalls.add (!excludes.contains ("left"));
+					allowedWalls.add (!excludes.contains ("bottom"));
+					allowedWalls.add (!excludes.contains ("right"));
+				} catch (FileNotFoundException e) {
+					allowedWalls.add (true);
+					allowedWalls.add (true);
+					allowedWalls.add (true);
+					allowedWalls.add (true);
+				}
+			} else {
+				allowedWalls.add (true);
+				allowedWalls.add (true);
+				allowedWalls.add (true);
+				allowedWalls.add (true);
+			}
+			allowedWallsMap.put (roomeId, allowedWalls);
+			return allowedWalls;
+		}
+	}
+	
+	public static int rollRoomeId (Roome r) {
 		
 		//Get the id for the roome
-		ArrayList<Integer> ids = getRoomeIdPool ();
-		int idx = (int)(Math.random () * ids.size ());
-		int idVal = ids.get (idx);
+		int idVal;
+		while (true) {
+			
+			//Roll the ID
+			ArrayList<Integer> ids = getRoomeIdPool ();
+			int idx = (int)(Math.random () * ids.size ());
+			idVal = ids.get (idx);
+			
+			//Check to see if the room can have the given walls
+			ArrayList<Boolean> walls = getAllowedWalls (idVal);
+			boolean canGenerate = true;
+			if (r.topJunction && !walls.get (0)) {
+				canGenerate = false;
+			}
+			if (r.leftJunction && !walls.get (1)) {
+				canGenerate = false;
+			}
+			if (r.bottomJunction && !walls.get (2)) {
+				canGenerate = false;
+			}
+			if (r.rightJunction && !walls.get (3)) {
+				canGenerate = false;
+			}
+			if (canGenerate) {
+				break; //Break out of the loop if the ID is allowed
+			}
+			
+		}
 		
 		//Assign possible variants
 		HashMap<Integer, ArrayList<String>> altMap = getRoomeAltMap ();
@@ -727,7 +793,7 @@ public class Roome extends GameObject {
 		for (int i = 0; i < finalRooms.size(); i++) {
 			working = (Roome)finalRooms.get(i);
 			if (working != null && working.getSprite () == null) {
-				working.init(rollRoomeId (), r.nextInt (5));
+				working.init(rollRoomeId (working), r.nextInt (5));
 			}
 		}
 

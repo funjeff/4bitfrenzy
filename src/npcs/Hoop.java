@@ -22,13 +22,18 @@ public class Hoop extends NPC {
 	}
 	
 	@Override
-	public void forget () {
-		Thread.dumpStack ();
+	public boolean spawnsQuestItem () {
+		return true;
 	}
 	
 	@Override
-	public boolean spawnsQuestItem () {
-		return true;
+	public int getMinQuestItemDist () {
+		return 0;
+	}
+	
+	@Override
+	public int getMaxQuestItemDist () {
+		return 2;
 	}
 	
 	@Override

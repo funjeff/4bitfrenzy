@@ -4,7 +4,7 @@ resources/sprites/rooms/bricks/ 100
 resources/sprites/rooms/flower/ 100
 resources/sprites/rooms/funny/ 100
 resources/sprites/rooms/head/ 100
-resources/sprites/rooms/heart/ 100
+resources/sprites/rooms/heart/ 400
 resources/sprites/rooms/hex/ 100
 resources/sprites/rooms/lake/ 100
 resources/sprites/rooms/noise/ 100

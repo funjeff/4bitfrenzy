@@ -23,7 +23,6 @@ import engine.RenderLoop;
 import engine.Sprite;
 import gameObjects.DataSlot;
 import gameObjects.Register;
-import gameObjects.TitleScreen;
 import items.Item;
 import engine.GameObject;
 import map.Roome;
@@ -31,6 +30,7 @@ import npcs.NPC;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
+import titleScreen.TitleScreen;
 
 public class Client extends Thread {
 

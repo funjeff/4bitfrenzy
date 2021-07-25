@@ -59,6 +59,7 @@ public class Bit extends GameObject {
 	
 	private double prevFrameX;
 	private double prevFrameY;
+
 	private Vector2D pushVector = new Vector2D (0,0);
 	
 	public boolean isSecondaryBit() {
@@ -346,7 +347,8 @@ public class Bit extends GameObject {
 							//compass = null for client
 							if (this.playerNum == 1) {
 								
-								compass.setPointObject(reg.getDataSlot() );
+								//compass.setPointObject(reg.getDataSlot() );
+								//Commented out because the compass is no longer responsible for pointing to data slots
 							} else {
 								if(startedCarring) {
 									NetworkHandler.getServer().sendMessage("POINT:" + this.playerNum + ":" + reg.getMemAddress());

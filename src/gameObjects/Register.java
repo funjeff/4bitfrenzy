@@ -2,6 +2,7 @@ package gameObjects;
 
 import java.util.ArrayList;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
@@ -14,6 +15,8 @@ import util.Vector2D;
 
 public class Register extends GameObject {
 	
+	public static Sprite navArrow = new Sprite ("resources/sprites/register_nav_arrow.png");
+	
 	public int memAddress = 17;
 	
 	public int secondAddress = -1;
@@ -25,6 +28,8 @@ public class Register extends GameObject {
 	public boolean isLargeRegister = false;
 	
 	public boolean isBlue = false;
+	
+	public boolean showNavArrow = true;
 	
 	long spawnTime;
 	
@@ -273,7 +278,11 @@ public class Register extends GameObject {
 	
 	@Override
 	public void draw () {
+		
+		//Draw the register
 		super.draw();
+		
+		//Draw what this is
 		if (display != null) {
 			if (secondAddress == -1) {
 				display.setX(this.getX() + 35);
@@ -286,6 +295,23 @@ public class Register extends GameObject {
 				display.draw();
 			}
 		}
+		
+		//Draw the nav arrow
+		if (showNavArrow) {
+			DataSlot slot = null;
+			ArrayList<GameObject> slots = ObjectHandler.getObjectsByName ("DataSlot");
+			for (int i = 0; i < slots.size (); i++) {
+				if (((DataSlot)slots.get (i)).getMemAddress() == this.getMemAddress ()) {
+					slot = (DataSlot)slots.get (i);
+				}
+			}
+			double dir = -Math.atan2 (slot.getCenterX () - getCenterX (), slot.getCenterY () - getCenterY ()) + Math.PI / 2;
+			dir = Compass.getNotchedDirection (dir, Compass.ARROW_NOTCHES);
+			int drawX = (int)(getX () - GameCode.getViewX ()) + 36;
+			int drawY = (int)(getY () - GameCode.getViewY ()) - 28;
+			navArrow.drawRotated (drawX, drawY, 0, 15, 9, dir);
+		}
+		
 	}
 	@Override
 	public String toString () {

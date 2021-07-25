@@ -531,6 +531,17 @@ public abstract class GameObject extends GameAPI {
 	}
 	
 	/**
+	 * Gets the distance between the center point of this GameObject and that of the specified GameObject obj
+	 * @param obj the object to calculate the distance from
+	 * @return the distance between the two objects
+	 */
+	public double getDistance (GameObject obj) {
+		double diffX = getCenterX () - obj.getCenterX ();
+		double diffY = getCenterY () - obj.getCenterY ();
+		return Math.sqrt (diffX * diffX + diffY * diffY);
+	}
+	
+	/**
 	 * Gets the x component of this GameObject's previous position.
 	 * @return The x coordinate of this GameObject
 	 */

@@ -1,4 +1,4 @@
-package gameObjects;
+package titleScreen;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -24,7 +24,8 @@ import resources.Textbox;
 
 public class TitleScreen extends GameObject {
 	
-	public Sprite bg = new Sprite ("resources/sprites/title.png");
+	public static Sprite bg = new Sprite ("resources/sprites/title.png");
+	public static Sprite infographic = new Sprite ("resources/sprites/game infographic.png");
 	
 	private String ip;
 	
@@ -60,6 +61,14 @@ public class TitleScreen extends GameObject {
 	public String mapLoadPath = null; //Set this to a filepath before closing the title screen to load a map
 	public static String[] initialData = null;
 	
+	private TitleBit titleBit;
+	private TitleRegister titleReg;
+	private TitleSlot hostSlot;
+	private TitleSlot joinSlot;
+	private TitleSlot perksSlot;
+	private TitleSlot settingsSlot;
+	private TitleSlot helpSlot;
+	
 	@Override
 	public void onDeclare () {
 		
@@ -68,7 +77,7 @@ public class TitleScreen extends GameObject {
 		ip = "";
 		
 		//Make the buttons
-		makeButtons();
+		initMainMenu();
 		
 		//Make the textbox
 		ipBox = new Textbox ("");
@@ -79,7 +88,7 @@ public class TitleScreen extends GameObject {
 		ipBox.changeBoxVisability ();
 		
 		ipBox.setRenderPriority(99);
-
+		
 	}
 	
 	@Override
@@ -127,15 +136,11 @@ public class TitleScreen extends GameObject {
 			}
 		}
 		
-		if (hostButton.isPressed ()) {
-			hostButton.reset ();
+		if (hostSlot.isSelected ()) {
+			//hostButton.reset ();
 			
 			//Remove the buttons
-			hostButton.forget ();
-			joinButton.forget ();
-			rulesButton.forget();
-			perksButton.forget();
-			settingsButton.forget();
+			exitMainMenu ();
 			
 			isHost = true;
 			
@@ -179,54 +184,38 @@ public class TitleScreen extends GameObject {
 			
 		}
 		
-		if (joinButton.isPressed ()) {
-			joinButton.reset ();
+		if (joinSlot.isSelected ()) {
+			//joinButton.reset ();
 			
 			//Remove the buttons
-			hostButton.forget ();
-			joinButton.forget ();
-			rulesButton.forget();
-			perksButton.forget();
-			settingsButton.forget();
+			exitMainMenu ();
 			
 			enterIpMode ();
 		}
-		if (rulesButton.isPressed()) {
-			hostButton.forget();
-			joinButton.forget();
-			rulesButton.forget();
-			perksButton.forget();
-			settingsButton.forget();
+		if (helpSlot.isSelected ()) {
+			exitMainMenu ();
 			
-			this.setSprite(new Sprite ("resources/sprites/game infographic.png"));
-			if (!getKeyEvents().isEmpty()) {
-				
-				setSprite (bg);
-				ip = "";
-				
-				this.makeButtons();
-				rulesButton.pressed = false;
-			}
-			
+			this.setSprite(infographic);
+		
 		}
-		if (perksButton.isPressed()) {
-			hostButton.forget();
-			joinButton.forget();
-			rulesButton.forget();
-			perksButton.forget();
-			settingsButton.forget();
+		if (getSprite () == infographic && keyPressed (KeyEvent.VK_ESCAPE)) {
+			
+			setSprite (bg);
+			ip = "";
+			
+			this.initMainMenu();
+			//rulesButton.pressed = false;
+		}
+		if (perksSlot.isSelected ()) {
+			exitMainMenu ();
 			perkMenu menu = new perkMenu (this);
 			if (ObjectHandler.getObjectsByName("perkMenu") == null || ObjectHandler.getObjectsByName("perkMenu").size() == 0) {
 				menu.declare();
 			}
 		}
-		if (settingsButton.isPressed()) {
-			hostButton.forget();
-			joinButton.forget();
-			rulesButton.forget();
-			perksButton.forget();
-			settingsButton.forget();
-			settingsButton.reset();
+		if (settingsSlot.isSelected ()) {
+			exitMainMenu ();
+			//settingsButton.reset();
 			SettingMenu menu = new SettingMenu (this);
 			if (ObjectHandler.getObjectsByName("SettingMenu") == null || ObjectHandler.getObjectsByName("SettingMenu").size() == 0) {
 				menu.declare();
@@ -254,8 +243,49 @@ public class TitleScreen extends GameObject {
 		
 	}
 	
-	private void makeButtons () {
-		hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
+	private void enterMainMenu () {
+		
+		titleBit = new TitleBit ();
+		titleReg = new TitleRegister ();
+		hostSlot = new TitleSlot (TitleSlot.titleHost);
+		joinSlot = new TitleSlot (TitleSlot.titleJoin);
+		perksSlot = new TitleSlot (TitleSlot.titlePerks);
+		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
+		helpSlot = new TitleSlot (TitleSlot.titleHelp);
+		
+		titleBit.declare (920, 360);
+		titleReg.declare (1000, 346);
+		hostSlot.declare (1150, 45);
+		joinSlot.declare (1150, 180);
+		helpSlot.declare (1150, 322);
+		perksSlot.declare (1150, 460);
+		settingsSlot.declare (1150, 600);
+		
+	}
+	
+	private void exitMainMenu () {
+		
+		titleBit.forget ();
+		titleReg.forget ();
+		hostSlot.forget ();
+		joinSlot.forget ();
+		perksSlot.forget ();
+		settingsSlot.forget ();
+		helpSlot.forget ();
+		
+		/*hostButton.forget();
+		joinButton.forget();
+		rulesButton.forget();
+		perksButton.forget();
+		settingsButton.forget();*/
+		
+	}
+	
+	private void initMainMenu () {
+		
+		enterMainMenu ();
+		
+		/*hostButton = new Button (new Sprite ("resources/sprites/host red.png"));
 		joinButton = new Button (new Sprite ("resources/sprites/join.png"));
 		rulesButton = new Button (new Sprite ("resources/sprites/story red.png"));
 		perksButton = new Button (new Sprite ("resources/sprites/perks red.png"));
@@ -279,7 +309,7 @@ public class TitleScreen extends GameObject {
 		joinButton.setRenderPriority(69);
 		rulesButton.setRenderPriority(69);
 		perksButton.setRenderPriority(69);
-		settingsButton.setRenderPriority(69);	
+		settingsButton.setRenderPriority(69);*/
 	
 	}
 	
@@ -730,7 +760,7 @@ public class TitleScreen extends GameObject {
 			}
 		
 			if (backButton.isPressed()) {
-				screen.makeButtons();
+				screen.initMainMenu();
 				forgetStuff();
 			}
 			
@@ -1002,8 +1032,8 @@ public class TitleScreen extends GameObject {
 					}
 					
 					if (backButton.isPressed()) {
-						screen.makeButtons();
-						screen.perksButton.pressed = false;
+						screen.initMainMenu();
+						//screen.perksButton.pressed = false;
 						forgetStuff();
 					}
 					
