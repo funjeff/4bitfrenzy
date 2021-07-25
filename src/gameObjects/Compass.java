@@ -43,8 +43,7 @@ public class Compass extends GameObject {
 		ang -= Math.PI / 2; //Start point correction
 		setArrowParams (ang);
 		
-		//Not really sure what this does, Jeffrey explain pls
-		//checks if it is pointing to a cleared data slot and makes it not do that (because pointing to a cleared data slot is a waste of time)
+		//Points to the nearest register when you turn in the current one
 		if (!pointObject.declared ()) {
 			ArrayList<GameObject> registers = ObjectHandler.getObjectsByName ("Register");
 			double minDist = Double.POSITIVE_INFINITY;
