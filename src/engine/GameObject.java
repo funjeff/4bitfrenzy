@@ -80,6 +80,8 @@ public abstract class GameObject extends GameAPI {
 	
 	private boolean visable = true;
 	
+	private boolean hitboxBorders = false;
+	
 	private static HashMap<Class<?>, Dimension> hitboxDimensions;
 	
 	/**
@@ -301,6 +303,11 @@ public abstract class GameObject extends GameAPI {
 	public void setRenderPriority(int renderPriority) {
 		this.renderPriority = renderPriority;
 	}
+	
+	public void adjustHitboxBorders () {
+		hitboxBorders = !hitboxBorders;
+	}
+	
 	/**
 	 * turns on pixel collisions
 	 */
@@ -326,8 +333,14 @@ public abstract class GameObject extends GameAPI {
 		
 			
 			if (thisRect.intersects(veiwport) && visable) {	
-				animationHandler.draw (x - GameCode.getViewX(), y - GameCode.getViewY());
+				animationHandler.draw (x - GameCode.getViewX(), y - GameCode.getViewY());	
+				
 			}
+		}
+		if (this.hitboxBorders) {
+			Graphics g = RenderLoop.wind.getBufferGraphics();
+			
+			g.drawRect(this.hitbox().x - GameCode.getViewX(), this.hitbox().y - GameCode.getViewY(), this.hitbox().width,this.hitbox().height);
 		}
 	}
 	

@@ -1,0 +1,7 @@
+default 50
+steam 10
+more_ram 25
+instant_regret 25
+gnome 50
+cool_js 10
+computer_repair 25

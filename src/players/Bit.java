@@ -59,7 +59,7 @@ public class Bit extends GameObject {
 	
 	private double prevFrameX;
 	private double prevFrameY;
-	private Vector2D pushVector;
+	private Vector2D pushVector = new Vector2D (0,0);
 	
 	public boolean isSecondaryBit() {
 		return secondaryBit;

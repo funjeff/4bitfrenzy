@@ -15,3 +15,6 @@ resources/sprites/rooms/casino/ 0
 resources/sprites/rooms/italy/ 0
 resources/sprites/rooms/dump/ 100
 resources/sprites/rooms/popcorn/ 100
+resources/sprites/rooms/gex/ 100
+resources/sprites/rooms/qr_code/ 100
+resources/sprites/rooms/keyboard/ 100
