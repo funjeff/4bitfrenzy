@@ -41,6 +41,7 @@ public class ServerConnection extends Thread {
 			
 			//Recieve data (blocking)
 			while (open) {
+				//System.out.println ("RECIEVING DATA!");
 				try {
 					this.sleep (1);
 				} catch (InterruptedException e) {
@@ -55,6 +56,7 @@ public class ServerConnection extends Thread {
 						dataOut.flush ();
 					}
 					if (str.length () >= 4 && str.substring (0, 4).equals ("KEYS")) {
+						System.out.println (str);
 						String[] keyData = str.split (":");
 						if (keyData.length > 1) {
 							inputs = keyData[1];
@@ -70,18 +72,22 @@ public class ServerConnection extends Thread {
 					while (s == null) {
 						try {
 							s = message.removeLast ();
-						} catch (ConcurrentModificationException | NoSuchElementException e) {
+						} catch (ConcurrentModificationException e) {
 							try {
 								Thread.sleep (1); //Wait and try again
 							} catch (InterruptedException e1) {
 								//Timing is not important
 							}
+						} catch (NoSuchElementException e) {
+							message = new LinkedList<String> (); //For some reason, message is a really fucked up linked list if this happens
 						}
 					}
 					
 					//Send the message
-					dataOut.writeUTF (s);
-					dataOut.flush ();
+					if (s != null) {
+						dataOut.writeUTF (s);
+						dataOut.flush ();
+					}
 					
 				}
 			}
@@ -96,7 +102,9 @@ public class ServerConnection extends Thread {
 	}
 
 	public void message (String message) {
-		this.message.add (message);
+		if (message != null) {
+			this.message.add (message);
+		}
 	}
 	
 	public String getInputs () {
