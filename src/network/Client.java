@@ -299,7 +299,6 @@ public class Client extends Thread {
 				if (args[1].equals ("CREATE")) {
 					NPC npc = NPC.getInstance (args[2]);
 					npc.declare ();
-					System.out.println (str);
 				} else if (args[1].equals ("UPDATE")) {
 					String[] data = args[2].split (":");
 					try {

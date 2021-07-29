@@ -64,7 +64,6 @@ public class ServerConnection extends Thread {
 					}
 				}
 				while (!message.isEmpty ()) {
-					
 					//Attempt to pop the message from writeMessage
 					String s = null;
 					while (s == null) {
@@ -72,6 +71,7 @@ public class ServerConnection extends Thread {
 							s = message.removeLast ();
 						} catch (ConcurrentModificationException | NoSuchElementException e) {
 							try {
+								e.printStackTrace();
 								Thread.sleep (1); //Wait and try again
 							} catch (InterruptedException e1) {
 								//Timing is not important
@@ -82,7 +82,6 @@ public class ServerConnection extends Thread {
 					//Send the message
 					dataOut.writeUTF (s);
 					dataOut.flush ();
-					
 				}
 			}
 			
