@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -190,7 +191,6 @@ public class GameCode {
 	public static void init () {
 		
 		getSettings (); //Initializes the settings
-		
 		
 		initControls();
 		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());

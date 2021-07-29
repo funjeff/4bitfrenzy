@@ -189,6 +189,7 @@ public class Bit extends GameObject {
 			try {
 		
 				keys = NetworkHandler.getServer ().getPlayerInputs (playerNum);
+
 			} catch (NullPointerException e) {
 				keys = null;
 			}

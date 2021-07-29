@@ -33,7 +33,6 @@ public class PushableNPC extends NPC {
 			boolean noclip = false;
 			double mul = 1;
 			if ((this.isCollidingChildren ("NPC") && this.getCollisionInfo ().getCollidingObjects ().size () != 0)) {
-				System.out.println ("HCK");
 				noclip = true;
 				pushMultiplier += Math.random () * .75 - .25;
 			}

@@ -171,7 +171,8 @@ public class Client extends Thread {
 			}
 			
 			if (str.length () >= 5 && str.substring (0, 5).equals ("LIVES")) {
-				int lives = Integer.parseInt(str.substring(6));
+				System.out.println (str);
+				int lives = Integer.parseInt(str.substring(5));
 				
 				Hud.setLives(lives);
 				
