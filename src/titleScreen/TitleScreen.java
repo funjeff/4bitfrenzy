@@ -142,50 +142,9 @@ public class TitleScreen extends GameObject {
 		}
 		
 		if (hostSlot.isSelected ()) {
-			//hostButton.reset ();
 			
-			//Remove the buttons
 			exitMainMenu ();
-			
-			isHost = true;
-			
-			GameCode.setPerk(perkNum, 0);
-			NetworkHandler.setHost (true);
-			
-			this.setSprite(new Sprite ("resources/sprites/now loading.png"));
-			
-			RenderLoop.pause();
-			
-			this.draw();
-			RenderLoop.wind.refresh();
-			
-			//If there is a map to load
-			if (mapLoadPath != null) {
-				//Load the map
-				File f = new File (mapLoadPath);
-				try {
-					Scanner s = new Scanner (f);
-					//Load the room data
-					String mapStr = s.nextLine ();
-					String roomsStr = mapStr.split (":")[1];
-					Roome.loadMap (roomsStr);
-					//Load the object data
-					String dataStr = s.nextLine ();
-					initialData = dataStr.split (":");
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else {
-				//Arcade mode, generate a map
-				Roome.generateMap();
-			}
-			
-			RenderLoop.unPause();
-			this.setSprite(lobbySprite);
-			
-			enterIpMode ();
-			
+			new GameMenu ().declare (0, 0);
 			
 		}
 		
@@ -193,9 +152,7 @@ public class TitleScreen extends GameObject {
 			//joinButton.reset ();
 			
 			//Remove the buttons
-			exitMainMenu ();
-			
-			enterIpMode ();
+
 		}
 		if (helpSlot.isSelected ()) {
 			exitMainMenu ();
@@ -422,6 +379,55 @@ public class TitleScreen extends GameObject {
 				}
 			}
 		}
+	}
+	
+	public void enterHostMode () {
+		
+		isHost = true;
+		
+		GameCode.setPerk(perkNum, 0);
+		NetworkHandler.setHost (true);
+		
+		this.setSprite(new Sprite ("resources/sprites/now loading.png"));
+		
+		RenderLoop.pause();
+		
+		this.draw();
+		RenderLoop.wind.refresh();
+		
+		//If there is a map to load
+		if (mapLoadPath != null) {
+			//Load the map
+			File f = new File (mapLoadPath);
+			try {
+				Scanner s = new Scanner (f);
+				//Load the room data
+				String mapStr = s.nextLine ();
+				String roomsStr = mapStr.split (":")[1];
+				Roome.loadMap (roomsStr);
+				//Load the object data
+				String dataStr = s.nextLine ();
+				initialData = dataStr.split (":");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			//Arcade mode, generate a map
+			Roome.generateMap();
+		}
+		
+		RenderLoop.unPause();
+		this.setSprite(lobbySprite);
+		
+		enterIpMode ();
+
+	}
+	
+	public void enterJoinMode () {
+
+		enterIpMode ();
+		
 	}
 	
 	public void enterIpMode () {
@@ -1094,7 +1100,75 @@ public class TitleScreen extends GameObject {
 				}
 		}
 	
+	public class GameMenu extends GameObject {
+		
+		private Button gmHostButton;
+		private Button gmJoinButton;
+		
+		public Sprite joinDescSprite = new Sprite ("resources/sprites/join_description.png");
+		public Sprite hostDescSprite = new Sprite ("resources/sprites/host_description.png");
+		
+		@Override
+		public void onDeclare () {
+			
+			//Host button coords: 146 257
+			//Join button coords: 697 252
+			//Host desc coords: 58 355
+			//Join desc corods: 586 354
+			
+			//Render this above the title screen
+			this.setSprite (new Sprite ("resources/sprites/game_menu.png"));
+			this.setRenderPriority (70);
+			
+			//Initialize the buttons
+			gmHostButton = new Button (new Sprite ("resources/sprites/host red.png"));
+			gmJoinButton = new Button (new Sprite ("resources/sprites/join.png"));
+			gmHostButton.declare (146, 257);
+			gmJoinButton.declare (697, 252);
+			gmHostButton.setGreen (new Sprite ("resources/sprites/host.png"));
+			gmJoinButton.setGreen (new Sprite ("resources/sprites/join green.png"));
+			gmHostButton.setRenderPriority (71);
+			gmJoinButton.setRenderPriority (71);
+			
+		}
+		
+		@Override
+		public void frameEvent () {
+			if (gmHostButton.isPressed ()) {
+				forgetStuff ();
+				enterHostMode ();
+				gmHostButton.reset ();
+			}
+			if (this.gmJoinButton.isPressed ()) {
+				forgetStuff ();
+				enterJoinMode ();
+				gmJoinButton.reset ();
+			}
+		}
+		
+		@Override
+		public void draw () {
+			
+			super.drawAbsolute ();
+			
+			if (gmHostButton != null && gmHostButton.isMouseInside ()) {
+				hostDescSprite.draw (58, 355);
+			}
+			if (gmJoinButton != null && gmJoinButton.isMouseInside ()) {
+				joinDescSprite.draw (586, 354);
+			}
+			
+		}
+		
+		public void forgetStuff () { 
+			gmHostButton.forget ();
+			gmJoinButton.forget ();
+			forget ();
+		}
+		
+	}
+	
 		public static int getNumberOfPlayers () {
 			return numPlayers;
 		}
-	}
+}
