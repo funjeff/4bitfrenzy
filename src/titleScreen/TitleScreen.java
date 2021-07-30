@@ -16,9 +16,12 @@ import engine.RenderLoop;
 import engine.Sprite;
 import engine.SpriteParser;
 import map.Roome;
+import menu.Menu;
+import menu.TextComponite;
 import network.Client;
 import network.NetworkHandler;
 import network.Server;
+import npcs.TalkableNPC;
 import resources.SoundPlayer;
 import resources.Textbox;
 
@@ -68,6 +71,8 @@ public class TitleScreen extends GameObject {
 	private TitleSlot perksSlot;
 	private TitleSlot settingsSlot;
 	private TitleSlot helpSlot;
+	
+	private TalkableNPC settingsBot;
 	
 	@Override
 	public void onDeclare () {
@@ -245,6 +250,10 @@ public class TitleScreen extends GameObject {
 	
 	private void enterMainMenu () {
 		
+		Menu menu = new Menu();
+		
+		menu = new Menu ();
+		
 		titleBit = new TitleBit ();
 		titleReg = new TitleRegister ();
 		hostSlot = new TitleSlot (TitleSlot.titleHost);
@@ -252,7 +261,18 @@ public class TitleScreen extends GameObject {
 		perksSlot = new TitleSlot (TitleSlot.titlePerks);
 		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
 		helpSlot = new TitleSlot (TitleSlot.titleHelp);
+		settingsBot = new TalkableNPC (150,200);
+		settingsBot.setSprite(new Sprite ("resources/sprites/robot.png"));
 		
+		settingsBot.setRenderPriority(101);
+		
+		TextComponite t = new TextComponite(20,20,menu);
+		
+		t.setText("PENIS MORE LIKE~ ~HPENSUS");
+		
+		menu.declare(400,100);
+		
+		menu.setRenderPriority(101);
 		titleBit.declare (920, 360);
 		titleReg.declare (1000, 346);
 		hostSlot.declare (1150, 45);
@@ -260,6 +280,7 @@ public class TitleScreen extends GameObject {
 		helpSlot.declare (1150, 322);
 		perksSlot.declare (1150, 460);
 		settingsSlot.declare (1150, 600);
+		settingsBot.declare(150,200);
 		
 	}
 	
@@ -272,6 +293,7 @@ public class TitleScreen extends GameObject {
 		perksSlot.forget ();
 		settingsSlot.forget ();
 		helpSlot.forget ();
+		settingsBot.forget();
 		
 		/*hostButton.forget();
 		joinButton.forget();

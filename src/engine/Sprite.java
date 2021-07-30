@@ -389,6 +389,17 @@ public class Sprite {
 		this.setFrame(frame, newImg);
 	}
 	
+	public void setOpacity (float opacity) {
+		for (int i = 0; i < this.getFrameCount(); i++) {
+			BufferedImage newImg = new BufferedImage (this.getFrame(i).getWidth(), this.getFrame(i).getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+			Graphics2D g = (Graphics2D) newImg.getGraphics();
+			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float) opacity);
+			g.setComposite(ac);
+			g.drawImage(this.getFrame(i), 0, 0, newImg.getWidth(), newImg.getHeight(), null);
+			this.setFrame(i, newImg);
+		}
+	}
+	
 	private static class CacheNode {
 		
 		/**
