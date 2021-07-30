@@ -372,9 +372,6 @@ public class Bit extends GameObject {
 				this.setHitboxAttributes(this.hitbox().width - (speed + 1) * 2, this.hitbox().height - (speed + 1) * 2);
 				this.setX(this.getX() + (speed + 1));
 				this.setY(this.getY() + (speed + 1));
-				if (playerNum == NetworkHandler.getPlayerNum () && isActive()) {
-					updateScroll ();
-				}
 			}
 	public int getSpeed() {
 		return speed;

@@ -141,8 +141,8 @@ public void drawBox () {
 	
 	int shakeInfoNum = 0;
 	
+	Sprite.scale(fontSheet, textSize, textSize);
 	for (int i = 0; i < text.length(); i++) {
-		Sprite.scale(fontSheet, textSize, textSize);
 		
 		char drawChar = text.charAt(i);
 		
@@ -279,7 +279,7 @@ public void drawBox () {
 			
 		}
 		
-		fontSheet.draw(xPos + (int)shakeOffsetX,yPos + (int)shakeOffsetY, text.charAt(i));
+		fontSheet.draw(xPos + (int)shakeOffsetX - GameCode.getViewX (), yPos + (int)shakeOffsetY - GameCode.getViewY (), text.charAt(i));
 		
 		xPos = xPos + textSize;
 		
@@ -296,7 +296,9 @@ public void draw () {
 	
 		Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), GameCode.getSettings ().getResolutionX (), GameCode.getSettings ().getResolutionY ());
 		if (thisRect.intersects(veiwport)) {	
+			long boxTime = System.nanoTime ();
 			this.drawBox();
+			System.out.println (System.nanoTime () - boxTime);
 		}
 	}
 }
