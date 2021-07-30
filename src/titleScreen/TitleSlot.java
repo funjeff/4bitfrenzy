@@ -10,6 +10,7 @@ public class TitleSlot extends GameObject {
 	public static Sprite titlePerks = new Sprite ("resources/sprites/title_slot_perks.png");
 	public static Sprite titleSettings = new Sprite ("resources/sprites/title_slot_settings.png");
 	public static Sprite titleHelp = new Sprite ("resources/sprites/title_slot_help.png");
+	public static Sprite titleStartGame = new Sprite ("resources/sprites/title_slot_start.png");
 	
 	private boolean selected = false;
 	

@@ -37,6 +37,7 @@ public class TitleScreen extends GameObject {
 	private boolean typeIp = false;
 	
 	private static Textbox ipBox;
+	private static Textbox infoBox;
 	private static volatile int numPlayers = 1;
 	
 	private Button hostButton;
@@ -66,7 +67,7 @@ public class TitleScreen extends GameObject {
 	
 	private TitleBit titleBit;
 	private TitleRegister titleReg;
-	private TitleSlot hostSlot;
+	private TitleSlot startGameSlot;
 	private TitleSlot joinSlot;
 	private TitleSlot perksSlot;
 	private TitleSlot settingsSlot;
@@ -84,7 +85,7 @@ public class TitleScreen extends GameObject {
 		//Make the buttons
 		initMainMenu();
 		
-		//Make the textbox
+		//Make the textboxes
 		ipBox = new Textbox ("");
 		ipBox.declare ();
 		ipBox.changeWidth (128);
@@ -93,6 +94,15 @@ public class TitleScreen extends GameObject {
 		ipBox.changeBoxVisability ();
 		
 		ipBox.setRenderPriority(99);
+		
+		infoBox = new Textbox ("");
+		infoBox.declare (0, 32);
+		infoBox.changeWidth (128);
+		infoBox.changeHeight (128);
+		infoBox.setFont ("text (red)");
+		infoBox.changeBoxVisability ();
+		
+		infoBox.setRenderPriority(99);
 		
 	}
 	
@@ -124,11 +134,13 @@ public class TitleScreen extends GameObject {
 							} catch (Exception e) {
 								failedMode = true;
 								ipBox.changeText ("CONNECTION FAILED. TRY USING A DIFFERENT IP OR CHECK YOUR FIREWALL SETTINGS.");
+								infoBox.changeText ("");
 								return;
 							}
 							//Connected, try to ping host
 							waitMode = true;
 							ipBox.changeText ("WAITING FOR HOST...");
+							infoBox.changeText ("(IF THIS TAKES A LONG TIME, THERE MAY BE A CONNECTION ERROR)");
 							client.joinServer ();
 							
 						} else {
@@ -141,7 +153,7 @@ public class TitleScreen extends GameObject {
 			}
 		}
 		
-		if (hostSlot.isSelected ()) {
+		if (startGameSlot.isSelected ()) {
 			
 			exitMainMenu ();
 			new GameMenu ().declare (0, 0);
@@ -188,6 +200,7 @@ public class TitleScreen extends GameObject {
 			//Change box contents for host
 			if (isHost) {
 				ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
+				infoBox.changeText ("PRESS ENTER ONCE ALL PLAYERS HAVE JOINED TO START THE GAME");
 				if (keyPressed (KeyEvent.VK_ENTER)) {
 					System.out.println ("STARTING");
 					titleClosed = true;
@@ -199,6 +212,7 @@ public class TitleScreen extends GameObject {
 			//Change box contents for joining
 			if (!isHost) {
 				ipBox.changeText ("ENTER THE CONNECTION IP: " + ip);
+				infoBox.changeText ("(PRESS ENTER AFTER TYPING THE IP TO JOIN)");
 			}
 			
 		}
@@ -213,7 +227,7 @@ public class TitleScreen extends GameObject {
 		
 		titleBit = new TitleBit ();
 		titleReg = new TitleRegister ();
-		hostSlot = new TitleSlot (TitleSlot.titleHost);
+		startGameSlot = new TitleSlot (TitleSlot.titleStartGame);
 		joinSlot = new TitleSlot (TitleSlot.titleJoin);
 		perksSlot = new TitleSlot (TitleSlot.titlePerks);
 		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
@@ -232,7 +246,7 @@ public class TitleScreen extends GameObject {
 		menu.setRenderPriority(101);
 		titleBit.declare (920, 360);
 		titleReg.declare (1000, 346);
-		hostSlot.declare (1150, 45);
+		startGameSlot.declare (1150, 45);
 		joinSlot.declare (1150, 180);
 		helpSlot.declare (1150, 322);
 		perksSlot.declare (1150, 460);
@@ -245,7 +259,7 @@ public class TitleScreen extends GameObject {
 		
 		titleBit.forget ();
 		titleReg.forget ();
-		hostSlot.forget ();
+		startGameSlot.forget ();
 		joinSlot.forget ();
 		perksSlot.forget ();
 		settingsSlot.forget ();

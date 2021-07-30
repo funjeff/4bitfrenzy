@@ -296,9 +296,7 @@ public void draw () {
 	
 		Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), GameCode.getSettings ().getResolutionX (), GameCode.getSettings ().getResolutionY ());
 		if (thisRect.intersects(veiwport)) {	
-			long boxTime = System.nanoTime ();
 			this.drawBox();
-			System.out.println (System.nanoTime () - boxTime);
 		}
 	}
 }
