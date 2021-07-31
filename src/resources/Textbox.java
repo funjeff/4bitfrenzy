@@ -115,13 +115,15 @@ public class Textbox extends GameObject {
 		return (width * height)/256;
 	}
 	public void setTextSize(int textSize) {
-		this.textSize = textSize;
-		
-		if (textSize > largestSize) {
-			largestSize = textSize;
+		if (this.textSize != textSize) {
+			this.textSize = textSize;
+			
+			if (textSize > largestSize) {
+				largestSize = textSize;
+			}
+	
+			Sprite.scale(fontSheet, textSize, textSize);
 		}
-
-		Sprite.scale(fontSheet, textSize, textSize);
 	}
 
 	
