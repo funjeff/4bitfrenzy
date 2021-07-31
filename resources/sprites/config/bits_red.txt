@@ -1,0 +1,3 @@
+$src resources/sprites/bits red.png
+
+grid 21 16

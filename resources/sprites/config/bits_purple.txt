@@ -1,0 +1,3 @@
+$src resources/sprites/bits purple.png
+
+grid 21 16

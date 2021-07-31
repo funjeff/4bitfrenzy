@@ -113,6 +113,8 @@ public class TitleScreen extends GameObject {
 		
 		infoBox.setRenderPriority(99);
 		
+		new Scene ("resources/scenes/blast.txt").declare (400, 0);
+		
 	}
 	
 	@Override
