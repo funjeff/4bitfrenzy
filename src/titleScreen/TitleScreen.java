@@ -221,9 +221,6 @@ public class TitleScreen extends GameObject {
 	
 	private void enterMainMenu () {
 		
-		Menu menu = new Menu();
-		
-		menu = new Menu ();
 		
 		titleBit = new TitleBit ();
 		titleReg = new TitleRegister ();
@@ -237,13 +234,6 @@ public class TitleScreen extends GameObject {
 		
 		settingsBot.setRenderPriority(101);
 		
-		TextComponite t = new TextComponite(20,20,menu);
-		
-		t.setText("PENIS MORE LIKE~ ~HPENSUS");
-		
-		menu.declare(400,100);
-		
-		menu.setRenderPriority(101);
 		titleBit.declare (920, 360);
 		titleReg.declare (1000, 346);
 		startGameSlot.declare (1150, 45);

@@ -52,26 +52,26 @@ public class Hud extends GameObject {
 	
 	public Hud () {
 		scoreDisplay = new Textbox ("SCORE: 00000000");
-		scoreDisplay.changeHeight(2 * 16);
-		scoreDisplay.changeWidth(17 * 16);
+		scoreDisplay.changeHeight(2);
+		scoreDisplay.changeWidth(17);
 		scoreDisplay.setFont("text (lime green)");
 		scoreDisplay.setBox("Green");
 		
 		timer = new Textbox (" ");
-		timer.changeHeight(2 * 16);
-		timer.changeWidth(22 * 16);
+		timer.changeHeight(2);
+		timer.changeWidth(22);
 		timer.setFont("text (lime green)");
 		timer.setBox("Green");
 		
 		registersRemaining = new Textbox (" ");
-		registersRemaining.changeHeight(2 * 16);
-		registersRemaining.changeWidth(22 * 16);
+		registersRemaining.changeHeight(2);
+		registersRemaining.changeWidth(22);
 		registersRemaining.setFont("text (lime green)");
 		registersRemaining.setBox("Green");
 		
 		waveNum = new Textbox ("WAVE NUMBER 1");
-		waveNum.changeHeight(2 * 16);
-		waveNum.changeWidth(22 * 16);
+		waveNum.changeHeight(2);
+		waveNum.changeWidth(22);
 		waveNum.setFont("text (lime green)");
 		waveNum.setBox("Green");
 		

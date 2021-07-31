@@ -29,6 +29,10 @@ public class Textbox extends GameObject {
 	int height;
 	int textSize = 16;
 	
+	int largestSize = 16;
+	
+	int lineSpacing = 2;
+
 	ArrayList <double []> shakeInfo = new ArrayList <double []> ();
 	
 	String [] extentions = {"7Z","JAVA","MP3","AI","AVI","BAS","C","C++","CD","CDF","CLASS","CMD","CSV","CSPROJ","D","D64","DAF","DAT","DB","DCI","DEV","DFL","DHP","DLC","DMO","DMP","DOC","DOG","E","EXE","EXP","EXS","F01","F4V","FA","FLV","GBR","GGB","GIF","GO","GPX","H!","H","H++","HACK","HDMP","HTA","HTML","HUM","ICO","IGC","ISO","IT","JAR","JNLP","JPEG","JS","JSON","LISP","LUA","LZ","M","MDI","MDG","MDS","MEX","MID","MOB","MOD","MOV","MP2","MP4","MPEG","MPG","MSI","NC","NEO","NPR","NUMBERS","O","OBJ","OBS","OXT","OWL","OST","P","PAL","PACK","PAK","PAM","PAS","PDF","PDN","PHP","PIE","PIT","PMA","PPTX","PSD","PTF","PS1","PUP","PY","QT","RAD","RAM","RAR","RB","RBXM","RBXL","RC","RES","RTF","RUN","SAV","SB3","SEQ","SIG","SM","SPIN","ST","STD","SWF","SWIFT","TAK","TORRENT","TAR","TSF","TTF","UI","UT!","V","V64","VB","VFD","VMG","VOB","WAV","WMA","XAR","XCF","XEX","XLS","XP","XYZ","ZIP","ZS"};
@@ -45,18 +49,18 @@ public class Textbox extends GameObject {
 	this.setBox ("Black");
 	spaceManipulation = 0;
 	text = textToDisplay;
-	width = 200;
-	height = 100;
+	width = 3200;
+	height = 1600;
 	
 	
 	this.setRenderPriority(1);
 	}
 	//changes wheather or not to unpause the game after the textbox is done
 	public void changeWidth (int newWidth) {
-		width = newWidth;
+		width = newWidth * 16;
 	}
 	public void changeHeight(int newHeigh) {
-		height = newHeigh;
+		height = newHeigh * 16;
 	}
 	public void changeBoxVisability () {
 		renderBox = !renderBox;
@@ -66,6 +70,12 @@ public class Textbox extends GameObject {
 	}
 	public String getText () {
 		return text;
+	}
+	public int getLineSpacing() {
+		return lineSpacing;
+	}
+	public void setLineSpacing(int lineSpacing) {
+		this.lineSpacing = lineSpacing;
 	}
 	public static Sprite getTextboxResource (String path, String parseStr) {
 		//Construct the cache string
@@ -102,33 +112,37 @@ public class Textbox extends GameObject {
 	}
 	
 	public int getSpace () {
-		return width * height;
+		return (width * height)/256;
 	}
 	public void setTextSize(int textSize) {
 		this.textSize = textSize;
+		
+		if (textSize > largestSize) {
+			largestSize = textSize;
+		}
+
+		Sprite.scale(fontSheet, textSize, textSize);
 	}
 
-	// text = the message thats displayed width is the width of the box height is the height of the box 
-	//x_orign is the x start point of the box y_orign is the y start point of the box
-	
 	
 	//2017 Jeffrey appologizes for this garbage code (he would never admit it though)
 	//EDIT I FINALLY FUCKIN REWROTE IT AFTER 5 FUCKING YEARS geez I can't belive ive been doing this for so long
 public void drawBox () {
 	//draws the box itself
 	if (renderBox) {
-		for (int i = 0; i < width; i++) {
-			textBoxTop.draw((int)(this.getX() + (i*8)), (int)(this.getY()));
-			textBoxBottum.draw((int)(this.getX() + (i*8)), (int)(this.getY() + (height*8)));
-		}
-		for (int i = 0; i < height; i++) {
-			textBoxSides.draw((int)(this.getX()), (int)(this.getY() + (i*8)));
-			textBoxSides.draw((int)(this.getX() +(width*8)), (int)(this.getY() + (i*8)));
-		}
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				textBoxBackground.draw((int)(this.getX() + (i * 8)),(int) (this.getY() + (j * 8)));
+		
+		for (int i = 0; i < width/8; i++) {
+			for (int j = 0; j < height/8; j++) {
+				textBoxBackground.draw((int)((this.getX() - GameCode.getViewX()) + (i * 8)),(int) ( (this.getY() - GameCode.getViewY()) + (j * 8) -10));
 			}
+		}
+		for (int i = 0; i < width/8; i++) {
+			textBoxTop.draw((int)((this.getX() - GameCode.getViewX()) + (i*8)), (int)((this.getY() - GameCode.getViewY()) -10));
+			textBoxBottum.draw((int)((this.getX() - GameCode.getViewX()) + (i*8)), (int)((this.getY() - GameCode.getViewY()) + (height) -10));
+		}
+		for (int i = 0; i < height/8; i++) {
+			textBoxSides.draw((int)((this.getX() - GameCode.getViewX())), (int)((this.getY() - GameCode.getViewY())+ (i*8) -10));
+			textBoxSides.draw((int)((this.getX() - GameCode.getViewX()) +(width)), (int)((this.getY()  - GameCode.getViewY())+ (i*8) -10));
 		}
 	}
 		// translates the charictar in the message to a askii value that is used to specify position on the
@@ -141,7 +155,7 @@ public void drawBox () {
 	
 	int shakeInfoNum = 0;
 	
-	Sprite.scale(fontSheet, textSize, textSize);
+
 	for (int i = 0; i < text.length(); i++) {
 		
 		char drawChar = text.charAt(i);
@@ -174,6 +188,7 @@ public void drawBox () {
 						identifyingChar = text.charAt(i);
 					}
 					this.setTextSize(Integer.parseInt(size));
+					i = i + 1;
 					break;
 				case 'T':
 					i = i + 1;
@@ -283,19 +298,25 @@ public void drawBox () {
 		
 		xPos = xPos + textSize;
 		
-		if ((xPos - this.getX())/textSize > width) {
+		if ((xPos - this.getX()) > width) {
 			xPos = (int) this.getX();
-			yPos = yPos + textSize;
+			yPos = yPos + largestSize * lineSpacing;
+			if (yPos - this.getY() > height) {
+				break;
+			}
 		}	
+	}
+	if (textSize == 16) {
+		this.setTextSize(16);
 	}
 }
 
 @Override
 public void draw () {
-		Rectangle thisRect = new Rectangle ((int)this.getX(), (int)this.getY(), this.width * textSize, this.height * textSize);
+		Rectangle thisRect = new Rectangle ((int)this.getX(), (int)this.getY(), this.width, this.height);
 	
 		Rectangle veiwport = new Rectangle ((int) GameCode.getViewX(), (int) GameCode.getViewY(), GameCode.getSettings ().getResolutionX (), GameCode.getSettings ().getResolutionY ());
-		if (thisRect.intersects(veiwport)) {	
+		if (thisRect.intersects(veiwport)) {
 			this.drawBox();
 		}
 	}

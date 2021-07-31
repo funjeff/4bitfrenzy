@@ -170,8 +170,8 @@ public class Compass extends GameObject {
 		} else {
 			t.setFont("text (red)");
 		}
-		t.changeWidth(144);
-		t.changeHeight(32);
+		t.changeWidth(144/16);
+		t.changeHeight(32/16);
 		
 		t.setX(this.getX() + GameCode.getViewX ());
 		try {
