@@ -56,7 +56,6 @@ public class ServerConnection extends Thread {
 						dataOut.flush ();
 					}
 					if (str.length () >= 4 && str.substring (0, 4).equals ("KEYS")) {
-						System.out.println (str);
 						String[] keyData = str.split (":");
 						if (keyData.length > 1) {
 							inputs = keyData[1];

@@ -73,6 +73,15 @@ public class TitleScreen extends GameObject {
 	private TitleSlot settingsSlot;
 	private TitleSlot helpSlot;
 	
+	private PerkStation defaultStation;
+	private PerkStation blastStation;
+	private PerkStation gripStation;
+	private PerkStation navStation;
+	private PerkStation dupeStation;
+	private PerkStation powerStation;
+	private PerkStation dualStation;
+	private PerkStation gamblerStation;
+	
 	private TalkableNPC settingsBot;
 	
 	@Override
@@ -160,13 +169,13 @@ public class TitleScreen extends GameObject {
 			
 		}
 		
-		if (joinSlot.isSelected ()) {
+		if (/*joinSlot.isSelected ()*/false) {
 			//joinButton.reset ();
 			
 			//Remove the buttons
 
 		}
-		if (helpSlot.isSelected ()) {
+		if (/*helpSlot.isSelected ()*/false) {
 			exitMainMenu ();
 			
 			this.setSprite(infographic);
@@ -180,14 +189,14 @@ public class TitleScreen extends GameObject {
 			this.initMainMenu();
 			//rulesButton.pressed = false;
 		}
-		if (perksSlot.isSelected ()) {
+		if (/*perksSlot.isSelected ()*/false) {
 			exitMainMenu ();
 			perkMenu menu = new perkMenu (this);
 			if (ObjectHandler.getObjectsByName("perkMenu") == null || ObjectHandler.getObjectsByName("perkMenu").size() == 0) {
 				menu.declare();
 			}
 		}
-		if (settingsSlot.isSelected ()) {
+		if (/*settingsSlot.isSelected ()*/false) {
 			exitMainMenu ();
 			//settingsButton.reset();
 			SettingMenu menu = new SettingMenu (this);
@@ -225,23 +234,41 @@ public class TitleScreen extends GameObject {
 		titleBit = new TitleBit ();
 		titleReg = new TitleRegister ();
 		startGameSlot = new TitleSlot (TitleSlot.titleStartGame);
-		joinSlot = new TitleSlot (TitleSlot.titleJoin);
-		perksSlot = new TitleSlot (TitleSlot.titlePerks);
-		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
-		helpSlot = new TitleSlot (TitleSlot.titleHelp);
+//		joinSlot = new TitleSlot (TitleSlot.titleJoin);
+//		perksSlot = new TitleSlot (TitleSlot.titlePerks);
+//		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
+//		helpSlot = new TitleSlot (TitleSlot.titleHelp);
 		settingsBot = new TalkableNPC (150,200);
 		settingsBot.setSprite(new Sprite ("resources/sprites/robot.png"));
 		
 		settingsBot.setRenderPriority(101);
 		
+		defaultStation = new PerkStation (0);
+		blastStation = new PerkStation (1);
+		gripStation = new PerkStation (2);
+		navStation = new PerkStation (3);
+		dupeStation = new PerkStation (4);
+		powerStation = new PerkStation (5);
+		dualStation = new PerkStation (6);
+		gamblerStation = new PerkStation (7);
+		
 		titleBit.declare (920, 360);
-		titleReg.declare (1000, 346);
-		startGameSlot.declare (1150, 45);
-		joinSlot.declare (1150, 180);
-		helpSlot.declare (1150, 322);
-		perksSlot.declare (1150, 460);
-		settingsSlot.declare (1150, 600);
+		titleReg.declare (487, 161);
+		startGameSlot.declare (331, 139);
+//		joinSlot.declare (1150, 180);
+//		helpSlot.declare (1150, 322);
+//		perksSlot.declare (1150, 460);
+//		settingsSlot.declare (1150, 600);
 		settingsBot.declare(150,200);
+		
+		defaultStation.declare (676, 168);
+		blastStation.declare (676, 316);
+		gripStation.declare (676, 464);
+		navStation.declare (676, 612);
+		dupeStation.declare (783, 168);
+		powerStation.declare (783, 316);
+		dualStation.declare (783, 464);
+		gamblerStation.declare (783, 612);
 		
 	}
 	
@@ -250,10 +277,10 @@ public class TitleScreen extends GameObject {
 		titleBit.forget ();
 		titleReg.forget ();
 		startGameSlot.forget ();
-		joinSlot.forget ();
-		perksSlot.forget ();
-		settingsSlot.forget ();
-		helpSlot.forget ();
+//		joinSlot.forget ();
+//		perksSlot.forget ();
+//		settingsSlot.forget ();
+//		helpSlot.forget ();
 		settingsBot.forget();
 		
 		/*hostButton.forget();
@@ -261,6 +288,15 @@ public class TitleScreen extends GameObject {
 		rulesButton.forget();
 		perksButton.forget();
 		settingsButton.forget();*/
+		
+		defaultStation.forget ();
+		blastStation.forget ();
+		gripStation.forget ();
+		navStation.forget ();
+		dupeStation.forget ();
+		powerStation.forget ();
+		dualStation.forget ();
+		gamblerStation.forget ();
 		
 	}
 	
