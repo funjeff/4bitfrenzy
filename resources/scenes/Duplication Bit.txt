@@ -1,0 +1,7 @@
+dupeBit 0 0 resources/sprites/config/bits_purple.txt
+normBit 0 0 resources/sprites/config/bits_green.txt
+END
+dupeBit 3 0
+FRAME 30
+dupeBit 0 3
+FRAME 60

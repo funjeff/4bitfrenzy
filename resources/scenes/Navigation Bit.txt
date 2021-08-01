@@ -1,0 +1,7 @@
+navBit 0 0 resources/sprites/config/bits_yellow.txt
+normBit 0 0 resources/sprites/config/bits_green.txt
+END
+navBit 3 0
+FRAME 30
+navBit 0 3
+FRAME 60

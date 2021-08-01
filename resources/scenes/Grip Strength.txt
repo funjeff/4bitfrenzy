@@ -1,0 +1,15 @@
+gripBit 0 0 resources/sprites/config/bits_green.txt
+normBit 128 0 resources/sprites/config/bits_green.txt
+reg1 -39 318 resources/sprites/title_register.png
+reg2 89 318 resources/sprites/title_register.png
+END
+gripBit 0 5
+normBit 0 5
+FRAME 60
+FRAME 10
+gripBit 0 -5
+reg1 0 -5
+normBit 0 -2
+reg2 0 -2
+FRAME 130
+FRAME 20

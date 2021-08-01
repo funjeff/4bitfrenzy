@@ -1,0 +1,7 @@
+powerBit 0 0 resources/sprites/config/bits_red.txt
+normBit 0 0 resources/sprites/config/bits_green.txt
+END
+powerBit 3 0
+FRAME 30
+powerBit 0 3
+FRAME 60

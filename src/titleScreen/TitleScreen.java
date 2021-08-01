@@ -84,6 +84,8 @@ public class TitleScreen extends GameObject {
 	
 	private TalkableNPC settingsBot;
 	
+	private static Scene perkScene;
+	
 	@Override
 	public void onDeclare () {
 		
@@ -112,8 +114,6 @@ public class TitleScreen extends GameObject {
 		infoBox.changeBoxVisability ();
 		
 		infoBox.setRenderPriority(99);
-		
-		new Scene ("resources/scenes/blast.txt").declare (400, 0);
 		
 	}
 	
@@ -332,6 +332,16 @@ public class TitleScreen extends GameObject {
 		perksButton.setRenderPriority(69);
 		settingsButton.setRenderPriority(69);*/
 	
+	}
+	
+	public static Scene playScene (String path, int x, int y) {
+		perkScene = new Scene (path);
+		perkScene.declare (x, y);
+		return perkScene;
+	}
+	
+	public static boolean scenePlaying () {
+		return perkScene != null && perkScene.declared ();
 	}
 	
 	@Override

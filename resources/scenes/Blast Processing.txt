@@ -1,0 +1,7 @@
+blastBit 128 0 resources/sprites/config/bits_blue.txt
+normBit 0 0 resources/sprites/config/bits_green.txt
+END
+FRAME 30
+blastBit 0 7
+normBit 0 5
+FRAME 150

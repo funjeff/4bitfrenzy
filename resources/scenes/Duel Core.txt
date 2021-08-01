@@ -1,0 +1,7 @@
+duelBit1 0 0 resources/sprites/config/bits_duel.txt
+duelBit2 0 0 resources/sprites/config/bits_duel.txt
+END
+duelBit1 3 0
+FRAME 30
+duelBit1 0 3
+FRAME 60
