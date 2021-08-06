@@ -3,6 +3,7 @@ package titleScreen;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
 import engine.GameObject;
 import engine.RenderLoop;
@@ -32,7 +33,9 @@ public class PerkStation extends GameObject {
 	@Override
 	public void frameEvent () {
 		if (isColliding ("TitleBit")) {
-			TitleScreen.perkNum = perkMap [perk];
+			if (keyPressed (KeyEvent.VK_ENTER)) {
+				TitleScreen.perkNum = perkMap [perk];
+			}
 			if (!TitleScreen.scenePlaying ()) {
 				scene = TitleScreen.playScene ("resources/scenes/" + perkNameMap [perk] + ".txt", 900, 129);
 			}
@@ -52,6 +55,13 @@ public class PerkStation extends GameObject {
 			g.setFont (f);
 			g.setColor (perkColorMap [perk]);
 			g.drawString (perkNameMap [perk], 864, 90);
+			f = new Font ("Arial", 1, 16);
+			g.setFont (f);
+			if (TitleScreen.perkNum == perkMap [perk]) {
+				g.drawString ("You have selected this perk.", 864, 120);
+			} else {
+				g.drawString ("Press ENTER to select this perk", 864, 120);
+			}
 		}
 	}
 	

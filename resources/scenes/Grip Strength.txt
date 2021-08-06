@@ -1,7 +1,7 @@
-gripBit 0 0 resources/sprites/config/bits_green.txt
-normBit 128 0 resources/sprites/config/bits_green.txt
-reg1 -39 318 resources/sprites/title_register.png
-reg2 89 318 resources/sprites/title_register.png
+gripBit 128 0 resources/sprites/config/bits_green.txt
+normBit 0 0 resources/sprites/config/bits_green.txt
+reg1 89 318 resources/sprites/title_register.png
+reg2 -39 318 resources/sprites/title_register.png
 END
 gripBit 0 5
 normBit 0 5

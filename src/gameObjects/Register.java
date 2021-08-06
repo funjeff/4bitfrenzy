@@ -298,6 +298,7 @@ public class Register extends GameObject {
 		
 		//Draw the nav arrow
 		if (showNavArrow) {
+			try {
 			DataSlot slot = null;
 			ArrayList<GameObject> slots = ObjectHandler.getObjectsByName ("DataSlot");
 			for (int i = 0; i < slots.size (); i++) {
@@ -310,6 +311,9 @@ public class Register extends GameObject {
 			int drawX = (int)(getX () - GameCode.getViewX ()) + 36;
 			int drawY = (int)(getY () - GameCode.getViewY ()) - 28;
 			navArrow.drawRotated (drawX, drawY, 0, 15, 9, dir);
+			} catch (NullPointerException e) {
+				//Do nothing, data slot has not been created yet
+			}
 		}
 		
 	}
