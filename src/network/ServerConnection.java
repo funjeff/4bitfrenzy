@@ -7,9 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import engine.GameCode;
 import engine.RenderLoop;
@@ -21,7 +21,7 @@ public class ServerConnection extends Thread {
 	Socket incoming;
 	boolean open = true;
 	
-	private volatile LinkedList<String> message = new LinkedList<String> ();
+	private volatile LinkedBlockingDeque<String> message = new LinkedBlockingDeque<String> ();
 	
 	private String inputs;
 	
@@ -67,20 +67,7 @@ public class ServerConnection extends Thread {
 				while (!message.isEmpty ()) {
 					//Attempt to pop the message from writeMessage
 					String s = null;
-					while (s == null) {
-						try {
-							s = message.removeLast ();
-						} catch (ConcurrentModificationException e) {
-							try {
-								e.printStackTrace();
-								Thread.sleep (1); //Wait and try again
-							} catch (InterruptedException e1) {
-								//Timing is not important
-							}
-						} catch (NoSuchElementException e) {
-							message = new LinkedList<String> (); //For some reason, message is a really fucked up linked list if this happens
-						}
-					}
+					s = message.removeLast ();
 					
 					//Send the message
 					if (s != null) {
