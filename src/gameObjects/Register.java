@@ -13,9 +13,10 @@ import resources.Hud;
 import resources.Textbox;
 import util.Vector2D;
 
-public class Register extends GameObject {
+public class Register extends GameObject implements Highlightable {
 	
 	public static Sprite navArrow = new Sprite ("resources/sprites/register_nav_arrow.png");
+	public static Sprite regOutline = new Sprite ("resources/sprites/register_hint.png");
 	
 	public int memAddress = 17;
 	
@@ -320,5 +321,15 @@ public class Register extends GameObject {
 	@Override
 	public String toString () {
 		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + isLargeRegister + " " + isBlue + " " + spawnTime + " " + this.getX() + " " + this.getY();
+	}
+
+	@Override
+	public boolean usesDefaultHightlight() {
+		return false;
+	}
+
+	@Override
+	public void highlight() {
+		regOutline.draw ((int)(getX () - GameCode.getViewX () - 3), (int)(getY () - GameCode.getViewY () - 3));
 	}
 }
