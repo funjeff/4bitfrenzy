@@ -115,7 +115,7 @@ public class Hud extends GameObject {
 		registersRemaining.changeText(Integer.toString(ObjectHandler.getObjectsByName("Register").size()) +" REGISTERS REMAIN");
 		registersRemaining.draw();
 		
-		if (prevTime != 0) {
+		if (prevTime != 0 && NetworkHandler.isHost ()) {
 			timeLeft = timeLeft - (System.currentTimeMillis() - prevTime);
 			if (timeLeft <= 0) {
 				newWave();

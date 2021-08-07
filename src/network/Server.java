@@ -3,6 +3,8 @@ package network;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,6 +30,7 @@ public class Server extends Thread {
 	
 	private static volatile boolean open = false;
 	private static volatile LinkedList<String> writeMessage = new LinkedList<String> ();
+	private static ArrayList<String> allMessages = new ArrayList<String> ();
 	
 	public Server () {
 		connections = new ArrayList<ServerConnection> ();
@@ -58,7 +61,7 @@ public class Server extends Thread {
 					String s = null;
 					while (s == null) {
 						try {
-							s = writeMessage.removeLast ();
+							s = writeMessage.removeFirst (); //SERIOUSLY? THIS WAS THE PROBLEM??
 						} catch (ConcurrentModificationException | NoSuchElementException e) {
 							try {
 								Thread.sleep (1); //Wait and try again
@@ -83,6 +86,23 @@ public class Server extends Thread {
 	}
 	
 	public void sendMessage (String message) {
+		allMessages.add (message);
+		System.out.println(message);
+		if (message.substring (0, 5).equals("START")) {
+			File f = new File ("log.txt");
+			FileWriter fw;
+			try {
+				fw = new FileWriter (f);
+				fw.write ("");
+				for (int i = 0; i < allMessages.size (); i++) {
+					fw.append (allMessages.get (i) + "\n");
+				}
+				fw.close ();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		writeMessage.add (message);
 	}
 	

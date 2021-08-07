@@ -84,7 +84,7 @@ public class Client extends Thread {
 				while (!readyToSend && !close) {
 					
 					if (dataIn.available () != 0) {
-						inMessages.push (dataIn.readUTF ());
+						inMessages.add (dataIn.readUTF ());
 					}
 
 				}
@@ -141,7 +141,7 @@ public class Client extends Thread {
 		while (!inMessages.isEmpty ()) {
 			String str = null;
 			try {
-				str = inMessages.removeLast ();
+				str = inMessages.removeFirst ();
 			} catch (NoSuchElementException e) {
 				break;
 				//Prevents a rare NoSuchElemetException caused by removing from an empty list
