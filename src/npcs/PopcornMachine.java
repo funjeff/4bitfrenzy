@@ -3,10 +3,13 @@ package npcs;
 import java.util.Random;
 
 import engine.Sprite;
+import util.DummyCollider;
 
 public class PopcornMachine extends NPC {
 	
 	long spawnTime;
+	
+	public static final int CORN_SPREAD = 24;
 
 	public PopcornMachine (double x, double y) {
 
@@ -41,7 +44,12 @@ public class PopcornMachine extends NPC {
 				negY = negY * -1;
 			}
 			
-			Popcorn corn = new Popcorn (this.getX() + (rand.nextInt(200) * negX),this.getY() + (rand.nextInt(200) * negY));
+			int xOffs = rand.nextInt (200) * negX;
+			int yOffs = rand.nextInt (200) * negY;
+			DummyCollider collider = new DummyCollider ((int)getX () + xOffs - CORN_SPREAD, (int)getY () + yOffs - CORN_SPREAD, CORN_SPREAD * 2, CORN_SPREAD * 2);
+			if (!collider.isColliding ("Popcorn")) {
+				Popcorn corn = new Popcorn (this.getX() + xOffs, this.getY() + yOffs);
+			}
 			
 		}
 	}

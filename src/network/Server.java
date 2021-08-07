@@ -87,7 +87,6 @@ public class Server extends Thread {
 	
 	public void sendMessage (String message) {
 		allMessages.add (message);
-		System.out.println(message);
 		if (message.substring (0, 5).equals("START")) {
 			File f = new File ("log.txt");
 			FileWriter fw;

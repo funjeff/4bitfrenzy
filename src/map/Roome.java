@@ -39,6 +39,7 @@ import network.NetworkHandler;
 import npcs.Dirt;
 import npcs.NPC;
 import resources.Textbox;
+import util.DummyCollider;
 
 public class Roome extends GameObject {
 	public static Roome [][] map;
@@ -1215,13 +1216,4 @@ public class Roome extends GameObject {
 		
 	}
 	
-	public static class DummyCollider extends GameObject {
-		
-		public DummyCollider (int x, int y, int width, int height) {
-			setX (x);
-			setY (y);
-			setHitboxAttributes (width, height);
-		}
-		
-	}
 }
