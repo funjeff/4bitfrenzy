@@ -7,7 +7,7 @@ public class TextComponite extends MenuComponite{
 	Textbox t;
 	
 	public TextComponite(int width, int height, Menu m) {
-		super((width *2) + 2, height * 2, m);
+		super((width *2) + 2, height * 8, m);
 		t = new Textbox ("");
 		t.changeWidth(width);
 		t.changeHeight(height);

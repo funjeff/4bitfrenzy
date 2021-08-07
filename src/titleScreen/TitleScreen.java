@@ -17,10 +17,13 @@ import engine.Sprite;
 import engine.SpriteParser;
 import map.Roome;
 import menu.Menu;
+import menu.MenuComponite;
+import menu.ObjectComponite;
 import menu.TextComponite;
 import network.Client;
 import network.NetworkHandler;
 import network.Server;
+import npcs.PopcornMachine;
 import npcs.TalkableNPC;
 import resources.SoundPlayer;
 import resources.Textbox;
@@ -254,6 +257,28 @@ public class TitleScreen extends GameObject {
 		dualStation = new PerkStation (6);
 		gamblerStation = new PerkStation (7);
 		
+//		Menu menu = new Menu ();
+//		
+//		TextComponite t = new TextComponite(30,5,menu);
+//		
+//		MenuComponite m = new MenuComponite (30, 80,menu);
+//		
+//		TextComponite t2 = new TextComponite(30,5,menu);
+//		
+//		PopcornMachine cornUnspread = new PopcornMachine (10,10);
+//		
+//		cornUnspread.declare();
+//		
+//		ObjectComponite obj = new ObjectComponite (cornUnspread,menu);
+//		
+//		t2.setText("LOLZ");
+//		
+//		t.setText("MY PENUS IS VERY LARGE AND YOURS IS ~Ctext (lime green)~VERY ~HSMALL!");
+//		
+//		menu.declare(900,250);
+//		
+//		menu.setRenderPriority(72);
+//		
 		titleBit.declare (920, 360);
 		titleReg.declare (487, 161);
 		startGameSlot.declare (331, 139);

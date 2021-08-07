@@ -64,12 +64,13 @@ public class ServerConnection extends Thread {
 						}
 					}
 				}
+				
 				while (!message.isEmpty ()) {
 					//Attempt to pop the message from writeMessage
 					String s = null;
 					while (s == null) {
 						try {
-							s = message.removeLast ();
+							s = message.removeFirst ();
 						} catch (ConcurrentModificationException e) {
 							try {
 								e.printStackTrace();

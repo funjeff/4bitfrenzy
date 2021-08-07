@@ -87,8 +87,8 @@ public class Keyboard extends NPC {
 		keys[10] = new Key("F10",this);
 		keys[11] = new Key("F11",this);
 		keys[12] = new Key("F12",this);
-		keys[13] = new Key("del",this);
-		keys[14] = new Key("~",this);
+		keys[13] = new Key("DEL",this);
+		keys[14] = new Key("",this);
 		keys[15] = new Key("1",this);
 		keys[16] = new Key("2",this);
 		keys[17] = new Key("3",this);

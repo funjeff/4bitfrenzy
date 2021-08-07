@@ -38,6 +38,8 @@ public class Textbox extends GameObject {
 	String [] extentions = {"7Z","JAVA","MP3","AI","AVI","BAS","C","C++","CD","CDF","CLASS","CMD","CSV","CSPROJ","D","D64","DAF","DAT","DB","DCI","DEV","DFL","DHP","DLC","DMO","DMP","DOC","DOG","E","EXE","EXP","EXS","F01","F4V","FA","FLV","GBR","GGB","GIF","GO","GPX","H!","H","H++","HACK","HDMP","HTA","HTML","HUM","ICO","IGC","ISO","IT","JAR","JNLP","JPEG","JS","JSON","LISP","LUA","LZ","M","MDI","MDG","MDS","MEX","MID","MOB","MOD","MOV","MP2","MP4","MPEG","MPG","MSI","NC","NEO","NPR","NUMBERS","O","OBJ","OBS","OXT","OWL","OST","P","PAL","PACK","PAK","PAM","PAS","PDF","PDN","PHP","PIE","PIT","PMA","PPTX","PSD","PTF","PS1","PUP","PY","QT","RAD","RAM","RAR","RB","RBXM","RBXL","RC","RES","RTF","RUN","SAV","SB3","SEQ","SIG","SM","SPIN","ST","STD","SWF","SWIFT","TAK","TORRENT","TAR","TSF","TTF","UI","UT!","V","V64","VB","VFD","VMG","VOB","WAV","WMA","XAR","XCF","XEX","XLS","XP","XYZ","ZIP","ZS"};
 	boolean renderBox;
 	
+	String tempColor = "text (red)";
+	
 	private static HashMap<String, Sprite> resourceCache = new HashMap<String, Sprite> ();
 
 	
@@ -94,8 +96,23 @@ public class Textbox extends GameObject {
 	}
 	public void setFont (String fontName) {
 		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16");
+		
+		tempColor = fontName;
+		
 		font = fontName;
 	}
+	private void setFontTemporarily (String fontName) {
+		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16");
+		
+		tempColor = fontName;
+	}
+	
+	private void resetFont () {
+		if (!font.equals(tempColor)) {
+			this.setFont(font);
+		}
+	}
+	
 	//I think Im gonna rewrite this at some point
 	/*public void giveName (String boxName) {
 		if (!boxName.equals("null")) {
@@ -130,6 +147,7 @@ public class Textbox extends GameObject {
 	//2017 Jeffrey appologizes for this garbage code (he would never admit it though)
 	//EDIT I FINALLY FUCKIN REWROTE IT AFTER 5 FUCKING YEARS geez I can't belive ive been doing this for so long
 public void drawBox () {
+	
 	//draws the box itself
 	if (renderBox) {
 		
@@ -177,7 +195,8 @@ public void drawBox () {
 						i = i + 1;
 						identifyingChar = text.charAt(i);
 					}
-					this.setFont(color);
+					this.setFontTemporarily(color);
+					i = i + 1;
 					break;
 				case 'S':
 					i = i + 1;
@@ -295,7 +314,6 @@ public void drawBox () {
 			}
 			
 		}
-		
 		fontSheet.draw(xPos + (int)shakeOffsetX - GameCode.getViewX (), yPos + (int)shakeOffsetY - GameCode.getViewY (), text.charAt(i));
 		
 		xPos = xPos + textSize;
@@ -308,9 +326,11 @@ public void drawBox () {
 			}
 		}	
 	}
-	if (textSize == 16) {
+	if(textSize != 16) {
 		this.setTextSize(16);
 	}
+	this.resetFont();
+
 }
 
 @Override

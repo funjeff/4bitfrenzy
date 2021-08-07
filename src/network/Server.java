@@ -54,7 +54,7 @@ public class Server extends Thread {
 			AcceptHandler h = new AcceptHandler (this);
 			h.start ();
 			while (true) {
-
+				
 				if (!writeMessage.isEmpty ()) {
 					
 					//Attempt to pop the message from writeMessage

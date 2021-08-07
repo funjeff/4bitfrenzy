@@ -44,7 +44,9 @@ public class Menu extends GameObject {
 			componites.get(i).setX((int) this.getX());
 			componites.get(i).setY(place);
 			
+			
 			componites.get(i).draw();
+			
 			place = place + componites.get(i).getHeight();
 		}
 	}

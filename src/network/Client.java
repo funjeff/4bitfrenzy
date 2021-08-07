@@ -235,7 +235,7 @@ public class Client extends Thread {
 							reg.forget();
 						}
 					}
-				}
+				} 
 			}
 			
 			

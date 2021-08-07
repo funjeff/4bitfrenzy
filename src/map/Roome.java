@@ -728,7 +728,11 @@ public class Roome extends GameObject {
 	 * @return the room that that object is in
 	 */
 	public static Roome getRoom (double x, double y) {
-		return map [(int)(y/720)][(int) (x/1080)];
+		try {
+			return map [(int)(y/720)][(int) (x/1080)];
+		} catch (NullPointerException e){
+			return null;
+		}
 	}
 	public static void generateMap () {
 		//This consistently fails for relatively large maps (as small as 12x12) - this is related to the open corridor probability

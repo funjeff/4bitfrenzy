@@ -199,7 +199,9 @@ public class DataSlot extends GameObject {
 		this.setX(Double.parseDouble(infos[4]));
 		this.setY(Double.parseDouble(infos[5]));
 		updateTime = 0;
-		Roome.getRoom(this.getX(), this.getY()).ds = this;
+		if (Roome.getRoom(this.getX(), this.getY()) != null) {
+			Roome.getRoom(this.getX(), this.getY()).ds = this;
+		}
 	}
 	
 }

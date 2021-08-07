@@ -26,7 +26,7 @@ public class PopcornMachine extends NPC {
 
 	@Override
 	public void npcFrame () {
-		
+	
 		if (spawnTime < System.currentTimeMillis()) {
 			
 			Random rand = new Random ();
