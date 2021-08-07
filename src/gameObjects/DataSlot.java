@@ -14,7 +14,7 @@ import resources.Hud;
 import resources.SoundPlayer;
 import resources.Textbox;
 
-public class DataSlot extends GameObject {
+public class DataSlot extends GameObject implements Highlightable {
 	
 	public int memAddress = 0;
 	
@@ -29,6 +29,7 @@ public class DataSlot extends GameObject {
 	String prevEncoding = null;
 	
 	Sprite driveSprite = new Sprite("resources/sprites/config/drive.txt");
+	static Sprite driveHightlight = new Sprite ("resources/sprites/data_slot_highlight.png");
 
 	public int getMemAddress() {
 		return memAddress;
@@ -202,6 +203,16 @@ public class DataSlot extends GameObject {
 		if (Roome.getRoom(this.getX(), this.getY()) != null) {
 			Roome.getRoom(this.getX(), this.getY()).ds = this;
 		}
+	}
+
+	@Override
+	public boolean usesDefaultHightlight() {
+		return false;
+	}
+
+	@Override
+	public void highlight() {
+		driveHightlight.draw ((int)getX () - GameCode.getViewX () - 3, (int)getY () - GameCode.getViewY () - 3);
 	}
 	
 }

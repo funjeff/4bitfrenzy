@@ -143,45 +143,47 @@ public class Compass extends GameObject {
 	
 	@Override
 	public void draw () {
-		this.setX(50);
-		this.setY(50);
-		
-		String memAdress = "";
-		boolean regOrDs = false; //true for reg false for ds
-		try {
-			Register reg = (Register) pointObject;
-			memAdress = Integer.toHexString(reg.memAddress).toUpperCase();
-			regOrDs = true;
-		} catch (ClassCastException e) {
+		if (this.isVisable ()) {
+			this.setX(50);
+			this.setY(50);
 			
-		}
-		try {
-			DataSlot ds = (DataSlot) pointObject;
-			memAdress = Integer.toHexString(ds.memAddress).toUpperCase();
-			regOrDs = false;
-		} catch (ClassCastException e) {
+			String memAdress = "";
+			boolean regOrDs = false; //true for reg false for ds
+			try {
+				Register reg = (Register) pointObject;
+				memAdress = Integer.toHexString(reg.memAddress).toUpperCase();
+				regOrDs = true;
+			} catch (ClassCastException e) {
+				
+			}
+			try {
+				DataSlot ds = (DataSlot) pointObject;
+				memAdress = Integer.toHexString(ds.memAddress).toUpperCase();
+				regOrDs = false;
+			} catch (ClassCastException e) {
+				
+			}
 			
-		}
-		
-		Textbox t = new Textbox ("   " + memAdress);
-		
-		if (regOrDs) {
-			t.setFont("text (lime green)");
-		} else {
-			t.setFont("text (red)");
-		}
-		t.changeWidth(144/16);
-		t.changeHeight(32/16);
-		
-		t.setX(this.getX() + GameCode.getViewX ());
-		try {
-			t.setY(this.getY() + GameCode.getViewY () + 110);
-		} catch (NullPointerException e) {
+			Textbox t = new Textbox ("   " + memAdress);
 			
+			if (regOrDs) {
+				t.setFont("text (lime green)");
+			} else {
+				t.setFont("text (red)");
+			}
+			t.changeWidth(144/16);
+			t.changeHeight(32/16);
+			
+			t.setX(this.getX() + GameCode.getViewX ());
+			try {
+				t.setY(this.getY() + GameCode.getViewY () + 110);
+			} catch (NullPointerException e) {
+				
+			}
+			t.draw();
+			
+			this.getSprite ().drawRotated ((int)getX (), (int)getY (), 0, 60, 36, pointDir);
 		}
-		t.draw();
-		
-		this.getSprite ().drawRotated ((int)getX (), (int)getY (), 0, 60, 36, pointDir);
 	}
 	
 	public static double getNotchedDirection (double dir, int notches) {

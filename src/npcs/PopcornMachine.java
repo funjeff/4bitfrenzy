@@ -50,6 +50,7 @@ public class PopcornMachine extends NPC {
 			if (!collider.isColliding ("Popcorn")) {
 				Popcorn corn = new Popcorn (this.getX() + xOffs, this.getY() + yOffs);
 			}
+			collider.forget ();
 			
 		}
 	}

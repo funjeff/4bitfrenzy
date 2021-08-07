@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import engine.GameCode;
 import engine.ObjectHandler;
@@ -53,7 +54,7 @@ public class Client extends Thread {
 	private static HashMap<Integer, Item> itemMap = new HashMap<Integer, Item> ();
 	static int datas = 0;
 	
-	private static volatile LinkedList<String> inMessages = new LinkedList<String> ();
+	private static volatile LinkedBlockingDeque<String> inMessages = new LinkedBlockingDeque<String> ();
 	
 	private String uuid = UUID.randomUUID ().toString ();
 	

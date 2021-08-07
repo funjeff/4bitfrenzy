@@ -13,6 +13,7 @@ import engine.SpriteParser;
 import gameObjects.Compass;
 import gameObjects.ControlsHint;
 import gameObjects.DataSlot;
+import gameObjects.Highlightable;
 import gameObjects.Register;
 import gameObjects.WaveCompleteGraphic;
 import items.Item;
@@ -23,6 +24,7 @@ import network.NetworkHandler;
 import npcs.Hoop;
 import npcs.LoadedDice;
 import resources.SoundPlayer;
+import util.DummyCollider;
 import util.Vector2D;
 
 
@@ -61,6 +63,10 @@ public class Bit extends GameObject {
 	private double prevFrameY;
 
 	private Vector2D pushVector = new Vector2D (0,0);
+	
+	private DummyCollider utilCollider;
+	
+	public static final int HIGHLIGHT_RADIUS = 120;
 	
 	public boolean isSecondaryBit() {
 		return secondaryBit;
@@ -169,6 +175,16 @@ public class Bit extends GameObject {
 			//Get rid of the hint if unused
 			if (!showHint) {
 				controlsHint.showNoHint ();
+			}
+			
+			//Hide the compass if grabbing
+			//NOTE: COMPASS CAN BE NULL HERE... WEIRD
+			if (regestersBeingCarried != null && regestersBeingCarried.size () > 0 && compass != null) {
+				compass.setVisability (false);
+			} else {
+				if (compass != null) {
+					compass.setVisability (true);
+				}
 			}
 			
 		}
@@ -546,6 +562,21 @@ public class Bit extends GameObject {
 		
 	}
 	
+	public void highlightNearby () {
+		DummyCollider dc = new DummyCollider ((int)getCenterX () - HIGHLIGHT_RADIUS, (int)getCenterY () - HIGHLIGHT_RADIUS, HIGHLIGHT_RADIUS * 2, HIGHLIGHT_RADIUS * 2);
+		dc.isCollidingChildren ("GameObject");
+		ArrayList<GameObject> collidingObjs = dc.getCollisionInfo ().getCollidingObjects();
+		if (collidingObjs != null) {
+			for (int i = 0; i < collidingObjs.size (); i++) {
+				GameObject curr = collidingObjs.get (i);
+				if (curr instanceof Highlightable && this.getDistance (curr) < HIGHLIGHT_RADIUS) {
+					((Highlightable)curr).highlight ();
+ 				}
+			}
+		}
+		
+	}
+	
 	@Override
 	public void draw () {
 		if (this.playerNum == NetworkHandler.getPlayerNum() && isActive()) {
@@ -553,6 +584,7 @@ public class Bit extends GameObject {
 		}
 		
 		super.draw();
+		highlightNearby ();
 		
 		if (perk == 2 && keyDown ('M')) {
 			map.draw();

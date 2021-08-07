@@ -11,10 +11,10 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import engine.GameCode;
 import engine.RenderLoop;
@@ -29,7 +29,7 @@ public class Server extends Thread {
 	private String serverIp;
 	
 	private static volatile boolean open = false;
-	private static volatile LinkedList<String> writeMessage = new LinkedList<String> ();
+	private static volatile LinkedBlockingDeque<String> writeMessage = new LinkedBlockingDeque<String> ();
 	private static ArrayList<String> allMessages = new ArrayList<String> ();
 	
 	public Server () {
@@ -59,17 +59,7 @@ public class Server extends Thread {
 					
 					//Attempt to pop the message from writeMessage
 					String s = null;
-					while (s == null) {
-						try {
-							s = writeMessage.removeFirst (); //SERIOUSLY? THIS WAS THE PROBLEM??
-						} catch (ConcurrentModificationException | NoSuchElementException e) {
-							try {
-								Thread.sleep (1); //Wait and try again
-							} catch (InterruptedException e1) {
-								//Timing is not important
-							}
-						}
-					}
+					s = writeMessage.removeFirst ();
 					
 					//Send the message
 					for (int i = 0; i < connections.size (); i++) {
