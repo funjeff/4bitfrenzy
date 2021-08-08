@@ -579,9 +579,6 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void draw () {
-		if (this.playerNum == NetworkHandler.getPlayerNum() && isActive()) {
-			updateScroll();
-		}
 		
 		super.draw();
 		highlightNearby ();

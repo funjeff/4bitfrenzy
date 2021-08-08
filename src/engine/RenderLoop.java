@@ -51,7 +51,9 @@ public class RenderLoop {
 		GameCode.testBitch();
 		//Start the game logic loop on a separate thread
 		GameLoop gameLoop = new GameLoop ();
-		new Thread (gameLoop).start ();
+		GameCode.init ();
+		//new Thread (gameLoop).start (); //Game logic and rendering are on the same thread (for now)
+		//TODO swap between single-threaded and multi-threaded as necessary
 		//Initializes lastUpdate to the current time
 		lastUpdate = System.nanoTime ();
 		renderThread = Thread.currentThread ();
@@ -64,6 +66,8 @@ public class RenderLoop {
 				long startTime = System.nanoTime ();
 				frameTime = System.currentTimeMillis ();
 				if (!paused) {
+				//Run the game loop
+				gameLoop.run ();
 				//Render the window
 				GameCode.renderFunc ();
 				ObjectHandler.renderAll ();
@@ -73,6 +77,7 @@ public class RenderLoop {
 				}
 				
 				long elapsedTime = lastUpdate - startTime;
+				System.out.println (elapsedTime);
 				int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
 				if (sleepTime < 0) {
 					sleepTime = 0;

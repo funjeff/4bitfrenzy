@@ -337,6 +337,14 @@ public class GameCode {
 			gameStarted = true;
 			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
 		}
+		
+		for (int i = 0; i < bits.size (); i++) {
+			Bit b = bits.get (i);
+			if (b.playerNum == NetworkHandler.getPlayerNum()) {
+				b.updateScroll ();
+			}
+		}
+		
 	}
 	
 	public static TitleScreen getTitleScreen () {
