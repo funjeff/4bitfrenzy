@@ -69,7 +69,6 @@ public class GameCode {
 	private static GameSettings settings;
 	
 	private File loadFile = null;
-	
 	private static double scoreMultiplier = 1;
 	private static boolean hasPerk15 = false;
 	
@@ -490,6 +489,7 @@ public class GameCode {
 			
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
 			return null;
 		}
 		

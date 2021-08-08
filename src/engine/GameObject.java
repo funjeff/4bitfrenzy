@@ -13,6 +13,7 @@ import gameObjects.DataSlot;
 import gameObjects.Register;
 import map.Roome;
 import npcs.Basketball;
+import npcs.CarKey;
 import npcs.Dirt;
 import npcs.Popcorn;
 import npcs.Shovel;
@@ -285,6 +286,7 @@ public abstract class GameObject extends GameAPI {
 		hitboxDimensions.put (Register.class, new Dimension (98, 42));
 		hitboxDimensions.put (Popcorn.class, new Dimension (16, 16));
 		hitboxDimensions.put (Trash.class, new Dimension (64, 64));
+		hitboxDimensions.put (CarKey.class, new Dimension (16, 36));
 		
 	}
 	
@@ -512,6 +514,22 @@ public abstract class GameObject extends GameAPI {
 	 */
 	public double getY () {
 		return y;
+	}
+	
+	/**
+	 * Gets the x coordinate this GameObject would be drawn at on the screen, accounting for scrolling
+	 * @return the x coordinate this GameObject will be drawn at
+	 */
+	public int getDrawX () {
+		return (int)(getX () - GameCode.getViewX ());
+	}
+	
+	/**
+	 * Gets the x coordinate this GameObject would be drawn at on the screen, accounting for scrolling
+	 * @return the y coordinate this GameObject will be drawn at
+	 */
+	public int getDrawY () {
+		return (int)(getY () - GameCode.getViewY ());
 	}
 	
 	/**

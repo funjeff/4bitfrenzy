@@ -36,6 +36,7 @@ import items.Glue;
 import items.Speed;
 import items.Teleporter;
 import network.NetworkHandler;
+import npcs.CarKey;
 import npcs.Dirt;
 import npcs.NPC;
 import resources.Textbox;
@@ -795,12 +796,20 @@ public class Roome extends GameObject {
 		while (working == null) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
 		working.init (13, r.nextInt (5)); //Casino ID is 13
 		
+		//Place in the truck room
+		working = null;
+		while (working == null || mapWidth * 1080 - working.getX () < 9720) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
+		working.init (20, r.nextInt (5));
+		
 		for (int i = 0; i < finalRooms.size(); i++) {
 			working = (Roome)finalRooms.get(i);
 			if (working != null && working.getSprite () == null) {
 				working.init(rollRoomeId (working), r.nextInt (5));
 			}
 		}
+		
+		//Spawn in the key
+		map [4][5].spawnObject (CarKey.class);
 
 		if (GameCode.devMode ()) {
 			Ribbon.constructPath ();
@@ -1107,7 +1116,7 @@ public class Roome extends GameObject {
 	}
 	
 	public GameObject spawnObject (Class<?> obj) {
-		
+		System.out.println (obj);
 		//NOTE: ONLY WORKS WITH OBJECTS THAT HAVE DEFINED HITBOX DIMENSIONS VIA GameObject.getHitboxDimensions (Class<?> c)
 		
 		Dimension defaultHitbox = GameObject.getHitboxDimensions (obj);

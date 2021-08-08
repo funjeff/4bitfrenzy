@@ -1,12 +1,14 @@
 package npcs;
 
 import engine.Sprite;
+import gameObjects.Highlightable;
 import items.BasketBomb;
 import items.Bombs;
 
-public class Hoop extends NPC {
+public class Hoop extends NPC implements Highlightable {
 
 	public static Sprite hoopSprite = new Sprite ("resources/sprites/hoop.png");
+	public static Sprite hoopHighlight = new Sprite ("resources/sprites/hoop_highlight.png");
 	
 	public Hoop (double x, double y) {
 		super (x, y);
@@ -54,6 +56,16 @@ public class Hoop extends NPC {
 	@Override
 	public int getMaxQuestItems () {
 		return 3;
+	}
+
+	@Override
+	public boolean usesDefaultHightlight() {
+		return false;
+	}
+
+	@Override
+	public void highlight() {
+		hoopHighlight.draw (getDrawX () - 4, getDrawY () - 4);
 	}
 	
 }
