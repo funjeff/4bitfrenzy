@@ -15,6 +15,10 @@ public class Basketball extends PushableNPC implements Highlightable {
 		this.addCollisionException(Hoop.class);
 	}
 
+	public void pop () {
+		forget ();
+	}
+	
 	@Override
 	public boolean usesDefaultHightlight() {
 		return false;

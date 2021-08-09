@@ -17,7 +17,7 @@ public class Item extends GameObject {
 	}
 
 	/**
-	 * returns true if item use was succsefull false otherwise
+	 * returns true if item use was successful false otherwise
 	 */
 	public boolean useItem (Bit user) {
 		return true;
@@ -47,6 +47,18 @@ public class Item extends GameObject {
 	
 	public Bit getDropper () {
 		return dropper;
+	}
+	
+	public String getName () {
+		return "default_item_name";
+	}
+	
+	public String getItemText () {
+		return "default_item_text";
+	}
+	
+	public String getItemFlavor () {
+		return "default_item_flavor";
 	}
 	
 	@Override

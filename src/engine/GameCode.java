@@ -26,6 +26,8 @@ import items.FakeScrambler;
 import items.FriedFood;
 import items.Glue;
 import items.Item;
+import items.Lighter;
+import items.Pin;
 import items.Speed;
 import items.Teleporter;
 import items.Water;
@@ -385,6 +387,10 @@ public class GameCode {
 				Hud.newWave ();
 			}
 		}
+		
+		//DEBUG SPAWNING STARTS HERE
+		Roome.map [5][5].spawnObject (Lighter.class);
+		//DEBUG SPAWNING ENDS HERE
 		
 		//Declare the hud and make the bits
 		hud.declare();

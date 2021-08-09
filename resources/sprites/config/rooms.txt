@@ -19,3 +19,4 @@ resources/sprites/rooms/gex/ 100
 resources/sprites/rooms/qr_code/ 100
 resources/sprites/rooms/keyboard/ 100
 resources/sprites/rooms/truck/ 0
+resources/sprites/rooms/pond/ 40

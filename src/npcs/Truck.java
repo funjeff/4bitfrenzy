@@ -61,6 +61,22 @@ public class Truck extends NPC implements Highlightable {
 			}
 		}
 	}
+	
+	public void lightOnFire () {
+		this.forget ();
+		//Destroy all walls in the current room
+		Roome.getRoom (getX (), getY ()).destroyTopWall ();
+		Roome.getRoom (getX (), getY ()).destroyBottomWall ();
+		Roome.getRoom (getX (), getY ()).destroyLeftWall ();
+		Roome.getRoom (getX (), getY ()).destroyRightWall ();
+		//Play sound effects
+		if (NetworkHandler.isHost()) {
+			SoundPlayer play = new SoundPlayer ();
+			play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");
+		} else {
+			NetworkHandler.getServer().sendMessage("SOUND:"  + NetworkHandler.getPlayerNum() + ":resources/sounds/effects/bomb.wav");
+		}
+	}
 
 	@Override
 	public boolean usesDefaultHightlight() {
