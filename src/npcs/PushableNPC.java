@@ -20,6 +20,7 @@ public class PushableNPC extends NPC {
 	
 	public PushableNPC (double x, double y) {
 		super (x, y);
+		this.addCollisionException (Fryer.class);
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ public class Fish extends PushableNPC implements Highlightable {
 		this.addCollisionException(Lake.class);
 		this.setFriction (1);
 		this.setHitboxAttributes (46, 22);
+		this.addCollisionException (Fryer.class);
 	}
 
 	@Override

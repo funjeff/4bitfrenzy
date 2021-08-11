@@ -33,4 +33,21 @@ public class Cash extends Item {
 		
 		dropper.setSpeed(dropper.getSpeed() - 2);
 	}
+	
+	public String getName () {
+		return "Cash";
+	}
+	
+	public String getDesc () {
+		return "Gives a speed boost while held.\n"
+				+ "press \'use\' to drop it.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "yo why are those idiots delivering registers with no profit incentive";
+	}
 }

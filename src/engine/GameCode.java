@@ -21,6 +21,7 @@ import items.BasketBomb;
 import items.Bombs;
 import items.BrokenTeleporter;
 import items.Cash;
+import items.ChickenBucket;
 import items.DataScrambler;
 import items.Egg;
 import items.FakeScrambler;
@@ -391,7 +392,7 @@ public class GameCode {
 		
 		//DEBUG SPAWNING STARTS HERE
 		Roome.map [5][5].spawnObject (Lighter.class);
-		Roome.map [5][5].spawnObject (FriedFood.class);
+		Roome.map [5][5].spawnObject (ChickenBucket.class);
 		//DEBUG SPAWNING ENDS HERE
 		
 		//Declare the hud and make the bits

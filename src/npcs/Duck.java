@@ -14,6 +14,7 @@ public class Duck extends PushableNPC implements Highlightable {
 		this.addCollisionException(Lake.class);
 		this.setFriction (1);
 		this.setHitboxAttributes (25, 54);
+		this.addCollisionException (Fryer.class);
 	}
 
 	@Override
