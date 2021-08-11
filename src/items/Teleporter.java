@@ -45,4 +45,21 @@ public class Teleporter extends Item {
 			return false;
 		}
 	}
+	
+	public String getName () {
+		return "Teleporter";
+	}
+	
+	public String getDesc () {
+		return "Teleports you to a room\n"
+				+ "with a register in it.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "zoom";
+	}
 }

@@ -49,18 +49,6 @@ public class Item extends GameObject {
 		return dropper;
 	}
 	
-	public String getName () {
-		return "default_item_name";
-	}
-	
-	public String getItemText () {
-		return "default_item_text";
-	}
-	
-	public String getItemFlavor () {
-		return "default_item_flavor";
-	}
-	
 	@Override
 	public void frameEvent () {
 		if (dropper != null && !this.isColliding (dropper)) {

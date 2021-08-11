@@ -33,4 +33,21 @@ public class DataScrambler extends Item {
 			return true;
 		}
 	}
+	
+	public String getName () {
+		return "Data Scrambler";
+	}
+	
+	public String getDesc () {
+		return "Use this item while grabbing\n"
+				+ "a register to scramble it.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "should we be doing this?";
+	}
 }

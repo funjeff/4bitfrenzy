@@ -17,6 +17,7 @@ import java.util.Scanner;
 import gameObjects.DataSlot;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
+import items.BasketBomb;
 import items.Bombs;
 import items.BrokenTeleporter;
 import items.Cash;
@@ -390,6 +391,7 @@ public class GameCode {
 		
 		//DEBUG SPAWNING STARTS HERE
 		Roome.map [5][5].spawnObject (Lighter.class);
+		Roome.map [5][5].spawnObject (FriedFood.class);
 		//DEBUG SPAWNING ENDS HERE
 		
 		//Declare the hud and make the bits

@@ -469,11 +469,11 @@ public class Client extends Thread {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									b.inventory.setItem(it);
+									b.inventory.putItem (it);
 								}
 								s2.close();
 							} else {
-								b.inventory.setItem(null);
+								b.inventory.putItem (null);
 							}
 						} catch (IndexOutOfBoundsException e) {
 							//Do nothing

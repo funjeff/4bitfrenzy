@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import gameObjects.Catalogable;
 import gameObjects.DataSlot;
 import gameObjects.Register;
 import map.Roome;
@@ -25,7 +26,7 @@ import players.Bit;
  * @author nathan
  *
  */
-public abstract class GameObject extends GameAPI {
+public abstract class GameObject extends GameAPI implements Catalogable {
 	
 	/**
 	 * x-coordinate of this GameObject
@@ -732,5 +733,21 @@ public abstract class GameObject extends GameAPI {
 	public void setVisability(boolean visable) {
 	
 		this.visable = visable;
+	}
+	
+	public String getName () {
+		return "default_name";
+	}
+	
+	public String getDesc () {
+		return "default_short_desc";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "default_flavor";
 	}
 }

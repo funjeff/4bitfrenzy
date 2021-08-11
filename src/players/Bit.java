@@ -232,7 +232,7 @@ public class Bit extends GameObject {
 						Item it = inventory.getItem();
 						it.dropItem(this);
 					}
-					inventory.setItem(toUse);
+					inventory.putItem (toUse);
 					toUse.pickUpItem(this);
 					toUse.forget();
 				}

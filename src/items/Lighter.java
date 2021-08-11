@@ -24,4 +24,20 @@ public class Lighter extends Item {
 		return false;
 	}
 	
+	public String getName () {
+		return "Lighter";
+	}
+	
+	public String getDesc () {
+		return "(Quest Item)\nLights things on fire.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "lights things on fire";
+	}
+	
 }

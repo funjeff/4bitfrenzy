@@ -30,4 +30,20 @@ public class Pin extends Item {
 		return false;
 	}
 	
+	public String getName () {
+		return "Pin";
+	}
+	
+	public String getDesc () {
+		return "(Quest Item)\nIt's, uhh, sort\nof like a dart...\n(I guess...)";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "edible until proven otherwise";
+	}
+	
 }

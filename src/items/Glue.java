@@ -37,4 +37,24 @@ public class Glue extends Item {
 			}
 		}
 	}
+	
+	public String getName () {
+		return "Glue";
+	}
+	
+	public String getDesc () {
+		return "Use this while grabbing two\n"
+				+ "registers to glue them together,\n"
+				+ "allowing them to both be turned\n"
+				+ "in to a single data slot\n"
+				+ "simultaneously.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "...and people said this concept wouldn't stick!";
+	}
 }
