@@ -224,6 +224,14 @@ public class Hud extends GameObject {
 		int newRegisters = (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
 		for (int i = 0; i < newRegisters; i++) {
 				
+			try {
+				if (ObjectHandler.getObjectsByName ("Register").size () >= 50) {
+					return;
+				}
+			} catch (NullPointerException e) {
+				//Do nothing
+			}
+			
 			int memNum = rand.nextInt(256);
 			int wx = rand.nextInt (Roome.getMapWidth ());
 			int wy = rand.nextInt (Roome.getMapHeight ());
@@ -336,7 +344,14 @@ public class Hud extends GameObject {
 				}
 			}
 		}
-		timeLeft = 60000 * 5 + 60000 * roundNum;
+		if (roundNum == 1) {
+			timeLeft = 360000; // 6 minutes
+		} else {
+			timeLeft = 300000 - 30000 * roundNum;
+			if (timeLeft <= 120000) {
+				timeLeft = 120000; //2 minutes
+			}
+		}
 	}
 	public static void waveOver () {
 		if (NetworkHandler.isHost ()) {
