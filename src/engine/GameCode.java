@@ -2,6 +2,7 @@ package engine;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,8 +16,10 @@ import java.util.Random;
 import java.util.Scanner;
 
 import gameObjects.DataSlot;
+import gameObjects.MovableRectHighlight;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
+import gameObjects.Tutorial;
 import items.BasketBomb;
 import items.Bombs;
 import items.BrokenTeleporter;
@@ -391,8 +394,9 @@ public class GameCode {
 		}
 		
 		//DEBUG SPAWNING STARTS HERE
-		Roome.map [5][5].spawnObject (Lighter.class);
-		Roome.map [5][5].spawnObject (ChickenBucket.class);
+		//Roome.map [5][5].spawnObject (Lighter.class);
+		//Roome.map [5][5].spawnObject (ChickenBucket.class);
+		new Tutorial ();
 		//DEBUG SPAWNING ENDS HERE
 		
 		//Declare the hud and make the bits

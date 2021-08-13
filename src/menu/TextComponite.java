@@ -1,5 +1,6 @@
 package menu;
 
+import engine.GameCode;
 import resources.Textbox;
 
 public class TextComponite extends MenuComponite{
@@ -22,8 +23,8 @@ public class TextComponite extends MenuComponite{
 	
 	@Override
 	public void draw() {
-		t.setX(this.getX());
-		t.setY(this.getY());
+		t.setX(this.getX() + GameCode.viewX);
+		t.setY(this.getY() + GameCode.viewY);
 		
 		t.draw();
 	}

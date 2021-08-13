@@ -203,8 +203,8 @@ public class Hud extends GameObject {
 			}
 		}
 		
-		//Spawn in perk 15 bonus register (if applicable)
-		if (roundNum == 1 && GameCode.hasPerk15()) {
+		//Spawn in first register (always in starting room)
+		if (roundNum == 1) {
 			Point pt1 = new Point (Roome.getMapWidth () / 2, Roome.getMapHeight () / 2);
 			Point pt2 = getNearbyRoome (pt1, 1, 1);
 			Roome registerRoome = Roome.map [pt1.y][pt1.x];
