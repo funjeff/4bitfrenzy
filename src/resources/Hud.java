@@ -17,6 +17,7 @@ import gameObjects.WaveCompleteGraphic;
 import items.Bombs;
 import items.DataScrambler;
 import items.Glue;
+import items.Lighter;
 import items.Speed;
 import items.Teleporter;
 import map.Roome;
@@ -184,7 +185,7 @@ public class Hud extends GameObject {
 			Roome r = Roome.map[wy][wx];
 		
 			//IMPORTANT client is unresponsive if there are no items
-			switch (rand.nextInt(5)) {
+			switch (rand.nextInt(6)) {
 				case 0:
 					r.spawnObject (Glue.class);
 					break;
@@ -200,6 +201,8 @@ public class Hud extends GameObject {
 				case 4:
 					r.spawnObject (DataScrambler.class);
 					break;
+				case 5:
+					r.spawnObject (Lighter.class);
 			}
 		}
 		
