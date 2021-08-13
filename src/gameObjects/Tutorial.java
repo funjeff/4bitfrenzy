@@ -32,6 +32,7 @@ public class Tutorial extends GameObject {
 	public static final Rectangle itemRect = new Rectangle (240, 99, 32, 32);
 	public static final Rectangle waveRect = new Rectangle (640, 9, 352, 113);
 	public static final Rectangle livesRect = new Rectangle (20, 4, 512, 27);
+	public static final Rectangle screenRect = new Rectangle (4, 4, 1272, 712);
 	
 	public Tutorial () {
 		
@@ -45,7 +46,6 @@ public class Tutorial extends GameObject {
 		
 		//Add components and set menu dimension
 		menuText = new TextComponite (25, 26, menu);
-		menuText.setText ("AAAAAAAAAAAAAAAAAAAAAAAAA");
 		continueComponent = new TextComponite (25, 1, menu);
 		continueComponent.setText ("PRESS ENTER TO CONTINUE...");
 		menu.setWidth (TUTORIAL_MENU_WIDTH);
@@ -67,32 +67,78 @@ public class Tutorial extends GameObject {
 	
 	@Override
 	public void frameEvent () {
-		if (this.keyPressed (KeyEvent.VK_ENTER) || stage == -1) {
+		if ((this.keyPressed (KeyEvent.VK_ENTER) || stage == -1) && !highlight.isMoving ()) {
 			stage++;
 			switch (stage) {
 				case 0:
+					menuText.setText (
+					"YOUR JOB IS TO DELIVER    " +
+					"REGISTERS TO DATA SLOTS.  " +
+					"THESE WILL BE HIGHLIGHTED " +
+					"WHITE WHEN YOU GET NEAR   " +
+					"THEM. YOU MAY PUSH THE    " +
+					"REGISTERS, OR YOU MAY HOLD" +
+					"SHIFT TO PULL THEM.  ");
 					break;
 				case 1:
-					menuText.setText ("COMPASS");
-					moveHighlight (compassRect, 30);
+					menuText.setText (
+					"THIS IS THE COMPASS. IT   " +
+					"POINTS TO THE NEAREST     " +
+					"REGISTER BY DEFAULT. YOU  " +
+					"CAN TOGGLE THE REGISTER IT" +
+					"POINTS TO BY PRESSING     " +
+					"SPACE."
+					);
+					moveHighlight (compassRect, 20);
 					break;
 				case 2:
-					menuText.setText ("ITEM BOX");
-					moveHighlight (itemRect, 30);
+					menuText.setText (
+					"THE ITEM BOX HOLDS THE    " +
+					"ITEM YOU CURRENTLY HAVE.  " +
+					"TO USE YOUR ITEM, PRESS   " +
+					"THE ENTER KEY."
+					);
+					moveHighlight (itemRect, 20);
 					break;
 				case 3:
-					menuText.setText ("SCORE");
-					moveHighlight (scoreRect, 30);
+					menuText.setText (
+					"THIS BOX DISPLAYS YOUR    " +
+					"SCORE. YOU CAN ONLY SCORE " +
+					"POINTS BY TURNING IN      " +
+					"REGISTERS."
+					);
+					moveHighlight (scoreRect, 20);
 					break;
 				case 4:
-					menuText.setText ("GAME INFO");
-					moveHighlight (waveRect, 30);
+					menuText.setText (
+					"THESE BOXES DISPLAY INFO  " +
+					"ABOUT THE CURRENT WAVE.   " +
+					"WHEN THE TIME HITS ZERO,  " +
+					"MORE REGISTERS WILL SPAWN " +
+					"AND THE NEXT WAVE WILL    " +
+					"START."
+					);
+					moveHighlight (waveRect, 20);
 					break;
 				case 5:
-					menuText.setText ("LIVES");
-					moveHighlight (livesRect, 30);
+					menuText.setText (
+					"AT THEN END OF A WAVE, YOU" +
+					"WILL LOSE ONE LIFE FOR    " +
+					"EACH REMAINING REGISTER.  " +
+					"WHEN YOUR LIVES HIT ZERO, " +
+					"YOU LOSE THE GAME.        "
+					);
+					moveHighlight (livesRect, 20);
 					break;
 				case 6:
+					menuText.setText (
+					"NOW, GO FORTH AND DELIVER " +
+					"REGISTERS AS QUICKLY AS   " +
+					"YOU CAN!"
+					);
+					moveHighlight (screenRect, 20);
+					break;
+				case 7:
 					forget ();
 					break;
 			}

@@ -13,12 +13,12 @@ import util.Vector2D;
 
 public class MovableRectHighlight extends GameObject {
 
-	Rectangle from;
-	Rectangle to;
-	int moveTime;
-	int elapsedTime;
+	private Rectangle from;
+	private Rectangle to;
+	private int moveTime;
+	private int elapsedTime;
 	
-	boolean isMoving = false;
+	private boolean isMoving = false;
 	
 	public MovableRectHighlight (Rectangle r) {
 		from = r;
@@ -30,6 +30,10 @@ public class MovableRectHighlight extends GameObject {
 		moveTime = time;
 		elapsedTime = 0;
 		isMoving = true;
+	}
+	
+	public boolean isMoving () {
+		return isMoving;
 	}
 	
 	@Override
