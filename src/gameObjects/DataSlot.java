@@ -19,6 +19,8 @@ public class DataSlot extends GameObject implements Highlightable {
 	public int memAddress = 0;
 	
 	boolean cleared = false;
+	boolean scrambled = false;
+	boolean wasScrambled = false;
 	
 	Textbox display;
 	
@@ -87,12 +89,21 @@ public class DataSlot extends GameObject implements Highlightable {
 	@Override
 	public void frameEvent () {
 		
+		if (wasScrambled != scrambled) {
+			wasScrambled = scrambled;
+			SoundPlayer play = new SoundPlayer ();
+			play.playSoundEffect(GameCode.volume,"resources/sounds/effects/scrambler.wav");
+			this.setSprite (new Sprite ("resources/sprites/drive_scrambled.png", "resources/sprites/config/drive.txt"));
+			display.forget ();
+			display = null;
+		}
+		
 		if (this.isColliding("Register") && !this.cleared && NetworkHandler.isHost()) {
 			ArrayList <GameObject> collidingRegesters = this.getCollisionInfo().getCollidingObjects();
 			for (int i = 0; i < collidingRegesters.size(); i++) {
 				
 				Register working = (Register)collidingRegesters.get(i);
-				if (working.getMemAddress() == memAddress || working.scrambled || working.secondAddress == memAddress) {
+				if (working.getMemAddress() == memAddress || working.scrambled && this.scrambled || working.secondAddress == memAddress) {
 					this.awardPoints(working);
 					working.forget();
 					Roome.getRoom(this.getX(), this.getY()).ds = null;
@@ -140,6 +151,15 @@ public class DataSlot extends GameObject implements Highlightable {
 	}
 	public void awardPoints (Register reg) {
 		long pointsToAward = 10000;
+		if (reg.scrambled) {
+			pointsToAward += 20000;
+		}
+		if (reg.isLargeRegister) {
+			pointsToAward += 30000;
+		}
+		if (reg.isBlue) {
+			pointsToAward += 50000;
+		}
 		long deliveryTime = System.currentTimeMillis() - reg.spawnTime;
 		pointsToAward = pointsToAward + ((180000 - deliveryTime)/2);
 		if (pointsToAward < 10000) {
@@ -160,6 +180,10 @@ public class DataSlot extends GameObject implements Highlightable {
 		this.cleared = cleared;
 	}
 	
+	public boolean isScrambled () {
+		return scrambled;
+	}
+	
 	@Override
 	public void forget () {
 		if (NetworkHandler.isHost()) {
@@ -171,9 +195,9 @@ public class DataSlot extends GameObject implements Highlightable {
 	@Override
 	public String toString () {
 		if (reward == null) {
-			return getId () + " " + memAddress  + " " + cleared + " " + "null" + " " + this.getX() + " " + this.getY();
+			return getId () + " " + memAddress  + " " + cleared + " " + "null" + " " + this.getX() + " " + this.getY() + " " + scrambled;
 		} else {
-			return getId () + " " + memAddress  + " " + cleared + " " + reward.getText().substring(2) + " " + this.getX() + " " + this.getY();
+			return getId () + " " + memAddress  + " " + cleared + " " + reward.getText().substring(2) + " " + this.getX() + " " + this.getY() + " " + scrambled;
 		}
 	}
 	
@@ -199,9 +223,21 @@ public class DataSlot extends GameObject implements Highlightable {
 		}
 		this.setX(Double.parseDouble(infos[4]));
 		this.setY(Double.parseDouble(infos[5]));
+		this.scrambled = Boolean.parseBoolean (infos[6]);
 		updateTime = 0;
 		if (Roome.getRoom(this.getX(), this.getY()) != null) {
 			Roome.getRoom(this.getX(), this.getY()).ds = this;
+		}
+	}
+	
+	public void scramble () {
+		scrambled = true;
+		ArrayList<GameObject> regs = ObjectHandler.getObjectsByName ("Register");
+		for (int i = 0; i < regs.size (); i++) {
+			Register r = (Register)regs.get (i);
+			if (r.getDataSlot () == this) {
+				r.scramble ();
+			}
 		}
 	}
 

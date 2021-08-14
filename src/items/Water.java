@@ -39,8 +39,10 @@ public class Water extends Item {
 	}
 	
 	public String getDesc () {
-		return "Use this item while grabbing\n"
-				+ "a register to scramble it.";
+		return "Use this item on a data slot\n"
+				+ "to scramble it. Scrambled\n"
+				+ "data slots will not deduct\n"
+				+ "lives at the end of a wave.";
 	}
 	
 	public String getLongDescription () {

@@ -113,7 +113,14 @@ public class Hud extends GameObject {
 		
 		registersRemaining.setX(640 + GameCode.getViewX());
 		registersRemaining.setY(100 + GameCode.getViewY());
-		registersRemaining.changeText(Integer.toString(ObjectHandler.getObjectsByName("Register").size()) +" REGISTERS REMAIN");
+		ArrayList<GameObject> dataSlots = ObjectHandler.getObjectsByName ("DataSlot");
+		int numSlots = 0;
+		for (int i = 0; i < dataSlots.size (); i++) {
+			if (!((DataSlot)dataSlots.get(i)).isScrambled ()) {
+				numSlots++;
+			}
+		}
+		registersRemaining.changeText(numSlots +" REGISTERS REMAIN");
 		registersRemaining.draw();
 		
 		if (prevTime != 0 && NetworkHandler.isHost ()) {
@@ -156,7 +163,7 @@ public class Hud extends GameObject {
 				DataSlot currentSlot = (DataSlot) slots.get(i);
 				if (currentSlot.isCleared()) {
 					currentSlot.forget();
-				} else {
+				} else if (!currentSlot.isScrambled ()) {
 					setLives(getLives() - 1);
 					if (lives <= 0) {
 						gameOver();
