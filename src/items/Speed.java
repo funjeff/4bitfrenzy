@@ -30,4 +30,21 @@ public class Speed extends Item {
 		user.speedUpTemporarly();
 		return true;
 	}
+	
+	public String getName () {
+		return "Speed Boost";
+	}
+	
+	public String getDesc () {
+		return "Using this item will allow\n"
+				+ "you to move faster temporarily.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "contains 20 ccs of milk";
+	}
 }

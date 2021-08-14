@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
+import gameObjects.Highlightable;
 import players.Bit;
 
-public class Dirt extends NPC {
+public class Dirt extends NPC implements Highlightable {
 
 	public static Sprite dirtSprite = new Sprite ("resources/sprites/dirt.png");
 	public static Sprite dirtTunnelSprite = new Sprite ("resources/sprites/dirt (tunnel).png");
+	public static Sprite dirtHighlight = new Sprite ("resources/sprites/dirt_highlight.png");
 	
 	public Dirt linkedDirt;
 	
@@ -83,6 +85,16 @@ public class Dirt extends NPC {
 	@Override
 	public int getMaxQuestItemDist () {
 		return 3;
+	}
+
+	@Override
+	public boolean usesDefaultHightlight() {
+		return false;
+	}
+
+	@Override
+	public void highlight() {
+		dirtHighlight.draw (getDrawX () - 3, getDrawY () - 3);
 	}
 	
 }

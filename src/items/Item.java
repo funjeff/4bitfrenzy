@@ -17,7 +17,7 @@ public class Item extends GameObject {
 	}
 
 	/**
-	 * returns true if item use was succsefull false otherwise
+	 * returns true if item use was successful false otherwise
 	 */
 	public boolean useItem (Bit user) {
 		return true;

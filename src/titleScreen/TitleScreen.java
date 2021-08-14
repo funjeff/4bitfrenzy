@@ -478,6 +478,7 @@ public class TitleScreen extends GameObject {
 		
 		this.draw();
 		RenderLoop.wind.refresh();
+		enterIpMode ();
 		
 		//If there is a map to load
 		if (mapLoadPath != null) {
@@ -503,8 +504,6 @@ public class TitleScreen extends GameObject {
 		
 		RenderLoop.unPause();
 		this.setSprite(lobbySprite);
-		
-		enterIpMode ();
 
 	}
 	

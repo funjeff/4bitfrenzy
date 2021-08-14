@@ -232,7 +232,7 @@ public class Bit extends GameObject {
 						Item it = inventory.getItem();
 						it.dropItem(this);
 					}
-					inventory.setItem(toUse);
+					inventory.putItem (toUse);
 					toUse.pickUpItem(this);
 					toUse.forget();
 				}
@@ -579,9 +579,6 @@ public class Bit extends GameObject {
 	
 	@Override
 	public void draw () {
-		if (this.playerNum == NetworkHandler.getPlayerNum() && isActive()) {
-			updateScroll();
-		}
 		
 		super.draw();
 		highlightNearby ();

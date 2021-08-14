@@ -107,4 +107,21 @@ public class Bombs extends Item {
 			}
 		}
 	}
+	
+	public String getName () {
+		return "Bomb";
+	}
+	
+	public String getDesc () {
+		return "Approach a wall and\nthrow the bomb to destroy it.\nDoes not work on the\nedges of the map.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "edible until proven otherwise";
+	}
+	
 }

@@ -2,6 +2,7 @@ package engine;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,17 +16,23 @@ import java.util.Random;
 import java.util.Scanner;
 
 import gameObjects.DataSlot;
+import gameObjects.MovableRectHighlight;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
+import gameObjects.Tutorial;
+import items.BasketBomb;
 import items.Bombs;
 import items.BrokenTeleporter;
 import items.Cash;
+import items.ChickenBucket;
 import items.DataScrambler;
 import items.Egg;
 import items.FakeScrambler;
 import items.FriedFood;
 import items.Glue;
 import items.Item;
+import items.Lighter;
+import items.Pin;
 import items.Speed;
 import items.Teleporter;
 import items.Water;
@@ -69,7 +76,6 @@ public class GameCode {
 	private static GameSettings settings;
 	
 	private File loadFile = null;
-	
 	private static double scoreMultiplier = 1;
 	private static boolean hasPerk15 = false;
 	
@@ -338,6 +344,14 @@ public class GameCode {
 			gameStarted = true;
 			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
 		}
+		
+		for (int i = 0; i < bits.size (); i++) {
+			Bit b = bits.get (i);
+			if (b.playerNum == NetworkHandler.getPlayerNum()) {
+				b.updateScroll ();
+			}
+		}
+		
 	}
 	
 	public static TitleScreen getTitleScreen () {
@@ -378,6 +392,12 @@ public class GameCode {
 				Hud.newWave ();
 			}
 		}
+		
+		//DEBUG SPAWNING STARTS HERE
+		//Roome.map [5][5].spawnObject (Lighter.class);
+		//Roome.map [5][5].spawnObject (ChickenBucket.class);
+		new Tutorial ();
+		//DEBUG SPAWNING ENDS HERE
 		
 		//Declare the hud and make the bits
 		hud.declare();
@@ -490,6 +510,7 @@ public class GameCode {
 			
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
 			return null;
 		}
 		

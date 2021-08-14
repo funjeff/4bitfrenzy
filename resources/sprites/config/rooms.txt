@@ -18,3 +18,6 @@ resources/sprites/rooms/popcorn/ 100
 resources/sprites/rooms/gex/ 10
 resources/sprites/rooms/qr_code/ 20
 resources/sprites/rooms/keyboard/ 20
+resources/sprites/rooms/truck/ 0
+resources/sprites/rooms/pond/ 40
+resources/sprites/rooms/fryer/ 20

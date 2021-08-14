@@ -10,6 +10,10 @@ public class Baseball extends PushableNPC {
 		setSprite (new Sprite ("resources/sprites/baseball.png"));
 	}
 	
+	public void pop () {
+		forget ();
+	}
+	
 	@Override
 	public void npcFrame () {
 		super.npcFrame ();

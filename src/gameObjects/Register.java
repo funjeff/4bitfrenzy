@@ -236,11 +236,9 @@ public class Register extends GameObject implements Highlightable {
 		//Check for powerhouse perk
 		for (int i = 0; i < bitsPushing.size (); i++) {
 			if (bitsPushing.get (i).perk == 3 || bitsPushing.get(i).isPoweredUp()) {
-				canPush = true; //Only one bit needs to have powerhouse
+				canPush = true; //Only one bit needs to have powerhouse or be powered up
 			}
 		}
-		
-		
 		
 		//Check for 2 or more bits
 		if (bitsPushing.size () > 1) {

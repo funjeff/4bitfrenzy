@@ -30,4 +30,22 @@ public class Egg extends Item {
 		user.powerUpTemporarly();
 		return true;
 	}
+	
+	public String getName () {
+		return "Egg";
+	}
+	
+	public String getDesc () {
+		return "Using this item will allow\n"
+				+ "you to carry red registers\n"
+				+ "for a short time.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "The FDA said it's probably not steroids";
+	}
 }

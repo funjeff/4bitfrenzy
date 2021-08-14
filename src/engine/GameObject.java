@@ -9,10 +9,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import gameObjects.Catalogable;
 import gameObjects.DataSlot;
 import gameObjects.Register;
 import map.Roome;
 import npcs.Basketball;
+import npcs.CarKey;
 import npcs.Dirt;
 import npcs.Popcorn;
 import npcs.Shovel;
@@ -24,7 +26,7 @@ import players.Bit;
  * @author nathan
  *
  */
-public abstract class GameObject extends GameAPI {
+public abstract class GameObject extends GameAPI implements Catalogable {
 	
 	/**
 	 * x-coordinate of this GameObject
@@ -285,6 +287,7 @@ public abstract class GameObject extends GameAPI {
 		hitboxDimensions.put (Register.class, new Dimension (98, 42));
 		hitboxDimensions.put (Popcorn.class, new Dimension (16, 16));
 		hitboxDimensions.put (Trash.class, new Dimension (64, 64));
+		hitboxDimensions.put (CarKey.class, new Dimension (16, 36));
 		
 	}
 	
@@ -515,6 +518,22 @@ public abstract class GameObject extends GameAPI {
 	}
 	
 	/**
+	 * Gets the x coordinate this GameObject would be drawn at on the screen, accounting for scrolling
+	 * @return the x coordinate this GameObject will be drawn at
+	 */
+	public int getDrawX () {
+		return (int)(getX () - GameCode.getViewX ());
+	}
+	
+	/**
+	 * Gets the x coordinate this GameObject would be drawn at on the screen, accounting for scrolling
+	 * @return the y coordinate this GameObject will be drawn at
+	 */
+	public int getDrawY () {
+		return (int)(getY () - GameCode.getViewY ());
+	}
+	
+	/**
 	 * Gets the x-coordinate of the center of this GameObject, based on its position and hitbox attributes
 	 * @return the x-coordinate of this GameObject's center point
 	 */
@@ -714,5 +733,21 @@ public abstract class GameObject extends GameAPI {
 	public void setVisability(boolean visable) {
 	
 		this.visable = visable;
+	}
+	
+	public String getName () {
+		return "default_name";
+	}
+	
+	public String getDesc () {
+		return "default_short_desc";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "default_flavor";
 	}
 }

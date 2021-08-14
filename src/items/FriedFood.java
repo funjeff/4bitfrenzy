@@ -34,4 +34,21 @@ public class FriedFood extends Item {
 		
 		return true;
 	}
+	
+	public String getName () {
+		return "Fried Food";
+	}
+	
+	public String getDesc () {
+		return "Eating fried food grants\n"
+				+ "various stat boosts.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "Made with no preservatives or artificial ingredients";
+	}
 }

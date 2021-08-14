@@ -17,6 +17,7 @@ import gameObjects.WaveCompleteGraphic;
 import items.Bombs;
 import items.DataScrambler;
 import items.Glue;
+import items.Lighter;
 import items.Speed;
 import items.Teleporter;
 import map.Roome;
@@ -184,7 +185,7 @@ public class Hud extends GameObject {
 			Roome r = Roome.map[wy][wx];
 		
 			//IMPORTANT client is unresponsive if there are no items
-			switch (rand.nextInt(5)) {
+			switch (rand.nextInt(6)) {
 				case 0:
 					r.spawnObject (Glue.class);
 					break;
@@ -200,11 +201,13 @@ public class Hud extends GameObject {
 				case 4:
 					r.spawnObject (DataScrambler.class);
 					break;
+				case 5:
+					r.spawnObject (Lighter.class);
 			}
 		}
 		
-		//Spawn in perk 15 bonus register (if applicable)
-		if (roundNum == 1 && GameCode.hasPerk15()) {
+		//Spawn in first register (always in starting room)
+		if (roundNum == 1) {
 			Point pt1 = new Point (Roome.getMapWidth () / 2, Roome.getMapHeight () / 2);
 			Point pt2 = getNearbyRoome (pt1, 1, 1);
 			Roome registerRoome = Roome.map [pt1.y][pt1.x];
@@ -224,6 +227,14 @@ public class Hud extends GameObject {
 		int newRegisters = (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
 		for (int i = 0; i < newRegisters; i++) {
 				
+			try {
+				if (ObjectHandler.getObjectsByName ("Register").size () >= 50) {
+					return;
+				}
+			} catch (NullPointerException e) {
+				//Do nothing
+			}
+			
 			int memNum = rand.nextInt(256);
 			int wx = rand.nextInt (Roome.getMapWidth ());
 			int wy = rand.nextInt (Roome.getMapHeight ());
@@ -336,7 +347,14 @@ public class Hud extends GameObject {
 				}
 			}
 		}
-		timeLeft = 60000 * 5 + 60000 * roundNum;
+		if (roundNum == 1) {
+			timeLeft = 360000; // 6 minutes
+		} else {
+			timeLeft = 300000 - 30000 * roundNum;
+			if (timeLeft <= 120000) {
+				timeLeft = 120000; //2 minutes
+			}
+		}
 	}
 	public static void waveOver () {
 		if (NetworkHandler.isHost ()) {

@@ -31,8 +31,8 @@ public class GameLoop implements Runnable {
 	
 	@Override
 	public void run () {
-		GameCode.init ();
-		while (RenderLoop.running) {
+		//GameCode.init ();
+		//while (RenderLoop.running) {
 			//Get the target time in nanoseconds for this iteration; should be constant if stepsPerSecond doesn't change
 			long targetNanoseconds = (long)(1000000000 / stepsPerSecond);
 			//Get the time before running the game logic
@@ -44,7 +44,7 @@ public class GameLoop implements Runnable {
 			RenderLoop.wind.resetInputBuffers ();
 			//Calculate elapsed time and time to sleep for
 			lastUpdate = System.nanoTime ();
-			long elapsedTime = lastUpdate - startTime;
+			/*long elapsedTime = lastUpdate - startTime;
 			int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
 			if (sleepTime < 0) {
 				sleepTime = 0;
@@ -58,8 +58,8 @@ public class GameLoop implements Runnable {
 			//Wait until the next step should be executed
 			while (System.nanoTime () - startTime < targetNanoseconds) {
 				
-			}
-		}
+			}*/
+		//}
 	}
 	
 	/**

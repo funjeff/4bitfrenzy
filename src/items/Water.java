@@ -33,4 +33,21 @@ public class Water extends Item {
 			return true;
 		}
 	}
+	
+	public String getName () {
+		return "Water";
+	}
+	
+	public String getDesc () {
+		return "Use this item while grabbing\n"
+				+ "a register to scramble it.";
+	}
+	
+	public String getLongDescription () {
+		return "default_long_desc";
+	}
+	
+	public String getItemFlavor () {
+		return "drinkable... probably";
+	}
 }
