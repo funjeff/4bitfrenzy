@@ -30,7 +30,7 @@ import resources.Textbox;
 
 public class TitleScreen extends GameObject {
 	
-	public static Sprite bg = new Sprite ("resources/sprites/title.png");
+
 	public static Sprite infographic = new Sprite ("resources/sprites/game infographic.png");
 	
 	private String ip;
@@ -93,7 +93,6 @@ public class TitleScreen extends GameObject {
 	public void onDeclare () {
 		
 		//Set stuff
-		setSprite (bg);
 		ip = "";
 		
 		//Make the buttons
@@ -188,7 +187,6 @@ public class TitleScreen extends GameObject {
 		}
 		if (getSprite () == infographic && keyPressed (KeyEvent.VK_ESCAPE)) {
 			
-			setSprite (bg);
 			ip = "";
 			
 			this.initMainMenu();
@@ -243,7 +241,37 @@ public class TitleScreen extends GameObject {
 //		perksSlot = new TitleSlot (TitleSlot.titlePerks);
 //		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
 //		helpSlot = new TitleSlot (TitleSlot.titleHelp);
-		settingsBot = new TalkableNPC (150,200);
+		
+		
+		Menu menu = new Menu ();
+		
+		TextComponite t = new TextComponite(menu,"~S8~  ~Cnormal~GAMEVOLUME: ");
+		
+		MenuComponite m = new MenuComponite (30, 10,menu);
+		TextComponite t2 = new TextComponite(menu,"~S8~  ~Cnormal~MAPWIDTH:");
+		TextComponite t3 = new TextComponite (menu,"~S8~  ~Cnormal~MAPHEIGHT:" );
+		TextComponite t4 = new TextComponite (menu,"~S8~  ~Cnormal~RESOLUTION:" );
+		
+		menu.setColor("Notepad");
+		
+		menu.setTop(new Sprite ("resources/sprites/Text/notepadTop.png"));
+		
+		menu.setName("SETTINGS.CONFIG - NOTEPAD");
+		
+		menu.setX(100);
+		menu.setY(100);
+		
+		menu.addComponite(m);
+		menu.addComponite(t);
+		menu.addComponite(t2);
+		menu.addComponite(t3);
+		menu.addComponite(t4);
+		
+		menu.setBackgroundColor(0xFFFFFF);
+		
+
+		
+		settingsBot = new TalkableNPC (150,200,menu);
 		settingsBot.setSprite(new Sprite ("resources/sprites/robot.png"));
 		
 		settingsBot.setRenderPriority(101);
@@ -257,28 +285,7 @@ public class TitleScreen extends GameObject {
 		dualStation = new PerkStation (6);
 		gamblerStation = new PerkStation (7);
 		
-//		Menu menu = new Menu ();
-//		
-//		TextComponite t = new TextComponite(30,5,menu);
-//		
-//		MenuComponite m = new MenuComponite (30, 80,menu);
-//		
-//		TextComponite t2 = new TextComponite(30,5,menu);
-//		
-//		PopcornMachine cornUnspread = new PopcornMachine (10,10);
-//		
-//		cornUnspread.declare();
-//		
-//		ObjectComponite obj = new ObjectComponite (cornUnspread,menu);
-//		
-//		t2.setText("LOLZ");
-//		
-//		t.setText("MY PENUS IS VERY LARGE AND YOURS IS ~Ctext (lime green)~VERY ~HSMALL!");
-//		
-//		menu.declare(900,250);
-//		
-//		menu.setRenderPriority(72);
-//		
+
 		titleBit.declare (920, 360);
 		titleReg.declare (487, 161);
 		startGameSlot.declare (331, 139);
@@ -373,7 +380,7 @@ public class TitleScreen extends GameObject {
 	public void draw () {
 		super.draw ();
 		
-		if (this.getSprite().equals(lobbySprite)) {
+		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
 					Textbox perk = null;
@@ -804,8 +811,8 @@ public class TitleScreen extends GameObject {
 			if (width.wasToggled()) {
 				Roome.setMapWidth(Integer.parseInt(width.getSelectedString()));
 			}
-			if (width.wasToggled()) {
-				Roome.setMapWidth(Integer.parseInt(width.getSelectedString()));
+			if (height.wasToggled()) {
+				Roome.setMapHeight(Integer.parseInt(height.getSelectedString()));
 			}
 			if (volume.wasToggled()) {
 				if (Integer.parseInt(volume.getSelectedString()) == 0) {

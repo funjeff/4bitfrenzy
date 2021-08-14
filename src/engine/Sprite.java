@@ -92,6 +92,14 @@ public class Sprite {
 			isAnimated = false;
 		}
 	}
+	public Sprite (BufferedImage[] image) {
+		images = image;
+		if (images.length > 1) {
+			isAnimated = true;
+		} else {
+			isAnimated = false;
+		}
+	}
 	
 	/**
 	 * Constructs a sprite with the given image and parser. Does not support caching.
@@ -345,15 +353,19 @@ public class Sprite {
 		return parsePath;
 	}
 
-	public static void scale (Sprite toScale, int width, int height) {
+	public static BufferedImage [] scale (Sprite toScale, int width, int height) {
+		
+		BufferedImage [] buff = new BufferedImage [toScale.getFrameCount()];
+		
 		for (int i = 0; i < toScale.getFrameCount(); i++) {
 			Image img = toScale.getFrame(i).getScaledInstance(width, height, Image.SCALE_FAST);
 			BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 			Graphics2D bGr = bimage.createGraphics();
 		    bGr.drawImage(img, 0, 0, null);
-		    bGr.dispose();
-			toScale.setFrame(i,bimage);
+		    
+		    buff[i] = bimage;
 		}
+		return buff;
 	}
 	/**
 	 * Gets the BufferedImage associated with the given filepath.

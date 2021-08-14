@@ -69,7 +69,7 @@ public class ServerConnection extends Thread {
 					//Attempt to pop the message from writeMessage
 					String s = null;
 
-					s = message.removeLast ();
+					s = message.removeFirst ();
 					
 					//Send the message
 					if (s != null) {

@@ -2,7 +2,7 @@ resources/sprites/rooms/default/ 100
 resources/sprites/rooms/corners/ 100
 resources/sprites/rooms/bricks/ 100
 resources/sprites/rooms/flower/ 100
-resources/sprites/rooms/funny/ 100
+resources/sprites/rooms/funny/ 20
 resources/sprites/rooms/head/ 100
 resources/sprites/rooms/heart/ 400
 resources/sprites/rooms/hex/ 100
@@ -13,11 +13,11 @@ resources/sprites/rooms/snakes/ 100
 resources/sprites/rooms/basketball/ 20
 resources/sprites/rooms/casino/ 0
 resources/sprites/rooms/italy/ 0
-resources/sprites/rooms/dump/ 100
+resources/sprites/rooms/dump/ 50
 resources/sprites/rooms/popcorn/ 100
-resources/sprites/rooms/gex/ 100
-resources/sprites/rooms/qr_code/ 100
-resources/sprites/rooms/keyboard/ 100
+resources/sprites/rooms/gex/ 10
+resources/sprites/rooms/qr_code/ 20
+resources/sprites/rooms/keyboard/ 20
 resources/sprites/rooms/truck/ 0
 resources/sprites/rooms/pond/ 40
 resources/sprites/rooms/fryer/ 20

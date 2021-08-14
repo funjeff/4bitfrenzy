@@ -4,13 +4,17 @@ import java.util.ArrayList;
 
 import engine.GameCode;
 import engine.Sprite;
+import menu.Menu;
 import network.NetworkHandler;
 import players.Bit;
 
 public class TalkableNPC extends NPC {
+	
+	Menu diolog;
 
-	public TalkableNPC (double x, double y) {
+	public TalkableNPC (double x, double y, Menu m) {
 		super(x,y);
+		diolog = m;
 	}
 	
 	@Override
@@ -21,34 +25,18 @@ public class TalkableNPC extends NPC {
 	@Override
 	public void frameEvent () {
 		
+		boolean closed = false;
+		
+		if (diolog.isOpen() && this.keyReleased(GameCode.getSettings().getControls()[5])) {
+			diolog.close();
+			closed = true;
+		}
+		
 		if ((this.isColliding("TitleBit") || this.isColliding("Bit"))) {
-			
-			if (!this.isColliding("TitleBit")) {
-				
-				this.isColliding("Bit");
-				
-				ArrayList <Bit> collidingBits = new ArrayList <Bit>();
-				
-				for (int i = 0; i < this.getCollisionInfo().getCollidingObjects().size(); i++) {
-				
-					collidingBits.add((Bit) this.getCollisionInfo().getCollidingObjects().get(i));
-				}
-				
-				try {
-					for (int i = 0; i < collidingBits.size(); i++) {
-						if (NetworkHandler.getServer ().getPlayerInputs (collidingBits.get(i).playerNum).contains("10")) {
-							
-						}
-					}
-				} catch (NullPointerException e) {
-					
-				}
-			} else {
-				if (this.keyDown(GameCode.getSettings().getControls()[5])) {
-					
-				}
+			if (this.keyReleased(GameCode.getSettings().getControls()[5]) && !closed) {
+				diolog.open();
+				diolog.setRenderPriority(this.getRenderPriority());
 			}
-			
 		}
 		
 	}

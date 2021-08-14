@@ -35,7 +35,6 @@ public class Textbox extends GameObject {
 
 	ArrayList <double []> shakeInfo = new ArrayList <double []> ();
 	
-	String [] extentions = {"7Z","JAVA","MP3","AI","AVI","BAS","C","C++","CD","CDF","CLASS","CMD","CSV","CSPROJ","D","D64","DAF","DAT","DB","DCI","DEV","DFL","DHP","DLC","DMO","DMP","DOC","DOG","E","EXE","EXP","EXS","F01","F4V","FA","FLV","GBR","GGB","GIF","GO","GPX","H!","H","H++","HACK","HDMP","HTA","HTML","HUM","ICO","IGC","ISO","IT","JAR","JNLP","JPEG","JS","JSON","LISP","LUA","LZ","M","MDI","MDG","MDS","MEX","MID","MOB","MOD","MOV","MP2","MP4","MPEG","MPG","MSI","NC","NEO","NPR","NUMBERS","O","OBJ","OBS","OXT","OWL","OST","P","PAL","PACK","PAK","PAM","PAS","PDF","PDN","PHP","PIE","PIT","PMA","PPTX","PSD","PTF","PS1","PUP","PY","QT","RAD","RAM","RAR","RB","RBXM","RBXL","RC","RES","RTF","RUN","SAV","SB3","SEQ","SIG","SM","SPIN","ST","STD","SWF","SWIFT","TAK","TORRENT","TAR","TSF","TTF","UI","UT!","V","V64","VB","VFD","VMG","VOB","WAV","WMA","XAR","XCF","XEX","XLS","XP","XYZ","ZIP","ZS"};
 	boolean renderBox;
 	
 	String tempColor = "text (red)";
@@ -105,6 +104,9 @@ public class Textbox extends GameObject {
 		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16");
 		
 		tempColor = fontName;
+		if (textSize != 16) {
+			fontSheet = new Sprite (Sprite.scale(getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ 16 + " " + 16), textSize, textSize));
+		}
 	}
 	
 	private void resetFont () {
@@ -131,16 +133,15 @@ public class Textbox extends GameObject {
 	public int getSpace () {
 		return (width * height)/256;
 	}
-	public void setTextSize(int textSize) {
-		if (this.textSize != textSize) {
+	public void setTextSize(int textSize) {	
+	
+			fontSheet = new Sprite (Sprite.scale(getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ this.textSize + " " + this.textSize), textSize, textSize));
+			
 			this.textSize = textSize;
 			
 			if (textSize > largestSize) {
 				largestSize = textSize;
 			}
-	
-			Sprite.scale(fontSheet, textSize, textSize);
-		}
 	}
 
 	
