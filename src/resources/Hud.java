@@ -360,7 +360,7 @@ public class Hud extends GameObject {
 		if (NetworkHandler.isHost ()) {
 			NetworkHandler.getServer ().sendMessage ("ROUND COMPLETE");
 		}
-		setRoundTime (15000);
+		setRoundTime (10000);
 		new WaveCompleteGraphic ();
 	}
 	public static void setRoundTime (long roundTime) {
