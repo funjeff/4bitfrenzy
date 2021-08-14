@@ -15,7 +15,6 @@ public class MenuComponite extends GameObject{
 		this.height = height;
 		
 		menu = m;
-		m.addComponite(this);
 	}
 	
 	public Menu getMenu() {

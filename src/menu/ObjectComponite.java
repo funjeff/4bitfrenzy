@@ -18,6 +18,11 @@ public class ObjectComponite extends MenuComponite {
 		}
 		
 		@Override
+		public void compointeFrame () {
+			g.frameEvent();
+		}
+		
+		@Override
 		public void draw () {
 			g.setX(this.getX());
 			g.setY(this.getY());
