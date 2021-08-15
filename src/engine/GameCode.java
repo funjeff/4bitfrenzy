@@ -402,10 +402,9 @@ public class GameCode {
 		
 		//DEBUG SPAWNING STARTS HERE
 		//Roome.map [5][5].spawnObject (Lighter.class);
-		//Roome.map [5][5].spawnObject (ChickenBucket.class);
+		//Roome.map [5][5].spawnObject (DataScrambler.class);
 		new Tutorial ();
 		//DEBUG SPAWNING ENDS HERE
-		
 		//Declare the hud and make the bits
 		hud.declare();
 		int i = 0;

@@ -2,10 +2,14 @@ package items;
 
 import engine.GameCode;
 import engine.Sprite;
+import gameObjects.DataSlot;
 import gameObjects.Register;
+import map.Roome;
 import network.NetworkHandler;
+import npcs.Basketball;
 import players.Bit;
 import resources.SoundPlayer;
+import util.DummyCollider;
 
 public class DataScrambler extends Item {
 	
@@ -19,7 +23,7 @@ public class DataScrambler extends Item {
 	 */
 	@Override
 	public boolean useItem (Bit user) {
-		if (user.regestersBeingCarried == null) {
+		/*if (user.regestersBeingCarried == null) {
 			return false;
 		} else {
 			if (NetworkHandler.isHost()) {
@@ -31,7 +35,14 @@ public class DataScrambler extends Item {
 			Register reg = (Register)user.regestersBeingCarried.get(0);
 			reg.scramble();
 			return true;
+		}*/
+		DummyCollider dc = new DummyCollider ((int)user.getX () - Bit.HIGHLIGHT_RADIUS, (int)user.getY () - Bit.HIGHLIGHT_RADIUS, Bit.HIGHLIGHT_RADIUS * 2, Bit.HIGHLIGHT_RADIUS * 2);
+		if (dc.isColliding ("DataSlot")) {
+			DataSlot ds = (DataSlot)dc.getCollisionInfo ().getCollidingObjects ().get (0);
+			ds.scramble ();
+			return true;
 		}
+		return false;
 	}
 	
 	public String getName () {
@@ -39,8 +50,10 @@ public class DataScrambler extends Item {
 	}
 	
 	public String getDesc () {
-		return "Use this item while grabbing\n"
-				+ "a register to scramble it.";
+		return "Use this item on a data slot\n"
+				+ "to scramble it. Scrambled\n"
+				+ "data slots will not deduct\n"
+				+ "lives at the end of a wave.";
 	}
 	
 	public String getLongDescription () {

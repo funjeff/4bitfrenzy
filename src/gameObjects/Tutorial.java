@@ -26,7 +26,7 @@ public class Tutorial extends GameObject {
 	public static final int TUTORIAL_MENU_HEIGHT = 31;
 	public static final int PADDING = 4;
 	
-	public static final Rectangle startingRect = new Rectangle (TUTORIAL_MENU_X - PADDING, TUTORIAL_MENU_Y - PADDING, TUTORIAL_MENU_WIDTH * 8 + PADDING * 2, TUTORIAL_MENU_HEIGHT * 8 + PADDING * 2);
+	public static final Rectangle startingRect = new Rectangle (TUTORIAL_MENU_X - PADDING, TUTORIAL_MENU_Y - PADDING, TUTORIAL_MENU_WIDTH * 8 + PADDING * 2, TUTORIAL_MENU_HEIGHT * 8 + 8 + PADDING * 2);
 	public static final Rectangle scoreRect = new Rectangle (320, 89, 272, 33);
 	public static final Rectangle compassRect = new Rectangle (45, 27, 150, 156);
 	public static final Rectangle itemRect = new Rectangle (240, 99, 32, 32);
@@ -45,14 +45,19 @@ public class Tutorial extends GameObject {
 		menu.setRenderPriority (42001);
 		
 		//Add components and set menu dimension
-		menuText = new TextComponite (25, 26, menu);
+		menuText = new TextComponite (25, 14, menu);
 		continueComponent = new TextComponite (25, 1, menu);
 		continueComponent.setText ("PRESS ENTER TO CONTINUE...");
+		menu.addComponite (menuText);
+		menu.addComponite (continueComponent);
+		menu.setBackgroundColor (0);
 		menu.setWidth (TUTORIAL_MENU_WIDTH);
 		menu.setHeight (TUTORIAL_MENU_HEIGHT);
+		menu.open ();
 		
 		//Make the highlight
-		highlight = new MovableRectHighlight (startingRect);
+		highlight = new MovableRectHighlight (screenRect);
+		moveHighlight (startingRect, 20);
 		highlight.setRenderPriority (42003);
 		
 		//Declare
@@ -67,7 +72,13 @@ public class Tutorial extends GameObject {
 	
 	@Override
 	public void frameEvent () {
-		if ((this.keyPressed (KeyEvent.VK_ENTER) || stage == -1) && !highlight.isMoving ()) {
+		
+		if (this.keyPressed ('W') || this.keyPressed ('A') || this.keyPressed ('S') || this.keyPressed ('D')) {
+			forget (); //TODO do we keep this?
+		}
+		
+		//Handle tutorial progression
+		if ((this.keyPressed (KeyEvent.VK_ENTER) || stage == -1) && (!highlight.isMoving () || stage == -1)) {
 			stage++;
 			switch (stage) {
 				case 0:
@@ -143,16 +154,7 @@ public class Tutorial extends GameObject {
 					break;
 			}
 		}
-	}
-	
-	@Override
-	public void draw () {
-		if (this.keyPressed ('W') || this.keyPressed ('A') || this.keyPressed ('S') || this.keyPressed ('D')) {
-			forget (); //TODO do we keep this?
-		}
-		Graphics g = RenderLoop.wind.getBufferGraphics ();
-		g.setColor (Color.BLACK);
-		g.fillRect (TUTORIAL_MENU_X + 1, TUTORIAL_MENU_Y + 8, TUTORIAL_MENU_WIDTH * 8 - 1, TUTORIAL_MENU_HEIGHT * 8 - 8);
+		
 	}
 	
 	@Override
