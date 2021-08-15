@@ -65,7 +65,6 @@ public class GameCode {
 	public static int [] perks = {-1,-1,-1,-1};
 	
 	static int frame = 1;
-	
 
 	public static float volume = 5;
 	
