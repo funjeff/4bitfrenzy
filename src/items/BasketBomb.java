@@ -24,7 +24,7 @@ public class BasketBomb extends Bombs {
 	}
 	
 	public String getItemFlavor () {
-		return "edible until proven otherwise";
+		return "I'm rooting for the bitsvill zero-ones";
 	}
 	
 }

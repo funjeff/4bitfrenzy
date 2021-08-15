@@ -30,7 +30,7 @@ public class Bombs extends Item {
 		thrown = true;
 		this.user = user;
 		direction = user.lastMove;
-		pickupablity = false;
+		pickupability = false;
 		return true;
 	}
 	
@@ -105,6 +105,8 @@ public class Bombs extends Item {
 				}
 				break;
 			}
+		} else {
+			super.frameEvent ();
 		}
 	}
 	
@@ -121,6 +123,7 @@ public class Bombs extends Item {
 	}
 	
 	public String getItemFlavor () {
+		//You know back in the day they used to call me the bomb master
 		return "edible until proven otherwise";
 	}
 	

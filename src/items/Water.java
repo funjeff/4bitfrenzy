@@ -2,10 +2,12 @@ package items;
 
 import engine.GameCode;
 import engine.Sprite;
+import gameObjects.DataSlot;
 import gameObjects.Register;
 import network.NetworkHandler;
 import players.Bit;
 import resources.SoundPlayer;
+import util.DummyCollider;
 
 public class Water extends Item {
 	
@@ -19,19 +21,13 @@ public class Water extends Item {
 	 */
 	@Override
 	public boolean useItem (Bit user) {
-		if (user.regestersBeingCarried == null) {
-			return false;
-		} else {
-			if (NetworkHandler.isHost()) {
-				SoundPlayer play = new SoundPlayer ();
-				play.playSoundEffect(GameCode.volume,"resources/sounds/effects/scrambler.wav");
-			} else {
-				NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/scrambler.wav");
-			}
-			Register reg = (Register)user.regestersBeingCarried.get(0);
-			reg.scramble();
+		DummyCollider dc = new DummyCollider ((int)user.getX () - Bit.HIGHLIGHT_RADIUS, (int)user.getY () - Bit.HIGHLIGHT_RADIUS, Bit.HIGHLIGHT_RADIUS * 2, Bit.HIGHLIGHT_RADIUS * 2);
+		if (dc.isColliding ("DataSlot")) {
+			DataSlot ds = (DataSlot)dc.getCollisionInfo ().getCollidingObjects ().get (0);
+			ds.scramble ();
 			return true;
 		}
+		return false;
 	}
 	
 	public String getName () {
