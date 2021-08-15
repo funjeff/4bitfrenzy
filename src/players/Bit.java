@@ -257,7 +257,7 @@ public class Bit extends GameObject {
 					inventory.setVisability(true);
 				}
 			}
-			if (!this.isActive() && keys != null && keys.contains(Integer.toString('C')) && !switching) {
+			if (!this.isActive() && keys != null && keys.contains("C") && !switching) {
 				active = true;
 				switching = true;
 				GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
@@ -270,7 +270,7 @@ public class Bit extends GameObject {
 					}
 				}
 			}
-			if (keys != null && !keys.contains(Integer.toString('C'))) {
+			if (keys != null && !keys.contains("C")) {
 				this.switching = false;
 			}
 				if (regestersBeingCarried != null && keys != null && !keys.contains ("v")) {

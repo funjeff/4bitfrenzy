@@ -353,7 +353,7 @@ public class GameCode {
 		
 		for (int i = 0; i < bits.size (); i++) {
 			Bit b = bits.get (i);
-			if (b.playerNum == NetworkHandler.getPlayerNum()) {
+			if (b.playerNum == NetworkHandler.getPlayerNum() && b.isActive()) {
 				b.updateScroll ();
 			}
 		}

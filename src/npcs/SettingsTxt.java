@@ -85,6 +85,8 @@ public class SettingsTxt extends TalkableNPC {
 		this.setMenu(menu);
 		this.setSprite(new Sprite ("resources/sprites/notepad.png"));
 		this.setHitboxAttributes(this.getSprite().getWidth(), this.getSprite().getHeight());
+		
+		menu.setCloseButton(new Button (new Sprite ("resources/sprites/x button.png")));
 	}
 	
 	@Override

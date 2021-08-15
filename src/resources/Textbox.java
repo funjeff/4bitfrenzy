@@ -31,7 +31,7 @@ public class Textbox extends GameObject {
 	
 	int largestSize = 16;
 	
-	int lineSpacing = 2;
+	double lineSpacing = 2;
 
 	ArrayList <double []> shakeInfo = new ArrayList <double []> ();
 	
@@ -72,10 +72,10 @@ public class Textbox extends GameObject {
 	public String getText () {
 		return text;
 	}
-	public int getLineSpacing() {
+	public double getLineSpacing() {
 		return lineSpacing;
 	}
-	public void setLineSpacing(int lineSpacing) {
+	public void setLineSpacing(double lineSpacing) {
 		this.lineSpacing = lineSpacing;
 	}
 	public static Sprite getTextboxResource (String path, String parseStr) {
@@ -228,9 +228,10 @@ public void drawBox () {
 					textShake = !textShake;
 					i = i +1;
 					break;
-				default:
+				case 'N':
 					xPos = (int) this.getX();
-					yPos = yPos + textSize;
+					yPos = yPos + (int)(largestSize * lineSpacing);
+					i = i + 1;
 					break;
 				}
 			}
@@ -321,7 +322,7 @@ public void drawBox () {
 		
 		if ((xPos - this.getX()) > width) {
 			xPos = (int) this.getX();
-			yPos = yPos + largestSize * lineSpacing;
+			yPos = yPos + (int)(largestSize * lineSpacing);
 			if (yPos - this.getY() > height) {
 				break;
 			}

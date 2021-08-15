@@ -30,7 +30,7 @@ public class Menu extends GameObject {
 	
 	public boolean open = false;
 
-	public Button closeButton = new Button (new Sprite ("resources/sprites/x button.png")); 
+	public Button closeButton = null; 
 	
 	public Menu () {
 		
@@ -103,6 +103,7 @@ public class Menu extends GameObject {
 			if (closeButton != null) {
 				closeButton.frameEvent();
 				if (closeButton.isPressed()) {
+					closeButton.reset();
 					this.close();
 				}
 			}

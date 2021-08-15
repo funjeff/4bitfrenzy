@@ -10,7 +10,7 @@ public class TextComponite extends MenuComponite{
 	Textbox t;
 	
 	public TextComponite(int width, int height, Menu m) {
-		super(width *16, height * 16, m);
+		super(width, height, m);
 		t = new Textbox ("");
 		t.changeWidth(width);
 		t.changeHeight(height);
@@ -100,6 +100,10 @@ public class TextComponite extends MenuComponite{
 	
 	public void setText(String message) {
 		t.changeText(message);
+	}
+	
+	public Textbox getTextbox () {
+		return t;
 	}
 	
 	@Override
