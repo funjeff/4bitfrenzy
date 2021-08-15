@@ -6,7 +6,7 @@ import players.Bit;
 
 public class Item extends GameObject {
 	
-	public boolean pickupablity = true;
+	public boolean pickupability = true;
 	
 	public int uses = 2;
 	
@@ -32,6 +32,7 @@ public class Item extends GameObject {
 		
 		Roome romm = Roome.getRoom(droper.getX(), droper.getY());
 		this.dropper = droper;
+		this.pickupability = false;
 		this.declare ((int)droper.getX (), (int)droper.getY ());
 		
 	}
@@ -52,6 +53,7 @@ public class Item extends GameObject {
 	@Override
 	public void frameEvent () {
 		if (dropper != null && !this.isColliding (dropper)) {
+			pickupability = true;
 			dropper = null;
 		}
 	}

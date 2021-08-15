@@ -229,7 +229,7 @@ public class Bit extends GameObject {
 			}
 			if (this.isCollidingChildren("Item") && NetworkHandler.isHost()) {
 				Item toUse = (Item)this.getCollisionInfo().getCollidingObjects().get(0); 
-				if (toUse.pickupablity && toUse.getDropper () != this) {
+				if (toUse.pickupability) {
 					if (inventory.getItem() != null) {
 						Item it = inventory.getItem();
 						it.dropItem(this);
