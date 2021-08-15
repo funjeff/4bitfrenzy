@@ -16,6 +16,7 @@ import engine.RenderLoop;
 import engine.Sprite;
 import engine.SpriteParser;
 import map.Roome;
+import menu.CompositeComponite;
 import menu.Menu;
 import menu.MenuComponite;
 import menu.ObjectComponite;
@@ -24,6 +25,7 @@ import network.Client;
 import network.NetworkHandler;
 import network.Server;
 import npcs.PopcornMachine;
+import npcs.SettingsTxt;
 import npcs.TalkableNPC;
 import resources.SoundPlayer;
 import resources.Textbox;
@@ -85,7 +87,7 @@ public class TitleScreen extends GameObject {
 	private PerkStation dualStation;
 	private PerkStation gamblerStation;
 	
-	private TalkableNPC settingsBot;
+	private SettingsTxt settingsBot;
 	
 	private static Scene perkScene;
 	
@@ -241,38 +243,9 @@ public class TitleScreen extends GameObject {
 //		perksSlot = new TitleSlot (TitleSlot.titlePerks);
 //		settingsSlot = new TitleSlot (TitleSlot.titleSettings);
 //		helpSlot = new TitleSlot (TitleSlot.titleHelp);
-		
-		
-		Menu menu = new Menu ();
-		
-		TextComponite t = new TextComponite(menu,"~S8~  ~Cnormal~GAMEVOLUME: ");
-		
-		MenuComponite m = new MenuComponite (30, 10,menu);
-		TextComponite t2 = new TextComponite(menu,"~S8~  ~Cnormal~MAPWIDTH:");
-		TextComponite t3 = new TextComponite (menu,"~S8~  ~Cnormal~MAPHEIGHT:" );
-		TextComponite t4 = new TextComponite (menu,"~S8~  ~Cnormal~RESOLUTION:" );
-		
-		menu.setColor("Notepad");
-		
-		menu.setTop(new Sprite ("resources/sprites/Text/notepadTop.png"));
-		
-		menu.setName("SETTINGS.CONFIG - NOTEPAD");
-		
-		menu.setX(100);
-		menu.setY(100);
-		
-		menu.addComponite(m);
-		menu.addComponite(t);
-		menu.addComponite(t2);
-		menu.addComponite(t3);
-		menu.addComponite(t4);
-		
-		menu.setBackgroundColor(0xFFFFFF);
-		
 
-		
-		settingsBot = new TalkableNPC (150,200,menu);
-		settingsBot.setSprite(new Sprite ("resources/sprites/robot.png"));
+		settingsBot = new SettingsTxt (150,200);
+	
 		
 		settingsBot.setRenderPriority(101);
 		
@@ -649,7 +622,6 @@ public class TitleScreen extends GameObject {
 			stringList = strings;
 			leftButton = new Button (new Sprite ("resources/sprites/left arrow green.png"));
 			rightButton = new Button (new Sprite ("resources/sprites/right arrow green.png"));
-			
 		}
 		
 		public String getSelectedString () {
@@ -709,8 +681,6 @@ public class TitleScreen extends GameObject {
 			Graphics g = RenderLoop.wind.getBufferGraphics();
 			FontMetrics fm = g.getFontMetrics();
 			
-			g.setColor(new Color (0x32a852));
-			g.drawString(getSelectedString(), (int) (this.getX() + leftButton.getSprite().getWidth()) + 10, (int)this.getY() + 20);
 			
 			int width = leftButton.getSprite().getWidth() + 20;
 			
@@ -725,20 +695,28 @@ public class TitleScreen extends GameObject {
 					width = tempWidth;
 				}
 			}
+			
+			
+//			for (int i = 0; i < this.getSelectedString().length(); i++) {
+//				width = width + fm.charWidth(this.getSelectedString().charAt(i));
+//		}
+
 			rightButton.setX(this.getX() + width);
 			
-		
+			this.setHitboxAttributes(width + rightButton.getSprite().getWidth(), 32);
+			
 		}
 		@Override
 		public void draw () {
+			this.onDeclare();
 			
 			if (this.isVisable()) {
 				leftButton.draw();
 				rightButton.draw();
 				Graphics g = RenderLoop.wind.getBufferGraphics();
 	
-				g.setColor(new Color (0x32a852));
-				g.drawString(getSelectedString(), (int) (this.getX() + leftButton.getSprite().getWidth()) + 10, (int)this.getY() + 20);
+				g.setColor(new Color (0x000000));
+				g.drawString(getSelectedString(), (int) (this.getDrawX() + leftButton.getSprite().getWidth()) + 10, (int)this.getDrawY() + 20);
 				
 			}
 		}
@@ -746,20 +724,6 @@ public class TitleScreen extends GameObject {
 	}
 	public class SettingMenu extends GameObject {
 		
-		String [] volumeArray = {"0","1","2","3","4","5","6","7","8","9","10"};
-		ArrowButtons volume = new ArrowButtons (volumeArray);
-		
-		String [] widthArray = {"2","3","4","5","6","7","8","9","10"};
-		ArrowButtons width = new ArrowButtons (widthArray);
-		
-		String [] heightArray = {"2","3","4","5","6","7","8","9","10"};
-		ArrowButtons height = new ArrowButtons (heightArray);
-		
-		String [] resoultionArray = {"1280 x 720","1366 x 768","1600 x 900","1920 x 1080","1920 x 1200"};
-		ArrowButtons resolutions = new ArrowButtons (resoultionArray);
-		
-		String [] displayModeArray = {"Horizontal Border","Full Border","Strech","Full"};
-		ArrowButtons displayMode = new ArrowButtons (displayModeArray);
 		
 		
 		Button controllsButton = new Button (new Sprite ("resources/sprites/config button.png"));
@@ -773,122 +737,70 @@ public class TitleScreen extends GameObject {
 		Button backButton;
 		
 		public SettingMenu (TitleScreen screen) {
-			this.screen = screen;
-			
-			this.setSprite(new Sprite ("resources/sprites/settings menu.png"));
-			
-			this.setRenderPriority(70);
-			
-			volume.setRenderPriority(71);
-			resolutions.setRenderPriority(71);
-			width.setRenderPriority(71);
-			height.setRenderPriority(71);
-			controllsButton.setRenderPriority(71);
-			displayMode.setRenderPriority(71);
-			
-			backButton = new Button (new Sprite ("resources/sprites/back.png"));
-			
-			width.setIndex(8);
-			height.setIndex(8);
-			volume.setIndex(10);
-			
-			volume.declare(140,260);
-			resolutions.declare(180,175);
-			width.declare(140,460);
-			height.declare(140,520);
-			controllsButton.declare(150, 345);
-			backButton.declare(300, 512);
-			displayMode.declare(550, 165);
-			
-			
-			backButton.setRenderPriority(71);
+//			this.screen = screen;
+//			
+//			this.setSprite(new Sprite ("resources/sprites/settings menu.png"));
+//			
+//			this.setRenderPriority(70);
+//			
+//			volume.setRenderPriority(71);
+//			resolutions.setRenderPriority(71);
+//			width.setRenderPriority(71);
+//			height.setRenderPriority(71);
+//			controllsButton.setRenderPriority(71);
+//			displayMode.setRenderPriority(71);
+//			
+//			backButton = new Button (new Sprite ("resources/sprites/back.png"));
+//			
+//			
+//			volume.declare(140,260);
+//			resolutions.declare(180,175);
+//			width.declare(140,460);
+//			height.declare(140,520);
+//			controllsButton.declare(150, 345);
+//			backButton.declare(300, 512);
+//			displayMode.declare(550, 165);
+//			
+//			
+//			backButton.setRenderPriority(71);
 			
 			
 		}
 		
 		@Override
 		public void frameEvent () {
-			if (width.wasToggled()) {
-				Roome.setMapWidth(Integer.parseInt(width.getSelectedString()));
-			}
-			if (height.wasToggled()) {
-				Roome.setMapHeight(Integer.parseInt(height.getSelectedString()));
-			}
-			if (volume.wasToggled()) {
-				if (Integer.parseInt(volume.getSelectedString()) == 0) {
-					GameCode.musicHandler.muted = true;
-				} else {
-					GameCode.musicHandler.muted = false;
-					GameCode.volume =  -45 + (5 * Integer.parseInt(volume.getSelectedString()));
-					GameCode.musicHandler.playSoundEffect(GameCode.volume, "resources/sounds/effects/test sound.wav");
-				}
-			}
-			
-			if (displayMode.wasToggled()) {
-				GameCode.getSettings().setScaleMode(displayMode.getIndex());
-				
-				if (displayMode.getIndex() == 3) {
-					resolutions.setVisability(false);
-					showResText = false;
-				} else {
-					showResText = true;
-					resolutions.setVisability(true);
-				}
-			}
-			
-			if (resolutions.wasToggled()) {
-				String num1 = "";
-				String num2 = "";
-				
-				boolean writeToNum1Or2 = false;
-				
-				for (int i = 0; i < resolutions.getSelectedString().length(); i++) {
-					if (resolutions.getSelectedString().charAt(i) == ' ') {
-						writeToNum1Or2 = true;
-						i = i + 2;
-					} else {
-						
-						if (!writeToNum1Or2) {
-							num1 = num1 + resolutions.getSelectedString().charAt(i);
-						} else {
-							num2 = num2 + resolutions.getSelectedString().charAt(i);
-						}
-					}
-				}
-				
-				GameCode.getSettings().setResolution(Integer.parseInt(num1), Integer.parseInt(num2));
-			}
-			
-			if (controllsButton.isPressed()) {
-				ControlMenu menu = new ControlMenu (screen);
-				
-				menu.declare();
-				
-				controllsButton.reset();
-				this.forgetStuff();
-				
-				
-			}
 		
-			if (backButton.isPressed()) {
-				screen.initMainMenu();
-				forgetStuff();
-			}
+			
+//			if (controllsButton.isPressed()) {
+//				ControlMenu menu = new ControlMenu (screen);
+//				
+//				menu.declare();
+//				
+//				controllsButton.reset();
+//				this.forgetStuff();
+//				
+//				
+//			}
+//		
+//			if (backButton.isPressed()) {
+//				screen.initMainMenu();
+//				forgetStuff();
+//			}
 			
 		}
 		private void forgetStuff () {
 
-			volume.forget();
-			resolutions.forget();
-			controllsButton.forget();
-			width.forget();
-			height.forget();
-			displayMode.forget();
-			
-			
-			backButton.forget();
-			
-			this.forget();
+//			volume.forget();
+//			resolutions.forget();
+//			controllsButton.forget();
+//			width.forget();
+//			height.forget();
+//			displayMode.forget();
+//			
+//			
+//			backButton.forget();
+//			
+//			this.forget();
 		}
 		
 		@Override

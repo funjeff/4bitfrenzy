@@ -63,6 +63,16 @@ public class ServerConnection extends Thread {
 							inputs = "";
 						}
 					}
+					if (str.length () >= 6 && str.substring (0, 6).equals("FREEZE")) {
+						
+						GameCode.bits.get(Integer.parseInt(str.substring(6)) -1).freeze();
+					
+					}
+					
+					if (str.length () >= 8 && str.substring (0, 8).equals("UNFREEZE")) {
+						GameCode.bits.get(Integer.parseInt(str.substring(8)) -1).unfreeze();
+						
+					}
 				}
 				
 				while (!message.isEmpty ()) {

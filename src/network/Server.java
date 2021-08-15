@@ -168,8 +168,7 @@ public class Server extends Thread {
 				return ""; //Stuff hasn't been initialized yet
 			}
 		} else {
-			//Do inputs specially
-			
+			//Do inputs specially			
 			if (playerNum - 1 <= connections.size ()) {
 				return connections.get (playerNum - 2).getInputs ();
 			} else {

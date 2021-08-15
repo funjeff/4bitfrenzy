@@ -68,6 +68,8 @@ public class Bit extends GameObject {
 	
 	public static final int HIGHLIGHT_RADIUS = 120;
 	
+	public boolean frozen = false;
+	
 	public boolean isSecondaryBit() {
 		return secondaryBit;
 	}
@@ -305,29 +307,32 @@ public class Bit extends GameObject {
 				}
 				double xStart = getX ();
 				double yStart = getY ();
-				if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains ("U") && this.isSecondaryBit()))) {
-					if (this.goY((int)(this.getY() - speed))) {
-						this.carryRegestersY((((int)speed) * -1) - 1);
+				if (!frozen) {
+					
+					if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains ("U") && this.isSecondaryBit()))) {
+						if (this.goY((int)(this.getY() - speed))) {
+							this.carryRegestersY((((int)speed) * -1) - 1);
+						}
+						lastMove = 0;
 					}
-					lastMove = 0;
-				}
-				if (keys != null && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains ("R") && this.isSecondaryBit()))) {
-					if (this.goX((int)(this.getX() + speed))) {
-						this.carryRegestersX((int)speed);
+					if (keys != null && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains ("R") && this.isSecondaryBit()))) {
+						if (this.goX((int)(this.getX() + speed))) {
+							this.carryRegestersX((int)speed);
+						}
+						lastMove = 2;
 					}
-					lastMove = 2;
-				}
-				if (keys != null && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains ("L") && this.isSecondaryBit()))) {
-					if (this.goX((int)(this.getX() - speed))) {
-						this.carryRegestersX((((int)speed) * -1) - 1);
+					if (keys != null && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains ("L") && this.isSecondaryBit()))) {
+						if (this.goX((int)(this.getX() - speed))) {
+							this.carryRegestersX((((int)speed) * -1) - 1);
+						}
+						lastMove = 3;
 					}
-					lastMove = 3;
-				}
-				if (keys != null && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains ("G") && this.isSecondaryBit()))) {
-					if (this.goY((int)(this.getY() + speed))) {
-						this.carryRegestersY((int)speed);
+					if (keys != null && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains ("G") && this.isSecondaryBit()))) {
+						if (this.goY((int)(this.getY() + speed))) {
+							this.carryRegestersY((int)speed);
+						}
+						lastMove = 1;
 					}
-					lastMove = 1;
 				}
 				this.setHitboxAttributes(this.hitbox().width + (speed + 1) * 2, this.hitbox().height + (speed + 1) * 2);
 				this.setX(this.getX() - (speed + 1));
@@ -533,6 +538,14 @@ public class Bit extends GameObject {
 	
 	public Vector2D getPushVector () {
 		return pushVector;
+	}
+	
+	public void freeze () {
+		frozen = true;
+	}
+	
+	public void unfreeze () {
+		frozen = false;
 	}
 	
 	public void updateScroll () {

@@ -22,6 +22,8 @@ public class TitleBit extends GameObject {
 	private int stillTime = 0;
 	private boolean moved = false;
 
+	boolean frozen = false;
+	
 	public TitleBit () {
 		setSprite (sprite);
 		getAnimationHandler ().setAnimationFrame ((int)(Math.random () * 4));
@@ -80,19 +82,20 @@ public class TitleBit extends GameObject {
 		//Handle movement
 		double startX = getX ();
 		double startY = getY ();
-		if (keyDown ('W')) {
-			setY (getY () - speed);
+		if (!frozen) {
+			if (keyDown (GameCode.getSettings().getControls()[0])) {
+				setY (getY () - speed);
+			}
+			if (keyDown (GameCode.getSettings().getControls()[2])) {
+				setX (getX () - speed);
+			}
+			if (keyDown (GameCode.getSettings().getControls()[1])) {
+				setY (getY () + speed);
+			}
+			if (keyDown (GameCode.getSettings().getControls()[3])) {
+				setX (getX () + speed);
+			}
 		}
-		if (keyDown ('A')) {
-			setX (getX () - speed);
-		}
-		if (keyDown ('S')) {
-			setY (getY () + speed);
-		}
-		if (keyDown ('D')) {
-			setX (getX () + speed);
-		}
-		
 		//Handle the pushing and pulling of the TitleRegister
 		double diffX = getX () - startX;
 		double diffY = getY () - startY;
@@ -137,5 +140,10 @@ public class TitleBit extends GameObject {
 		}
 		
 	}
-	
+	public void freeze () {
+		frozen = true;
+	}
+	public void unfreeze () {
+		frozen = false;
+	}
 }

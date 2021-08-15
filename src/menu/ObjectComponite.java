@@ -1,5 +1,7 @@
 package menu;
 
+import java.util.ArrayList;
+
 import engine.GameObject;
 
 public class ObjectComponite extends MenuComponite {
@@ -11,15 +13,35 @@ public class ObjectComponite extends MenuComponite {
 		
 		}
 		
+		public ObjectComponite (GameObject g) {
+			super (g.hitbox().width, g.hitbox().height);
+			this.g = g;
+		
+		}
+		
 		public ObjectComponite (int width, int height, GameObject g, Menu menu) {
 			super (width, height, menu);			
 			this.g = g;
 			
 		}
 		
+		
 		@Override
 		public void compointeFrame () {
 			g.frameEvent();
+			if (this.getWidth() != g.hitbox().width) {
+				this.setWidth(g.hitbox().width);
+			}
+			if (this.getHeight() != g.hitbox().height) {
+				this.setHeight(g.hitbox().height);
+			}
+		}
+		
+		@Override
+		public ArrayList <GameObject> getAllObjs (){
+			ArrayList<GameObject> obj = new ArrayList <GameObject> ();
+			obj.add(g);
+			return obj;
 		}
 		
 		@Override

@@ -8,6 +8,7 @@ import engine.GameObject;
 import engine.RenderLoop;
 import engine.Sprite;
 import resources.Textbox;
+import titleScreen.TitleScreen.Button;
 
 public class Menu extends GameObject {	
 	
@@ -29,6 +30,8 @@ public class Menu extends GameObject {
 	
 	public boolean open = false;
 
+	public Button closeButton = new Button (new Sprite ("resources/sprites/x button.png")); 
+	
 	public Menu () {
 		
 	}
@@ -44,24 +47,32 @@ public class Menu extends GameObject {
 			
 				g.setColor(new Color (backgroundColor));
 			
-				g.fillRect((int)this.getX() + 2, (int)this.getY(), (int)width * 8 - 1, (int)height * 8 + 8);
+				
+				g.fillRect((int)this.getDrawX() + 2, (int)this.getDrawY(), (int)width * 8 - 1, (int)height * 8 + 8);
 			}
 			
 			if (width != 1 && height != -1) {
 				//draws the box
 				for (int i = 0; i < width -1; i++) {
-						top.draw((int)(this.getX() + (i*8)), (int)(this.getY() - (top.getHeight() - 8)));
-						bottomBar.draw((int)(this.getX() + (i*8)), (int)(this.getY() + ((height + 1)*8)));
+						top.draw((int)(this.getDrawX() + (i*8)), (int)(this.getDrawY() - (top.getHeight() - 8)));
+						bottomBar.draw((int)(this.getDrawX() + (i*8)), (int)(this.getDrawY() + ((height + 1)*8)));
 				}
 				for (int i = 0; i < height; i++) {
-					verticalBar.draw((int)(this.getX()), (int)(this.getY() + (i*8)));
-					verticalBar.draw((int)(this.getX() +(width*8) - 2), (int)(this.getY() + (i*8)));
+					verticalBar.draw((int)(this.getDrawX()), (int)(this.getDrawY() + (i*8)));
+					verticalBar.draw((int)(this.getDrawX() +(width*8) - 2), (int)(this.getDrawY() + (i*8)));
 				}
+			}
+			
+			if (closeButton != null) {
+				closeButton.setX(this.getX() + (this.getWidth() * 8) - closeButton.getSprite().getWidth());
+				closeButton.setY(this.getY() - (closeButton.getSprite().getHeight() - 8));
+				closeButton.draw();
 			}
 			
 			int place = (int)this.getY() + 8;
 			
 			for (int i = 0; i < componites.size(); i++) {
+				
 				
 				componites.get(i).setX((int) this.getX());
 				componites.get(i).setY(place);
@@ -88,6 +99,12 @@ public class Menu extends GameObject {
 		if (open) {
 			for (int i = 0; i <componites.size(); i++) {
 				componites.get(i).compointeFrame();
+			}
+			if (closeButton != null) {
+				closeButton.frameEvent();
+				if (closeButton.isPressed()) {
+					this.close();
+				}
 			}
 		}
 	}
@@ -145,10 +162,32 @@ public class Menu extends GameObject {
 		if (!this.declared()) {
 			this.declare((int)this.getX(), (int)this.getY());
 		}
-		
 	}	
+	public ArrayList <GameObject> getAllObjs (){
+		ArrayList <GameObject> objs = new ArrayList <GameObject>();
+		
+		for (int i = 0; i < componites.size(); i++) {
+			objs.addAll(componites.get(i).getAllObjs());
+		}
+		
+		return objs;
+		
+	}
+	
+	public void setCloseButton(Button closeButton) {
+		this.closeButton = closeButton;
+	}
+
+	public boolean containtsComponite (MenuComponite comp) {
+		return componites.contains(comp);
+		
+	}
+	
 	public void close () {
 		open = false;
+	}
+	public boolean isClosed () {
+		return !open;
 	}
 	
 	public void setName (String name) {
@@ -158,7 +197,10 @@ public class Menu extends GameObject {
 	}
 	public void removeComponite (MenuComponite comp) {
 		componites.remove(comp);	
-		height = height - comp.getHeight();
+		if (!fixedHeight){
+			height = height - (comp.getHeight()/8.0);
+		}
+
 	}
 	
 }

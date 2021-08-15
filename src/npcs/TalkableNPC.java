@@ -3,18 +3,22 @@ package npcs;
 import java.util.ArrayList;
 
 import engine.GameCode;
+import engine.GameObject;
 import engine.Sprite;
 import menu.Menu;
 import network.NetworkHandler;
 import players.Bit;
+import titleScreen.TitleBit;
 
 public class TalkableNPC extends NPC {
 	
 	Menu diolog;
-
-	public TalkableNPC (double x, double y, Menu m) {
+	
+	TitleBit pausedBit;
+	Bit alternativeBit;
+	
+	public TalkableNPC (double x, double y) {
 		super(x,y);
-		diolog = m;
 	}
 	
 	@Override
@@ -22,33 +26,88 @@ public class TalkableNPC extends NPC {
 		
 		
 	}
+
 	@Override
 	public void frameEvent () {
 		
 		boolean closed = false;
 		
-		if (diolog.isOpen() && this.keyReleased(GameCode.getSettings().getControls()[5])) {
-			diolog.close();
+		if (diolog.isClosed()) {
 			closed = true;
+			
+			if (pausedBit != null) {
+				pausedBit.unfreeze();
+			}
+			
+			if (alternativeBit != null) {
+				if (NetworkHandler.isHost()) {
+					alternativeBit.unfreeze();
+				} else {
+					NetworkHandler.getClient().messageServer("UNFREEZE" + alternativeBit.playerNum);
+				}
+			}
+			
+			alternativeBit = null;
+			pausedBit = null;
 		}
 		
 		if ((this.isColliding("TitleBit") || this.isColliding("Bit"))) {
-			if (this.keyReleased(GameCode.getSettings().getControls()[5]) && !closed) {
-				diolog.open();
-				diolog.setRenderPriority(this.getRenderPriority());
+			if (this.keyReleased(GameCode.getSettings().getControls()[5]) && diolog.isClosed()) {
+				if (this.isColliding("Bit")) {
+					alternativeBit = (Bit) this.getCollisionInfo().getCollidingObjects().get(0);
+					if (alternativeBit.playerNum == NetworkHandler.getPlayerNum()) {
+						if (NetworkHandler.isHost()) {
+							alternativeBit.freeze();
+						} else {
+							NetworkHandler.getClient ().messageServer ("FREEZE" + alternativeBit.playerNum);
+						}
+						diolog.open();
+						diolog.setRenderPriority(this.getRenderPriority());
+					} else {
+						alternativeBit = null;
+					}
+				} else {
+					this.isColliding("TitleBit");
+					pausedBit = (TitleBit) this.getCollisionInfo().getCollidingObjects().get(0);
+					pausedBit.freeze();
+					diolog.open();
+					diolog.setRenderPriority(this.getRenderPriority());
+				}
+				
+				
+				
 			}
 		}
-		
 	}
 	
 	@Override
 	public void draw () {
 		super.draw();
-
+		
 		if (this.isColliding("TitleBit") || this.isColliding("Bit")) {		
 			
-			Sprite tBubble = new Sprite ("resources/sprites/text buble.png"); 
-			tBubble.draw((int)this.getX() + 7, (int)(this.getY() - 22));
+			if (this.isColliding("TitleBit")) {
+				Sprite tBubble = new Sprite ("resources/sprites/text buble.png");
+				tBubble.draw((int)this.getDrawX(), (int)(this.getDrawY() - 22));
+			}
+			
+			if (this.isColliding("Bit")) {
+				Bit b = (Bit)this.getCollisionInfo().getCollidingObjects().get(0);
+				
+				if (b.playerNum == NetworkHandler.getPlayerNum()) {
+					Sprite tBubble = new Sprite ("resources/sprites/text buble.png");
+					tBubble.draw((int)this.getDrawX(), (int)(this.getDrawY() - 22));
+				}
+			}
+			
 		}
+	}
+	
+	public Menu getMenu() {
+		return diolog;
+	}
+
+	public void setMenu(Menu diolog) {
+		this.diolog = diolog;
 	}
 }
