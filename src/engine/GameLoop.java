@@ -31,8 +31,7 @@ public class GameLoop implements Runnable {
 	
 	@Override
 	public void run () {
-		//GameCode.init ();
-		//while (RenderLoop.running) {
+		do {
 			//Get the target time in nanoseconds for this iteration; should be constant if stepsPerSecond doesn't change
 			long targetNanoseconds = (long)(1000000000 / stepsPerSecond);
 			//Get the time before running the game logic
@@ -43,23 +42,26 @@ public class GameLoop implements Runnable {
 			ObjectHandler.callAll ();
 			RenderLoop.wind.resetInputBuffers ();
 			//Calculate elapsed time and time to sleep for
-			lastUpdate = System.nanoTime ();
-			/*long elapsedTime = lastUpdate - startTime;
-			int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
-			if (sleepTime < 0) {
-				sleepTime = 0;
+			
+			if (RenderLoop.useMultithreading) {
+				lastUpdate = System.nanoTime ();
+				long elapsedTime = lastUpdate - startTime;
+				int sleepTime = (int)((targetNanoseconds - elapsedTime) / 1000000) - 1;
+				if (sleepTime < 0) {
+					sleepTime = 0;
+				}
+				//Sleep until ~1ms before it's time to calculate the next step
+				try {
+					Thread.currentThread ().sleep (sleepTime);
+				} catch (InterruptedException e) {
+					//Do nothing; the while loop immediately after handles this case well
+				}
+				//Wait until the next step should be executed
+				while (System.nanoTime () - startTime < targetNanoseconds) {
+					
+				}
 			}
-			//Sleep until ~1ms before it's time to calculate the next step
-			try {
-				Thread.currentThread ().sleep (sleepTime);
-			} catch (InterruptedException e) {
-				//Do nothing; the while loop immediately after handles this case well
-			}
-			//Wait until the next step should be executed
-			while (System.nanoTime () - startTime < targetNanoseconds) {
-				
-			}*/
-		//}
+		} while (RenderLoop.useMultithreading);
 	}
 	
 	/**

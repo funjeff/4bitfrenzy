@@ -27,10 +27,14 @@ public class RenderLoop {
 	static public GameWindow wind;
 	
 	static public Thread renderThread;
+	static public Thread gameThread;
+	static public GameLoop gameLoop;
 	
 	static public boolean running = true;
 	
 	static boolean paused = false;
+	
+	public static volatile boolean useMultithreading = false;
 	
 	public static boolean isPaused() {
 		return paused;
@@ -50,16 +54,16 @@ public class RenderLoop {
 		wind = new GameWindow (1280, 720);
 		GameCode.testBitch();
 		//Start the game logic loop on a separate thread
-		GameLoop gameLoop = new GameLoop ();
+		gameLoop = new GameLoop ();
+		gameThread = new Thread (gameLoop);
 		GameCode.init ();
-		//new Thread (gameLoop).start (); //Game logic and rendering are on the same thread (for now)
+		//initMultithreading ();
 		//TODO swap between single-threaded and multi-threaded as necessary
 		//Initializes lastUpdate to the current time
 		lastUpdate = System.nanoTime ();
 		renderThread = Thread.currentThread ();
 		
 		while (running) {
-			
 				//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
 				long targetNanoseconds = (long)(1000000000 / maxFramerate);
 				//Get the time before refreshing the window
@@ -67,7 +71,9 @@ public class RenderLoop {
 				frameTime = System.currentTimeMillis ();
 				if (!paused) {
 				//Run the game loop
-				gameLoop.run ();
+				if (!useMultithreading && !gameThread.isAlive()) {
+					gameThread.run ();
+				}
 				//Render the window
 				GameCode.renderFunc ();
 				ObjectHandler.renderAll ();
@@ -109,6 +115,27 @@ public class RenderLoop {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public boolean isMultithreaded () {
+		return useMultithreading;
+	}
+	
+	public static void initMultithreading () {
+		if (!useMultithreading) {
+			useMultithreading = true;
+			gameThread.start ();
+		} else {
+			throw new IllegalStateException ("Cannot init multithreading while multithreading is enabled");
+		}
+	}
+	
+	public static void stopMultithreading () {
+		if (useMultithreading) {
+			useMultithreading = false;
+		} else {
+			throw new IllegalStateException ("Cannot stop multithreading while multithreading is disabled");
 		}
 	}
 	
