@@ -283,7 +283,8 @@ public class Bit extends GameObject {
 				if (regestersBeingCarried != null && keys != null && !keys.contains ("v")) {
 					regestersBeingCarried = null;
 				}
-				double speed = this.getCarrySpeed ();
+				double speed = this.getSpeed ();
+				System.out.println ("SPEED: " + speed);
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
 					if(compass != null && ObjectHandler.getObjectsByName("Register") != null &&ObjectHandler.getObjectsByName("Register").size() != 0) {
@@ -369,7 +370,7 @@ public class Bit extends GameObject {
 							ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();
 							for (int i = 0; i < workingRegisters.size (); i++) {
 								if (!regestersBeingCarried.contains (workingRegisters.get (i))) {
-									if (regestersBeingCarried.size () == 0) { //TODO TEMPORARY FIX FOR MULTIPLE CARRY CRASH
+									if (regestersBeingCarried.size () == 0) { //TODO TEMPORARY FIX FOR MULTIPLE CARRY CRASH; CAUSES REMOTE CARRY BUG
 										regestersBeingCarried.add (workingRegisters.get (i));
 									}
 								}
@@ -394,8 +395,8 @@ public class Bit extends GameObject {
 						}
 					}
 					if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {
-						setX (xStart - (speed + 1));
-						setY (yStart - (speed + 1)); //-(speed + 1) to account for earlier offset
+						setX (xStart - (xOffs + 1));
+						setY (yStart - (xOffs + 1)); //-(speed + 1) to account for earlier offset
 						for (int i = 0; i < regestersBeingCarried.size (); i++) {
 							((Register)regestersBeingCarried.get (i)).push (this, 0, 0); //Push is duplicate-safe
 						}
@@ -405,9 +406,26 @@ public class Bit extends GameObject {
 				this.setX(this.getX() + (xOffs + 1));
 				this.setY(this.getY() + (yOffs + 1));
 				wasPushed = false;
+				System.out.println ("IDV");
 			}
 	public int getSpeed() {
-		return speed + (spedUp ? 2 : 0);
+		
+		//Calculate slowdown
+		double resistance = 1;
+		if (perk != 1) {
+			if (regestersBeingCarried != null) {
+				resistance = 0.5/regestersBeingCarried.size();
+			}
+		}
+		double newSpeed = this.speed * resistance;
+		
+		if (resistance == 1) {
+			System.out.println (this.speed);
+			return this.speed + (spedUp ? 2 : 0) + (perk == 0 ? 2 : 0);
+		} else {
+			System.out.println(newSpeed);
+			return (int)newSpeed;
+		}
 	}
 
 	public void setSpeed(int speed) {
@@ -529,23 +547,6 @@ public class Bit extends GameObject {
 			break;
 		}
 		
-	}
-	
-	public double getCarrySpeed () {
-		double resistance = 1;
-		if (perk != 1) {
-			if (regestersBeingCarried != null) {
-				resistance = 0.5/regestersBeingCarried.size();
-			}
-		}
-		
-		double speed = this.speed * resistance;
-		
-		if (perk == 0) {
-			speed = speed + 2;
-		}
-		
-		return speed;
 	}
 	
 	public Vector2D getPushVector () {
