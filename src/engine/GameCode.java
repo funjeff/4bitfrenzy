@@ -230,7 +230,7 @@ public class GameCode {
 			int mouseY = bits.get (0).getCursorY () + getViewY ();
 			Point pt = Ribbon.getRibbonFromPoint (new Point (mouseX, mouseY));
 			if (pt != null) {
-				System.out.println (pt);
+				//System.out.println (pt);
 				new RibbonPulse (pt.x, pt.y).declare (0, 0);
 			}
 			

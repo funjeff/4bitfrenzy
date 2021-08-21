@@ -733,7 +733,7 @@ public class Roome extends GameObject {
 		}
 	}
 	public static void initText () {;
-		Textbox[] wallLines = new Textbox[(Roome.getMapHeight() * 720)/32];
+		Textbox[] wallLines = new Textbox[(Roome.getMapHeight() * 720)/36];
 		
 		String startMessage = "";
 		for (int i = 0; i < wallLines.length; i++) {
@@ -741,7 +741,7 @@ public class Roome extends GameObject {
 			wallLines[i].changeBoxVisability();
 			wallLines[i].changeWidth((getMapWidth() * 1080)/16 -1);
 			wallLines[i].changeHeight(1);
-			wallLines[i].declare(0, i * 32);
+			wallLines[i].declare(0, i * 36);
 			startMessage = fillArea(0,wallLines[i],startMessage);
 		}
 		while (!allFull(wallLines)) {
@@ -853,6 +853,10 @@ public class Roome extends GameObject {
 								finalMessage.append(toApend.charAt(i));
 								length = length + 1;
 							} else {
+								finalMessage.append(toApend.charAt(i));
+								length = length + 1;
+								i = i + 1;
+								
 								if (tip) {
 									finalMessage.append(color);
 									remainder = tipColor;
@@ -1373,7 +1377,7 @@ public class Roome extends GameObject {
 	}
 	
 	public GameObject spawnObject (Class<?> obj) {
-		System.out.println (obj);
+	//	System.out.println (obj);
 		//NOTE: ONLY WORKS WITH OBJECTS THAT HAVE DEFINED HITBOX DIMENSIONS VIA GameObject.getHitboxDimensions (Class<?> c)
 		
 		Dimension defaultHitbox = GameObject.getHitboxDimensions (obj);
@@ -1397,7 +1401,7 @@ public class Roome extends GameObject {
 			do {
 				int idx = indices.remove (0);
 				String params = spawnParams.get (idx);
-				System.out.println (params);
+				//System.out.println (params);
 				Scanner s = new Scanner (params);
 				x = s.nextInt () + (int)this.getX ();
 				y = s.nextInt () + (int)this.getY ();
@@ -1439,20 +1443,20 @@ public class Roome extends GameObject {
 		objHitbox.x = objHitbox.x + displacedX;
 		objHitbox.y = objHitbox.y + displacedY;
 		
-		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 144);
-		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,108);
-		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,144);
-		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,108);
+		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
+		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,92);
+		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
+		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,92);
 		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
 		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
 		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);
 		Rectangle rect8 = new Rectangle ( 648 + displacedX,576 + displacedY,432,144);
 		
-		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,144);
-		Rectangle rect10 = new Rectangle (0 + displacedX,252 + displacedY, 216, 216);
-		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
+		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,128);
+		Rectangle rect10 = new Rectangle (0 + displacedX,236 + displacedY, 216, 232);
+		Rectangle rect11 = new Rectangle (864 + displacedX, 236 + displacedY, 216, 232);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
-	
+		
 		if ((!objHitbox.intersects(rect12) || bottomJunction) && (!objHitbox.intersects(rect11) || rightJunction) && (!objHitbox.intersects(rect10) || leftJunction) && (!objHitbox.intersects(rect9) || topJunction) && !objHitbox.intersects(rect8) && !objHitbox.intersects(rect7) && !objHitbox.intersects(rect6) && !objHitbox.intersects(rect5) && !objHitbox.intersects(rect4) && !objHitbox.intersects(rect3) && !objHitbox.intersects(rect2) && !objHitbox.intersects(rect1)) {
 			return false;
 		} else {
@@ -1477,16 +1481,16 @@ public class Roome extends GameObject {
 		objHitbox.x = objHitbox.x + displacedX;
 		objHitbox.y = objHitbox.y + displacedY;
 		
-		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 144);
-		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,108);
-		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,144);
-		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,108);
+		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
+		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,92);
+		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
+		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,92);
 		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
 		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
 		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);
 		Rectangle rect8 = new Rectangle ( 648 + displacedX,576 + displacedY,432,144);
 		
-		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,144);
+		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,128);
 		Rectangle rect10 = new Rectangle (0 + displacedX,252 + displacedY, 216, 216);
 		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);

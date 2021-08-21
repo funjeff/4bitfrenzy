@@ -292,7 +292,6 @@ public class Bit extends GameObject {
 						try {
 						DataSlot ds = (DataSlot) compass.getPointObject();
 						if (ds.isCleared() || keyPressed (' ')) {
-							System.out.println("debg");
 							try {
 								regNum = regNum + 1;
 								compass.setPointObject(ObjectHandler.getObjectsByName("Register").get(regNum));
@@ -456,7 +455,6 @@ public class Bit extends GameObject {
 	}
 	@Override
 	public void setY (double y) {
-		System.out.println (y);
 		if (y < 0) {
 			Thread.dumpStack();
 		}
