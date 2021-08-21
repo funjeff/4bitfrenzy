@@ -1055,7 +1055,7 @@ public class Roome extends GameObject {
 		
 		//Place in the truck room
 		working = null;
-		while (working == null || mapWidth * 1080 - working.getX () < 9720) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
+		while (working == null || mapWidth * 1080 - working.getX () < (1080 * (mapWidth - 1))) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
 		working.init (20, r.nextInt (5));
 		
 		for (int i = 0; i < finalRooms.size(); i++) {
@@ -1066,7 +1066,7 @@ public class Roome extends GameObject {
 		}
 		
 		//Spawn in the key
-		map [4][5].spawnObject (CarKey.class);
+		map [mapHeight / 2 - 1][mapWidth / 2].spawnObject (CarKey.class);
 
 		if (GameCode.devMode ()) {
 			Ribbon.constructPath ();

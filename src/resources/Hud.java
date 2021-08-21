@@ -9,6 +9,7 @@ import java.util.Random;
 import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
+import engine.Sprite;
 import gameObjects.DataSlot;
 import gameObjects.GameOverScreen;
 import gameObjects.PixelBitch;
@@ -35,7 +36,7 @@ public class Hud extends GameObject {
 	static Textbox waveNum;
 	static Textbox registersRemaining;
 	long prevTime;
-	static int lives = 10;
+	static int lives = 11;
 	
 	//Register spawning parameters
 	public static int minRegisterDistance = 1;
@@ -49,34 +50,38 @@ public class Hud extends GameObject {
 	public static double largeRegisterOdds = .2;
 
 	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
+	public static final Sprite LIFE_SEGMENT = new Sprite ("resources/sprites/life_segment.png");
 
 	
 	public Hud () {
-		scoreDisplay = new Textbox ("SCORE: 00000000");
+		scoreDisplay = new Textbox ("00000000");
 		scoreDisplay.changeHeight(2);
 		scoreDisplay.changeWidth(17);
 		scoreDisplay.setFont("text (lime green)");
-		scoreDisplay.setBox("Green");
+		scoreDisplay.changeBoxVisability ();
 		
 		timer = new Textbox (" ");
 		timer.changeHeight(2);
 		timer.changeWidth(22);
 		timer.setFont("text (lime green)");
 		timer.setBox("Green");
+		timer.changeBoxVisability ();
 		
 		registersRemaining = new Textbox (" ");
 		registersRemaining.changeHeight(2);
 		registersRemaining.changeWidth(22);
 		registersRemaining.setFont("text (lime green)");
 		registersRemaining.setBox("Green");
+		registersRemaining.changeBoxVisability ();
 		
-		waveNum = new Textbox ("WAVE NUMBER 1");
+		waveNum = new Textbox ("1");
 		waveNum.changeHeight(2);
 		waveNum.changeWidth(22);
 		waveNum.setFont("text (lime green)");
 		waveNum.setBox("Green");
+		waveNum.changeBoxVisability ();
 		
-		this.setRenderPriority(5);
+		this.setRenderPriority(42000);
 	}
 
 	public static void updateScore (long change) {
@@ -85,7 +90,7 @@ public class Hud extends GameObject {
 		String workin = Long.toString(score);
 		int padNum = 8 - workin.length();
 		
-		String finalString = "SCORE: ";
+		String finalString = "";
 		for (int i = 0; i < padNum; i++) {
 			finalString = finalString + "0";
 		}
@@ -100,19 +105,19 @@ public class Hud extends GameObject {
 	public void draw () {
 		// once we do multiplayer put something here that make this happen only if its the right player
 		try {
-		scoreDisplay.setX(320 + GameCode.getViewX());
-		scoreDisplay.setY(100 + GameCode.getViewY());
+		scoreDisplay.setX(441 + GameCode.getViewX());
+		scoreDisplay.setY(68 + GameCode.getViewY());
 		scoreDisplay.draw();
 		
-		timer.setX(640 + GameCode.getViewX());
-		timer.setY(60 + GameCode.getViewY());
+		timer.setX(957 + GameCode.getViewX());
+		timer.setY(87 + GameCode.getViewY());
 		
-		waveNum.setX(640 + GameCode.getViewX());
-		waveNum.setY(20 + GameCode.getViewY());
+		waveNum.setX(957 + GameCode.getViewX());
+		waveNum.setY(21 + GameCode.getViewY());
 		waveNum.draw();
 		
-		registersRemaining.setX(640 + GameCode.getViewX());
-		registersRemaining.setY(100 + GameCode.getViewY());
+		registersRemaining.setX(957 + GameCode.getViewX());
+		registersRemaining.setY(54 + GameCode.getViewY());
 		ArrayList<GameObject> dataSlots = ObjectHandler.getObjectsByName ("DataSlot");
 		int numSlots = 0;
 		for (int i = 0; i < dataSlots.size (); i++) {
@@ -120,7 +125,7 @@ public class Hud extends GameObject {
 				numSlots++;
 			}
 		}
-		registersRemaining.changeText(numSlots +" REGISTERS REMAIN");
+		registersRemaining.changeText("" + numSlots);
 		registersRemaining.draw();
 		
 		if (prevTime != 0 && NetworkHandler.isHost ()) {
@@ -140,11 +145,11 @@ public class Hud extends GameObject {
 			secondsString = "0" + secondsString;
 		}
 		
-		timer.changeText(Integer.toString(numMinutes) + ":"+ secondsString + " REMAINING");
+		timer.changeText(Integer.toString(numMinutes) + ":"+ secondsString);
 		timer.draw();
 		
 		for (int i = 0; i < lives; i++) {
-				HEART.draw((i * 54) + 20, 0);
+				LIFE_SEGMENT.draw((i * 14) + 447, 32);
 		}
 		} catch (NullPointerException e) {
 			//Things aren't set up yet
@@ -154,7 +159,7 @@ public class Hud extends GameObject {
 	public static void newWave() {	
 		
 		roundNum = roundNum + 1;
-		waveNum.changeText("CURRENT WAVE: " + Integer.toString(roundNum));
+		waveNum.changeText(Integer.toString(roundNum));
 
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 

@@ -22,8 +22,8 @@ public class ItemBox extends GameObject {
 	public static final int ITEM_HINT_TIME = 300;
 	public static final int ITEM_HINT_FADE = 50;
 	
-	public static final int TEXT_OFFSET_X = -32;
-	public static final int TEXT_OFFSET_Y = 64;
+	public static final int TEXT_OFFSET_X = -200;
+	public static final int TEXT_OFFSET_Y = 112;
 	public static final int LINE_HEIGHT = 24;
 	public static final int DESC_OFFSET = 30;
 	
@@ -34,7 +34,7 @@ public class ItemBox extends GameObject {
 	
 	public ItemBox () {
 		this.setSprite(new Sprite ("resources/sprites/itemBox.png"));
-		this.setRenderPriority(3);
+		this.setRenderPriority(42000);
 		itemHintTime = 0;
 	}
 	
@@ -70,8 +70,8 @@ public class ItemBox extends GameObject {
 	public void draw () {
 		
 		//Draw the item box and the item inside it
-		this.setX(240);
-		this.setY(100);
+		this.setX(1153);
+		this.setY(61);
 		super.drawAbsolute ();
 		if (item != null && isVisable()) {
 			item.setX(this.getX());

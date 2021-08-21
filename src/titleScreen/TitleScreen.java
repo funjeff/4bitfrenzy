@@ -3,6 +3,7 @@ package titleScreen;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +25,7 @@ import menu.TextComponite;
 import network.Client;
 import network.NetworkHandler;
 import network.Server;
+import npcs.NPC;
 import npcs.PopcornMachine;
 import npcs.SettingsTxt;
 import npcs.TalkableNPC;
@@ -68,6 +70,7 @@ public class TitleScreen extends GameObject {
 	static Client client;
 	
 	public String mapLoadPath = null; //Set this to a filepath before closing the title screen to load a map
+	public static boolean doMapSave = false; //Internal use
 	public static String[] initialData = null;
 	
 	private TitleBit titleBit;
@@ -123,6 +126,10 @@ public class TitleScreen extends GameObject {
 	
 	@Override
 	public void frameEvent () {
+		
+		//Center the title screen
+		Point centeringPt = calculateCenteringPoint ();
+		GameCode.setView ((int)-centeringPt.getX (), (int)-centeringPt.getY ());
 		
 		//Handle typing with the IP
 		if (ipMode && !isHost) {
@@ -232,6 +239,18 @@ public class TitleScreen extends GameObject {
 			
 		}
 		
+	}
+	
+	public Point calculateCenteringPoint () {
+		int resX = GameCode.getSettings ().getResolutionX ();
+		int resY = GameCode.getSettings ().getResolutionY ();
+		int centerX = 100;
+		int centerY = 0;
+		if (resX > 1280) {
+			centerX = (resX - 1080) / 2;
+			centerY = (resY - 720) / 2;
+		}
+		return new Point (centerX, centerY);
 	}
 	
 	private void enterMainMenu () {
@@ -352,6 +371,7 @@ public class TitleScreen extends GameObject {
 	
 	@Override
 	public void draw () {
+		clearScreen ();
 		super.draw ();
 		
 		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
@@ -432,7 +452,8 @@ public class TitleScreen extends GameObject {
 						perk.setX((i * 500) + 165 + displace);
 						perk.setY((j * 300) + 75);
 						perk.draw();
-						bits.draw((i * 500) + 165, (j * 300) + 130, (i*2) + j);
+						//TODO FOR SOME REASON, INCREASING THE RESOLUTION CAUSES THESE TO NOT RENDER
+						bits.draw((i * 500) + 165 - GameCode.getViewX (), (j * 300) + 130, (i*2) + j - GameCode.getViewY ());
 					}
 				}
 			}
@@ -461,7 +482,28 @@ public class TitleScreen extends GameObject {
 			try {
 				Scanner s = new Scanner (f);
 				//Load the room data
-				String mapStr = s.nextLine ();
+				String mapStr = "INITIAL";
+				while (!mapStr.substring (0, 5).equals ("START")) {
+					mapStr = s.nextLine ();
+					//WARNING this is a big copy-paste, be sure to update in both places if applicable
+					if (mapStr.length () >= 3 && mapStr.substring (0,4).equals ("NPC ")) {
+						String[] args = mapStr.split (" ");
+						if (args[1].equals ("CREATE")) {
+							NPC npc = NPC.getInstance (args[2]);
+							npc.declare ();
+						} else if (args[1].equals ("UPDATE")) {
+							String[] data = args[2].split (":");
+							try {
+								NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
+								npc.updateNpc (args[2]);
+							} catch (NullPointerException e) {
+								System.out.println ("WARNING: NPC " + data[1] + " WAS NULL");
+							}
+						} else if (args[1].equals ("FORGET")) {
+							NPC.getNpcById (Integer.parseInt (args[2])).forget ();
+						}
+					}
+				}
 				String roomsStr = mapStr.split (":")[1];
 				Roome.loadMap (roomsStr);
 				//Load the object data
@@ -513,6 +555,12 @@ public class TitleScreen extends GameObject {
 		numPlayers++;
 	}
 	
+	public void clearScreen () {
+		Graphics g = RenderLoop.wind.getBufferGraphics ();
+		g.setColor (Color.BLACK);
+		g.fillRect (0, 0, GameCode.getSettings ().getResolutionX (), GameCode.getSettings ().getResolutionY ());
+	}
+	
 	public static class Button extends GameObject {
 		
 		private boolean pressed = false;
@@ -541,8 +589,8 @@ public class TitleScreen extends GameObject {
 		@Override
 		public void frameEvent () {
 			if (this.isVisable()) {
-				int mouseX = getCursorX ();
-				int mouseY = getCursorY ();
+				int mouseX = getCursorX () + GameCode.getViewX ();
+				int mouseY = getCursorY () + GameCode.getViewY ();
 				if (mouseX > getX () && mouseY > getY () && mouseX < getX () + getSprite ().getWidth () && mouseY < getY () + getSprite ().getHeight ()) {
 					if (green != null) {
 						this.setSprite(green);
@@ -1145,13 +1193,13 @@ public class TitleScreen extends GameObject {
 		@Override
 		public void draw () {
 			
-			super.drawAbsolute ();
+			super.draw ();
 			
 			if (gmHostButton != null && gmHostButton.isMouseInside ()) {
-				hostDescSprite.draw (58, 355);
+				hostDescSprite.draw (58 - GameCode.getViewX (), 355 - GameCode.getViewY ());
 			}
 			if (gmJoinButton != null && gmJoinButton.isMouseInside ()) {
-				joinDescSprite.draw (586, 354);
+				joinDescSprite.draw (586 - GameCode.getViewX (), 354 - GameCode.getViewY ());
 			}
 			
 		}

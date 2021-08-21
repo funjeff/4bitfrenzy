@@ -32,7 +32,6 @@ public class Scene extends GameObject {
 				} else {
 					Scanner s2 = new Scanner (curr);
 					String objName = s2.next ();
-					System.out.println (objName);
 					int objX = s2.nextInt ();
 					int objY = s2.nextInt ();
 					String objIcon = s2.next ();
@@ -107,7 +106,7 @@ public class Scene extends GameObject {
 		}
 		
 		public void draw () {
-			sprite.draw ((int)x + (int)getX (), (int)y + (int)getY (), frame);
+			sprite.draw ((int)x + getDrawX (), (int)y + getDrawY (), frame);
 		}
 		
 		@Override

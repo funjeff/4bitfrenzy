@@ -30,6 +30,9 @@ import util.Vector2D;
 
 public class Bit extends GameObject {
 	
+	public static final int HITBOX_WIDTH = 21;
+	public static final int HITBOX_HEIGHT = 16;
+	
 	public int playerNum = 0;
 	
 	public ArrayList<GameObject> regestersBeingCarried = null;
@@ -41,8 +44,10 @@ public class Bit extends GameObject {
 	public int lastMove = 0; // 0 for up 1 for down 2 for right 3 for left
 	
 	int speed = 5;
+	public boolean wasPushed = false;
 	
 	long speedUpTimer = 0;
+	boolean spedUp;
 	
 	boolean active = true;
 	
@@ -51,6 +56,8 @@ public class Bit extends GameObject {
 	boolean secondaryBit = false;
 	
 	boolean poweredUp = false;
+	
+	public boolean cashPickedUp = false;
 	
 	long powerTimer = 0;
 	
@@ -155,9 +162,11 @@ public class Bit extends GameObject {
 		}
 		
 		//Handle the controlsHint
-		this.setX (getX () - this.getSpeed ());
-		this.setY (getY () - this.getSpeed ());
-		this.setHitboxAttributes (hitbox ().width + this.getSpeed () * 2, hitbox ().height + this.getSpeed () * 2);
+		double xOffs = getSpeed ();
+		double yOffs = getSpeed ();
+		this.setX (getX () - xOffs);
+		this.setY (getY () - yOffs);
+		this.setHitboxAttributes (hitbox ().width + xOffs * 2, hitbox ().height + yOffs * 2);
 		if (NetworkHandler.getPlayerNum () == playerNum) {
 			
 			boolean showHint = false;
@@ -190,9 +199,9 @@ public class Bit extends GameObject {
 			}
 			
 		}
-		this.setX (getX () + this.getSpeed ());
-		this.setY (getY () + this.getSpeed ());
-		this.setHitboxAttributes (hitbox ().width - this.getSpeed () * 2, hitbox ().getHeight () - this.getSpeed () * 2);
+		this.setX (getX () + xOffs);
+		this.setY (getY () + yOffs);
+		this.setHitboxAttributes (HITBOX_WIDTH, HITBOX_HEIGHT);
 		
 			String keys;
 			if (keyPressed('T') && NetworkHandler.isHost () && NetworkHandler.getPlayerNum () == playerNum) {
@@ -218,7 +227,7 @@ public class Bit extends GameObject {
 			} 
 			if (speedUpTimer < System.currentTimeMillis()&& speedUpTimer != 0) {
 				speedUpTimer = 0;
-				speed = speed - 2;
+				spedUp = false;
 			}
 			if (compass != null && compass.getPointObject().equals(this)) {
 				try {
@@ -276,7 +285,7 @@ public class Bit extends GameObject {
 				if (regestersBeingCarried != null && keys != null && !keys.contains ("v")) {
 					regestersBeingCarried = null;
 				}
-				double speed = this.getCarrySpeed ();
+				double speed = this.getSpeed ();
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
 					if(compass != null && ObjectHandler.getObjectsByName("Register") != null &&ObjectHandler.getObjectsByName("Register").size() != 0) {
@@ -334,9 +343,11 @@ public class Bit extends GameObject {
 						lastMove = 1;
 					}
 				}
-				this.setHitboxAttributes(this.hitbox().width + (speed + 1) * 2, this.hitbox().height + (speed + 1) * 2);
-				this.setX(this.getX() - (speed + 1));
-				this.setY(this.getY() - (speed + 1));
+				xOffs = speed;
+				yOffs = speed;
+				this.setHitboxAttributes(this.hitbox().width + (xOffs + 1) * 2, this.hitbox().height + (yOffs + 1) * 2);
+				this.setX(this.getX() - (xOffs + 1));
+				this.setY(this.getY() - (yOffs + 1));
 					if (keys != null && keys.contains ("v")) {
 						
 						if (this.isColliding ("LoadedDice")) {
@@ -360,7 +371,9 @@ public class Bit extends GameObject {
 							ArrayList<GameObject> workingRegisters = this.getCollisionInfo().getCollidingObjects();
 							for (int i = 0; i < workingRegisters.size (); i++) {
 								if (!regestersBeingCarried.contains (workingRegisters.get (i))) {
-									regestersBeingCarried.add (workingRegisters.get (i));
+									if (regestersBeingCarried.size () == 0) { //TODO TEMPORARY FIX FOR MULTIPLE CARRY CRASH; CAUSES REMOTE CARRY BUG
+										regestersBeingCarried.add (workingRegisters.get (i));
+									}
 								}
 							}
 							
@@ -383,19 +396,37 @@ public class Bit extends GameObject {
 						}
 					}
 					if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {
-						setX (xStart - (speed + 1));
-						setY (yStart - (speed + 1)); //-(speed + 1) to account for earlier offset
+						setX (xStart - (xOffs + 1));
+						setY (yStart - (xOffs + 1)); //-(speed + 1) to account for earlier offset
 						for (int i = 0; i < regestersBeingCarried.size (); i++) {
 							((Register)regestersBeingCarried.get (i)).push (this, 0, 0); //Push is duplicate-safe
 						}
 					}
 				
-				this.setHitboxAttributes(this.hitbox().width - (speed + 1) * 2, this.hitbox().height - (speed + 1) * 2);
-				this.setX(this.getX() + (speed + 1));
-				this.setY(this.getY() + (speed + 1));
+				this.setHitboxAttributes(HITBOX_WIDTH, HITBOX_HEIGHT);
+				this.setX(this.getX() + (xOffs + 1));
+				this.setY(this.getY() + (yOffs + 1));
+				wasPushed = false;
 			}
 	public int getSpeed() {
-		return speed;
+		
+		//Calculate slowdown
+		double resistance = 1;
+		if (perk != 1) {
+			if (regestersBeingCarried != null) {
+				resistance = 0.5/regestersBeingCarried.size();
+			}
+		}
+		if (regestersBeingCarried != null && regestersBeingCarried.size () == 0) {
+			resistance = 1;
+		}
+		double newSpeed = this.speed * resistance;
+		
+		if (resistance == 1) {
+			return this.speed + (spedUp ? 2 : 0) + (perk == 0 ? 2 : 0) + (cashPickedUp ? 2 : 0);
+		} else {
+			return (int)newSpeed + (spedUp ? 2 : 0);
+		}
 	}
 
 	public void setSpeed(int speed) {
@@ -424,6 +455,14 @@ public class Bit extends GameObject {
 		}
 	}
 	@Override
+	public void setY (double y) {
+		System.out.println (y);
+		if (y < 0) {
+			Thread.dumpStack();
+		}
+		super.setY (y);
+	}
+	@Override
 	public boolean goX(double val) {
 		double x = this.getX();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
@@ -439,6 +478,7 @@ public class Bit extends GameObject {
 				ArrayList <GameObject> regesters = this.getCollisionInfo().getCollidingObjects();
 				for (int i = 0; i < regesters.size(); i++) {
 					if (regestersBeingCarried == null || !regestersBeingCarried.contains (regesters.get (i))) {
+						if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {regestersBeingCarried.remove (0);} //TODO TEMPORARY FIX FOR REMOTE PULLING
 						setX (x);
 						((Register)regesters.get (i)).push (this, val - x, 0);
 					}
@@ -449,7 +489,7 @@ public class Bit extends GameObject {
 		return true;
 	}
 	public void speedUpTemporarly() {
-		speed = speed + 2;
+		spedUp = true;
 		speedUpTimer = System.currentTimeMillis() +  30 * 1000;
 	}
 	public void powerUpTemporarly () {
@@ -476,6 +516,7 @@ public class Bit extends GameObject {
 				ArrayList <GameObject> regesters = this.getCollisionInfo().getCollidingObjects();
 				for (int i = 0; i < regesters.size(); i++) {
 					if (regestersBeingCarried == null || !regestersBeingCarried.contains (regesters.get (i))) {
+						if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {regestersBeingCarried.remove (0);} //TODO TEMPORARY FIX FOR REMOTE PULLING
 						setY (y);
 						((Register)regesters.get (i)).push (this, 0, val - y);
 					}
@@ -519,23 +560,6 @@ public class Bit extends GameObject {
 		
 	}
 	
-	public double getCarrySpeed () {
-		double resistance = 1;
-		if (perk != 1) {
-			if (regestersBeingCarried != null) {
-				resistance = 0.5/regestersBeingCarried.size();
-			}
-		}
-		
-		double speed = this.speed * resistance;
-		
-		if (perk == 0) {
-			speed = speed + 2;
-		}
-		
-		return speed;
-	}
-	
 	public Vector2D getPushVector () {
 		return pushVector;
 	}
@@ -557,6 +581,7 @@ public class Bit extends GameObject {
 		int SCROLL_BOUND_TOP = 200;
 		int SCROLL_BOUND_RIGHT = SCREEN_WIDTH - SCROLL_BOUND_LEFT;
 		int SCROLL_BOUND_BOTTOM = SCREEN_HEIGHT - SCROLL_BOUND_TOP;
+		SCROLL_BOUND_TOP += 120; //To account for the bar at the top of the screen
 		
 		double relX = getX () - GameCode.getViewX ();
 		double relY = getY () - GameCode.getViewY ();
