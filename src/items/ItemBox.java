@@ -22,7 +22,7 @@ public class ItemBox extends GameObject {
 	public static final int ITEM_HINT_TIME = 300;
 	public static final int ITEM_HINT_FADE = 50;
 	
-	public static final int TEXT_OFFSET_X = -200;
+	public static final int TEXT_OFFSET_X = -240;
 	public static final int TEXT_OFFSET_Y = 112;
 	public static final int LINE_HEIGHT = 24;
 	public static final int DESC_OFFSET = 30;

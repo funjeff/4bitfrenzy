@@ -1,7 +1,13 @@
-powerBit 0 0 resources/sprites/config/bits_red.txt
+gripBit 128 0 resources/sprites/config/bits_red.txt
 normBit 0 0 resources/sprites/config/bits_green.txt
+reg1 89 318 resources/sprites/register_large_title.png
+reg2 -39 318 resources/sprites/register_large_title.png
 END
-powerBit 3 0
-FRAME 30
-powerBit 0 3
+gripBit 0 5
+normBit 0 5
 FRAME 60
+FRAME 10
+gripBit 0 -2
+reg1 0 -2
+FRAME 130
+FRAME 20

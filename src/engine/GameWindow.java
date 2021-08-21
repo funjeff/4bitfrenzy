@@ -1,6 +1,7 @@
 package engine;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -54,12 +55,12 @@ public class GameWindow extends JFrame {
 			}
 		});
 		//Sets the initial size of the window and makes it visible
+		getContentPane ().setPreferredSize (new Dimension (1280, 720));
 		pack ();
-		setSize (width + getInsets ().left + getInsets ().right, height + getInsets ().top + getInsets ().bottom);
-		getContentPane ().setSize (width, height);
 		setVisible (true);
 		//Initializes the buffer for drawing
 		buffer = new BufferedImage (width, height, BufferedImage.TYPE_3BYTE_BGR);
+		System.out.println ("CONTENT PANE SIZE: " + getContentPane ().getWidth ());
 		//Sets up the input detection
 		inputManager = new InputManager (this, this.getContentPane ());
 	}
@@ -101,13 +102,19 @@ public class GameWindow extends JFrame {
 			windowGraphics.fillRect (0, yOffs + screenHeight, getContentPane ().getWidth (), yOffs + 5);
 		}
 		//Render the content
-		windowGraphics.drawImage (buffer, xOffs, yOffs, screenWidth, screenHeight, null);
+		if (scalingMode == GameCode.GameSettings.SCALE_MODE_FULL) {
+			System.out.println("OPE");
+			windowGraphics.drawImage (buffer, 0, 0, null);
+		} else {
+			windowGraphics.drawImage (buffer, xOffs, yOffs, screenWidth, screenHeight, null);
+		}
 		bufferGraphics.fillRect (0, 0, buffer.getWidth (), buffer.getHeight ());
 		
 		//Update the resolution if in full mode
 		if (scalingMode == GameCode.GameSettings.SCALE_MODE_FULL) {
-			if (getContentPane ().getWidth () != buffer.getWidth () || getContentPane ().getHeight () != buffer.getHeight ())
+			if (getContentPane ().getWidth () != buffer.getWidth () || getContentPane ().getHeight () != buffer.getHeight ()) {
 				GameCode.getSettings ().changeResolution (getContentPane ().getWidth (), getContentPane ().getHeight ());
+			}
 		} else {
 			GameCode.getSettings().resetRes();
 		}
@@ -188,4 +195,10 @@ public class GameWindow extends JFrame {
 		inputManager.resetKeyBuffers ();
 		inputManager.resetMouseBuffers ();
 	}
+	
+	public void resizeWindow (int width, int height) {
+		getContentPane ().setPreferredSize (new Dimension (width, height));
+		pack ();
+	}
+
 }

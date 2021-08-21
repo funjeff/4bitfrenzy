@@ -1,4 +1,3 @@
-blastBit 0 0 resources/sprites/config/bits_green.txt
-normBit 0 0 resources/sprites/config/bits_green.txt
+normBit 64 64 resources/sprites/config/bits_green.txt
 END
-FRAME 500
+FRAME 1000
