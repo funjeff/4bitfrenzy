@@ -284,7 +284,6 @@ public class Bit extends GameObject {
 					regestersBeingCarried = null;
 				}
 				double speed = this.getSpeed ();
-				System.out.println ("SPEED: " + speed);
 				
 				if (NetworkHandler.getPlayerNum() == this.playerNum) {
 					if(compass != null && ObjectHandler.getObjectsByName("Register") != null &&ObjectHandler.getObjectsByName("Register").size() != 0) {
@@ -406,7 +405,6 @@ public class Bit extends GameObject {
 				this.setX(this.getX() + (xOffs + 1));
 				this.setY(this.getY() + (yOffs + 1));
 				wasPushed = false;
-				System.out.println ("IDV");
 			}
 	public int getSpeed() {
 		
@@ -420,10 +418,8 @@ public class Bit extends GameObject {
 		double newSpeed = this.speed * resistance;
 		
 		if (resistance == 1) {
-			System.out.println (this.speed);
 			return this.speed + (spedUp ? 2 : 0) + (perk == 0 ? 2 : 0);
 		} else {
-			System.out.println(newSpeed);
 			return (int)newSpeed;
 		}
 	}
@@ -570,6 +566,7 @@ public class Bit extends GameObject {
 		int SCROLL_BOUND_TOP = 200;
 		int SCROLL_BOUND_RIGHT = SCREEN_WIDTH - SCROLL_BOUND_LEFT;
 		int SCROLL_BOUND_BOTTOM = SCREEN_HEIGHT - SCROLL_BOUND_TOP;
+		SCROLL_BOUND_TOP += 120; //To account for the bar at the top of the screen
 		
 		double relX = getX () - GameCode.getViewX ();
 		double relY = getY () - GameCode.getViewY ();

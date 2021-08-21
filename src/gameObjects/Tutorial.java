@@ -29,11 +29,11 @@ public class Tutorial extends GameObject {
 	public static final int PADDING = 4;
 	
 	public static final Rectangle startingRect = new Rectangle (TUTORIAL_MENU_X - PADDING, TUTORIAL_MENU_Y - PADDING, TUTORIAL_MENU_WIDTH * 8 + PADDING * 2, TUTORIAL_MENU_HEIGHT * 8 + 8 + PADDING * 2);
-	public static final Rectangle scoreRect = new Rectangle (320, 89, 272, 33);
-	public static final Rectangle compassRect = new Rectangle (45, 27, 150, 156);
-	public static final Rectangle itemRect = new Rectangle (240, 99, 32, 32);
-	public static final Rectangle waveRect = new Rectangle (640, 9, 352, 113);
-	public static final Rectangle livesRect = new Rectangle (20, 4, 512, 27);
+	public static final Rectangle scoreRect = new Rectangle (314, 68, 266, 17);
+	public static final Rectangle compassRect = new Rectangle (17, 6, 232, 107);
+	public static final Rectangle itemRect = new Rectangle (1141, 28, 58, 70);
+	public static final Rectangle waveRect = new Rectangle (706, 19, 324, 86);
+	public static final Rectangle livesRect = new Rectangle (318, 25, 289, 32);
 	public static final Rectangle screenRect = new Rectangle (4, 4, 1272, 712);
 	
 	public Tutorial () {

@@ -25,6 +25,8 @@ public class Compass extends GameObject {
 	
 	private double pointDir = 0;
 	
+	Textbox registerBox;
+	
 	GameObject pointObject; // the object the compass is pointing too
 	
 	Bit owner;
@@ -33,6 +35,10 @@ public class Compass extends GameObject {
 		this.owner = owner;
 		this.setRenderPriority(3);
 		setSprite (RIGHT);
+		registerBox = new Textbox ("FF");
+		registerBox.setFont ("text (lime green)");
+		registerBox.changeBoxVisability ();
+		setRenderPriority (42000);
 	}
 	
 	@Override
@@ -144,8 +150,8 @@ public class Compass extends GameObject {
 	@Override
 	public void draw () {
 		if (this.isVisable ()) {
-			this.setX(50);
-			this.setY(50);
+			this.setX(25);
+			this.setY(30);
 			
 			String memAdress = "";
 			boolean regOrDs = false; //true for reg false for ds
@@ -164,25 +170,17 @@ public class Compass extends GameObject {
 				
 			}
 			
-			Textbox t = new Textbox ("   " + memAdress);
+			registerBox.changeText ("" + memAdress);
 			
-			if (regOrDs) {
-				t.setFont("text (lime green)");
-			} else {
-				t.setFont("text (red)");
-			}
-			t.changeWidth(144/16);
-			t.changeHeight(32/16);
-			
-			t.setX(this.getX() + GameCode.getViewX ());
+			registerBox.setX(GameCode.getViewX () + 166);
 			try {
-				t.setY(this.getY() + GameCode.getViewY () + 110);
+				registerBox.setY(GameCode.getViewY () + 73);
 			} catch (NullPointerException e) {
 				
 			}
-			t.draw();
+			registerBox.draw();
 			
-			this.getSprite ().drawRotated ((int)getX (), (int)getY (), 0, 60, 36, pointDir);
+			this.getSprite ().drawRotated ((int)getX (), (int)getY (), 0, 45, 27, pointDir);
 		}
 	}
 	

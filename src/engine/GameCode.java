@@ -20,6 +20,7 @@ import gameObjects.MovableRectHighlight;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
 import gameObjects.Tutorial;
+import gui.MenuBar;
 import items.BasketBomb;
 import items.Bombs;
 import items.BrokenTeleporter;
@@ -406,6 +407,7 @@ public class GameCode {
 		//DEBUG SPAWNING ENDS HERE
 		//Declare the hud and make the bits
 		hud.declare();
+		new MenuBar ();
 		int i = 0;
 		while (true) {
 			try {
