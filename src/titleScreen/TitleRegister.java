@@ -55,7 +55,7 @@ public class TitleRegister extends GameObject {
 	public void draw () {
 		super.draw ();
 		if (hintTimer > HINT_TIME && ((hintTimer - HINT_TIME) / FLASH_TIME) % 2 == 0) {
-			hint.draw ((int)getX () - 3, (int)getY () - 3);
+			hint.draw (getDrawX () - 3, getDrawY () - 3);
 		}
 	}
 	

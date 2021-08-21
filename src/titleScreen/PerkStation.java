@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.RenderLoop;
 import engine.Sprite;
@@ -54,13 +55,13 @@ public class PerkStation extends GameObject {
 			Font f = new Font ("Arial", 96, 40);
 			g.setFont (f);
 			g.setColor (perkColorMap [perk]);
-			g.drawString (perkNameMap [perk], 864, 90);
+			g.drawString (perkNameMap [perk], 864 - GameCode.getViewX (), 90 - GameCode.getViewY ());
 			f = new Font ("Arial", 1, 16);
 			g.setFont (f);
 			if (TitleScreen.perkNum == perkMap [perk]) {
-				g.drawString ("You have selected this perk.", 864, 120);
+				g.drawString ("You have selected this perk.", 864 - GameCode.getViewX (), 120 - GameCode.getViewY ());
 			} else {
-				g.drawString ("Press ENTER to select this perk", 864, 120);
+				g.drawString ("Press ENTER to select this perk", 864 - GameCode.getViewX (), 120 - GameCode.getViewY ());
 			}
 		}
 	}

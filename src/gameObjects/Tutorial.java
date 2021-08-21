@@ -80,7 +80,7 @@ public class Tutorial extends GameObject {
 	public void frameEvent () {
 		menu.setX(TUTORIAL_MENU_X + GameCode.getViewX());
 		menu.setY(TUTORIAL_MENU_Y + GameCode.getViewY());
-		if (this.keyPressed ('W') || this.keyPressed ('A') || this.keyPressed ('S') || this.keyPressed ('D')) {
+		if (this.keyPressed (KeyEvent.VK_ESCAPE)) {
 			forget (); //TODO do we keep this?
 		}
 		

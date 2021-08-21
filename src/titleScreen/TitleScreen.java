@@ -3,6 +3,7 @@ package titleScreen;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -124,6 +125,10 @@ public class TitleScreen extends GameObject {
 	@Override
 	public void frameEvent () {
 		
+		//Center the title screen
+		Point centeringPt = calculateCenteringPoint ();
+		GameCode.setView ((int)-centeringPt.getX (), (int)-centeringPt.getY ());
+		
 		//Handle typing with the IP
 		if (ipMode && !isHost) {
 			ArrayList<KeyEvent> events = getKeyEvents ();
@@ -231,6 +236,18 @@ public class TitleScreen extends GameObject {
 			
 		}
 		
+	}
+	
+	public Point calculateCenteringPoint () {
+		int resX = GameCode.getSettings ().getResolutionX ();
+		int resY = GameCode.getSettings ().getResolutionY ();
+		int centerX = 100;
+		int centerY = 0;
+		if (resX > 1280) {
+			centerX = (resX - 1080) / 2;
+			centerY = (resY - 720) / 2;
+		}
+		return new Point (centerX, centerY);
 	}
 	
 	private void enterMainMenu () {
@@ -351,6 +368,7 @@ public class TitleScreen extends GameObject {
 	
 	@Override
 	public void draw () {
+		clearScreen ();
 		super.draw ();
 		
 		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
@@ -431,7 +449,8 @@ public class TitleScreen extends GameObject {
 						perk.setX((i * 500) + 165 + displace);
 						perk.setY((j * 300) + 75);
 						perk.draw();
-						bits.draw((i * 500) + 165, (j * 300) + 130, (i*2) + j);
+						//TODO FOR SOME REASON, INCREASING THE RESOLUTION CAUSES THESE TO NOT RENDER
+						bits.draw((i * 500) + 165 - GameCode.getViewX (), (j * 300) + 130, (i*2) + j - GameCode.getViewY ());
 					}
 				}
 			}
@@ -512,6 +531,12 @@ public class TitleScreen extends GameObject {
 		numPlayers++;
 	}
 	
+	public void clearScreen () {
+		Graphics g = RenderLoop.wind.getBufferGraphics ();
+		g.setColor (Color.BLACK);
+		g.fillRect (0, 0, GameCode.getSettings ().getResolutionX (), GameCode.getSettings ().getResolutionY ());
+	}
+	
 	public static class Button extends GameObject {
 		
 		private boolean pressed = false;
@@ -540,8 +565,8 @@ public class TitleScreen extends GameObject {
 		@Override
 		public void frameEvent () {
 			if (this.isVisable()) {
-				int mouseX = getCursorX ();
-				int mouseY = getCursorY ();
+				int mouseX = getCursorX () + GameCode.getViewX ();
+				int mouseY = getCursorY () + GameCode.getViewY ();
 				if (mouseX > getX () && mouseY > getY () && mouseX < getX () + getSprite ().getWidth () && mouseY < getY () + getSprite ().getHeight ()) {
 					if (green != null) {
 						this.setSprite(green);
@@ -1144,13 +1169,13 @@ public class TitleScreen extends GameObject {
 		@Override
 		public void draw () {
 			
-			super.drawAbsolute ();
+			super.draw ();
 			
 			if (gmHostButton != null && gmHostButton.isMouseInside ()) {
-				hostDescSprite.draw (58, 355);
+				hostDescSprite.draw (58 - GameCode.getViewX (), 355 - GameCode.getViewY ());
 			}
 			if (gmJoinButton != null && gmJoinButton.isMouseInside ()) {
-				joinDescSprite.draw (586, 354);
+				joinDescSprite.draw (586 - GameCode.getViewX (), 354 - GameCode.getViewY ());
 			}
 			
 		}
