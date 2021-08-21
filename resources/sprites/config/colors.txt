@@ -1,5 +1,5 @@
-text (blue)
-text (lime green)
-text (red)
-text (yellow)
-text
+text (blue) code
+text (lime green) code
+text (red) code
+text (yellow) code
+text (grey) code
