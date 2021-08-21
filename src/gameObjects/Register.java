@@ -1,10 +1,14 @@
 package gameObjects;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 import engine.GameCode;
 import engine.GameObject;
 import engine.ObjectHandler;
+import engine.RenderLoop;
 import engine.Sprite;
 import map.Roome;
 import network.NetworkHandler;
@@ -14,6 +18,9 @@ import resources.Textbox;
 import util.Vector2D;
 
 public class Register extends GameObject implements Highlightable {
+	
+	public static final int LARGE_HINT_DURATION = 300;
+	public static final int LARGE_HINT_FADE = 100;
 	
 	public static Sprite navArrow = new Sprite ("resources/sprites/register_nav_arrow.png");
 	public static Sprite regOutline = new Sprite ("resources/sprites/register_hint.png");
@@ -40,6 +47,8 @@ public class Register extends GameObject implements Highlightable {
 	Vector2D trajectory;
 	
 	boolean modified;
+	
+	private int largeHintTime;
 	
 	public Register () {
 		this.setSprite(new Sprite ("resources/sprites/Regester.png"));
@@ -250,6 +259,10 @@ public class Register extends GameObject implements Highlightable {
 			}
 		}
 		
+		if (!canPush && trajectory != null && largeHintTime != 1) {
+			largeHintTime = LARGE_HINT_DURATION;
+		}
+		
 		//Move the register
 		if (canPush) {
 			if (trajectory != null) {
@@ -313,6 +326,27 @@ public class Register extends GameObject implements Highlightable {
 			} catch (NullPointerException e) {
 				//Do nothing, data slot has not been created yet
 			}
+		}
+		
+		//Draw the hint if needed
+		if (largeHintTime > 1) { //Incredibly hacky way to get the message to show only once
+			
+			//Calculate transparency
+			float alpha;
+			if (largeHintTime < LARGE_HINT_FADE) {
+				alpha = ((float)largeHintTime / LARGE_HINT_FADE);
+			} else {
+				alpha = 1;
+			}
+			
+			Graphics g = RenderLoop.wind.getBufferGraphics ();
+			g.setColor (new Color (0f, 0f, 0f, alpha));
+			g.fillRect (getDrawX () - 36, getDrawY () - 84, 178, 48);
+			g.setFont (new Font ("Arial", 16, 16));
+			g.setColor (new Color (1f, 0f, 0f, alpha));
+			g.drawString ("Two players are needed", getDrawX () - 32, getDrawY () - 64);
+			g.drawString ("to move red registers.", getDrawX () - 26, getDrawY () - 44);
+			largeHintTime--;
 		}
 		
 	}

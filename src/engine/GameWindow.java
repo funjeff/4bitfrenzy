@@ -60,7 +60,6 @@ public class GameWindow extends JFrame {
 		setVisible (true);
 		//Initializes the buffer for drawing
 		buffer = new BufferedImage (width, height, BufferedImage.TYPE_3BYTE_BGR);
-		System.out.println ("CONTENT PANE SIZE: " + getContentPane ().getWidth ());
 		//Sets up the input detection
 		inputManager = new InputManager (this, this.getContentPane ());
 	}
@@ -103,7 +102,6 @@ public class GameWindow extends JFrame {
 		}
 		//Render the content
 		if (scalingMode == GameCode.GameSettings.SCALE_MODE_FULL) {
-			System.out.println("OPE");
 			windowGraphics.drawImage (buffer, 0, 0, null);
 		} else {
 			windowGraphics.drawImage (buffer, xOffs, yOffs, screenWidth, screenHeight, null);
