@@ -29,7 +29,7 @@ public class ChickenBucket extends Item {
 			NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/speed.wav");
 		}
 		
-			Hud.setLives(Hud.getLives() + 6);
+			Hud.setLives(Hud.getLives() + 3);
 			user.powerUpTemporarly();
 			user.speedUpTemporarly();
 		
@@ -42,7 +42,7 @@ public class ChickenBucket extends Item {
 	
 	public String getDesc () {
 		return "Eating fried chicken heals\n"
-				+ "six lives, and also grants\n"
+				+ "three lives, and also grants\n"
 				+ "temporary boosts to speed\n"
 				+ "and strength (ability to carry\n"
 				+ "red registers).";

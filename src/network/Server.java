@@ -18,6 +18,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import engine.GameCode;
 import engine.RenderLoop;
+import titleScreen.TitleScreen;
 
 public class Server extends Thread {
 
@@ -32,8 +33,20 @@ public class Server extends Thread {
 	private static volatile LinkedBlockingDeque<String> writeMessage = new LinkedBlockingDeque<String> ();
 	private static ArrayList<String> allMessages = new ArrayList<String> ();
 	
+	private FileWriter saveWriter;
+	
 	public Server () {
 		connections = new ArrayList<ServerConnection> ();
+		if (TitleScreen.doMapSave) {
+			File f = new File ("resources/maps/saved_map.txt");
+			try {
+				saveWriter = new FileWriter (f);
+				saveWriter.write ("");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
@@ -76,6 +89,29 @@ public class Server extends Thread {
 	}
 	
 	public void sendMessage (String message) {
+		
+		//Save the message if applicable
+		if (saveWriter != null) {
+			try {
+				if (!message.substring (0, 5).equals ("PERKS")) {
+					saveWriter.append (message);
+					saveWriter.append ('\n');
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (message.substring (0, 4).equals("DATA")) {
+				try {
+					saveWriter.close ();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				saveWriter = null;
+			}
+		}
+		
 		allMessages.add (message);
 		if (message.substring (0, 5).equals("START")) {
 			File f = new File ("log.txt");

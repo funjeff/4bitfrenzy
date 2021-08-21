@@ -57,6 +57,8 @@ public class Bit extends GameObject {
 	
 	boolean poweredUp = false;
 	
+	public boolean cashPickedUp = false;
+	
 	long powerTimer = 0;
 	
 	public int regNum = 0;
@@ -418,9 +420,9 @@ public class Bit extends GameObject {
 		double newSpeed = this.speed * resistance;
 		
 		if (resistance == 1) {
-			return this.speed + (spedUp ? 2 : 0) + (perk == 0 ? 2 : 0);
+			return this.speed + (spedUp ? 2 : 0) + (perk == 0 ? 2 : 0) + (cashPickedUp ? 2 : 0);
 		} else {
-			return (int)newSpeed;
+			return (int)newSpeed + (spedUp ? 2 : 0);
 		}
 	}
 

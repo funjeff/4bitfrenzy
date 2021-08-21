@@ -29,7 +29,7 @@ public class FriedFood extends Item {
 			NetworkHandler.getServer().sendMessage("SOUND:"  + user.playerNum + ":resources/sounds/effects/speed.wav");
 		}
 		
-			Hud.setLives(Hud.getLives() + 3);
+			Hud.setLives(Hud.getLives() - 1);
 			user.speedUpTemporarly();
 		
 		return true;
@@ -40,8 +40,8 @@ public class FriedFood extends Item {
 	}
 	
 	public String getDesc () {
-		return "Eating fried food grants\n"
-				+ "various stat boosts.";
+		return "Gives you a speed boost,\n"
+				+ "but it's bad for your health...";
 	}
 	
 	public String getLongDescription () {

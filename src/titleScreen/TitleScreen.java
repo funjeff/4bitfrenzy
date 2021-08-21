@@ -25,6 +25,7 @@ import menu.TextComponite;
 import network.Client;
 import network.NetworkHandler;
 import network.Server;
+import npcs.NPC;
 import npcs.PopcornMachine;
 import npcs.SettingsTxt;
 import npcs.TalkableNPC;
@@ -69,6 +70,7 @@ public class TitleScreen extends GameObject {
 	static Client client;
 	
 	public String mapLoadPath = null; //Set this to a filepath before closing the title screen to load a map
+	public static boolean doMapSave = false; //Internal use
 	public static String[] initialData = null;
 	
 	private TitleBit titleBit;
@@ -479,7 +481,28 @@ public class TitleScreen extends GameObject {
 			try {
 				Scanner s = new Scanner (f);
 				//Load the room data
-				String mapStr = s.nextLine ();
+				String mapStr = "INITIAL";
+				while (!mapStr.substring (0, 5).equals ("START")) {
+					mapStr = s.nextLine ();
+					//WARNING this is a big copy-paste, be sure to update in both places if applicable
+					if (mapStr.length () >= 3 && mapStr.substring (0,4).equals ("NPC ")) {
+						String[] args = mapStr.split (" ");
+						if (args[1].equals ("CREATE")) {
+							NPC npc = NPC.getInstance (args[2]);
+							npc.declare ();
+						} else if (args[1].equals ("UPDATE")) {
+							String[] data = args[2].split (":");
+							try {
+								NPC npc = NPC.getNpcById (Integer.parseInt (data[1]));
+								npc.updateNpc (args[2]);
+							} catch (NullPointerException e) {
+								System.out.println ("WARNING: NPC " + data[1] + " WAS NULL");
+							}
+						} else if (args[1].equals ("FORGET")) {
+							NPC.getNpcById (Integer.parseInt (args[2])).forget ();
+						}
+					}
+				}
 				String roomsStr = mapStr.split (":")[1];
 				Roome.loadMap (roomsStr);
 				//Load the object data

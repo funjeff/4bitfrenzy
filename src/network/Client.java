@@ -296,6 +296,7 @@ public class Client extends Thread {
 				
 			}
 			
+			//This section has been copy-pasted into TitleScreen
 			if (str.length () >= 3 && str.substring (0,4).equals ("NPC ")) {
 				String[] args = str.split (" ");
 				if (args[1].equals ("CREATE")) {

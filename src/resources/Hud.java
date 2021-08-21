@@ -74,7 +74,7 @@ public class Hud extends GameObject {
 		registersRemaining.setBox("Green");
 		registersRemaining.changeBoxVisability ();
 		
-		waveNum = new Textbox ("WAVE NUMBER 1");
+		waveNum = new Textbox ("1");
 		waveNum.changeHeight(2);
 		waveNum.changeWidth(22);
 		waveNum.setFont("text (lime green)");
