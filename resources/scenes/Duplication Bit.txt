@@ -1,7 +1,32 @@
-dupeBit 0 0 resources/sprites/config/bits_purple.txt
+dupeBit 128 0 resources/sprites/config/bits_purple.txt
 normBit 0 0 resources/sprites/config/bits_green.txt
+bomb1 0 256 resources/sprites/bombs.png
+bomb2 128 256 resources/sprites/bombs.png
+bomb3 128 -1000 resources/sprites/bombs.png
 END
-dupeBit 3 0
-FRAME 30
-dupeBit 0 3
-FRAME 60
+dupeBit 0 5
+normBit 0 5
+FRAME 50
+bomb1 0 -1000
+bomb2 0 -1000
+dupeBit 0 5
+normBit 0 5
+FRAME 1
+dupeBit 0 5
+normBit 0 5
+FRAME 2
+FRAME 20
+bomb1 0 1032
+bomb2 0 1032
+FRAME 1
+bomb1 0 5
+bomb2 0 5
+FRAME 10
+bomb1 0 5
+bomb2 0 5
+bomb3 0 1288
+FRAME 1
+bomb1 0 5
+bomb2 0 5
+bomb3 0 5
+FRAME 80

@@ -35,6 +35,7 @@ public class Scene extends GameObject {
 					int objX = s2.nextInt ();
 					int objY = s2.nextInt ();
 					String objIcon = s2.next ();
+					System.out.println(objIcon);
 					Sprite objSpr = new Sprite (objIcon);
 					SceneObject obj = new SceneObject (objSpr, objX, objY, 0);
 					objs.add (obj);

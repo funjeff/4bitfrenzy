@@ -207,7 +207,7 @@ public class GameCode {
 		
 		initControls();
 		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
-		RenderLoop.wind.setSize (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
+		RenderLoop.wind.resizeWindow (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		
 		initSoundEffects();
 	}

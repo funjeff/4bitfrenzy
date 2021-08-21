@@ -1,7 +1,7 @@
-navBit 0 0 resources/sprites/config/bits_yellow.txt
-normBit 0 0 resources/sprites/config/bits_green.txt
+mapKey 77 60 resources/sprites/map_key.png
+mapSample 0 -1000 resources/sprites/map_sample.png
 END
-navBit 3 0
 FRAME 30
-navBit 0 3
-FRAME 60
+mapSample 0 1140
+FRAME 1
+FRAME 200

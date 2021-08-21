@@ -1,7 +1,30 @@
-duelBit1 0 0 resources/sprites/config/bits_duel.txt
-duelBit2 0 0 resources/sprites/config/bits_duel.txt
+duelBit1 160 256 resources/sprites/config/bits_duel.txt
+duelBit2 160 256 resources/sprites/config/bits_duel.txt
+keys1 116 166 resources/sprites/keys_wasd.png
+keys2 116 166 resources/sprites/keys_arrows.png
 END
-duelBit1 3 0
+FRAME 50
+duelBit1 0 -5
+duelBit2 0 5
+keys1 0 -5
+keys2 0 5
 FRAME 30
-duelBit1 0 3
-FRAME 60
+duelBit1 5 0
+duelBit2 0 5
+keys1 5 0
+keys2 0 5
+FRAME 15
+duelBit1 -5 0
+duelBit2 0 5
+keys1 -5 0
+keys2 0 5
+FRAME 8
+duelBit1 5 0
+duelBit2 -5 0
+keys1 5 0
+keys2 -5 0
+FRAME 8
+duelBit2 -5 0
+keys2 -5 0
+FRAME 10
+FRAME 20
