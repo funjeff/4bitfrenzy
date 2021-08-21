@@ -381,7 +381,6 @@ public class GameCode {
 		//Check for perk 15 (score booster, no longer default)
 		int perk15Count = 0;
 		for (int i = 0; i < 4; i++) {
-			System.out.println(perks[i]);
 			if (perks [i] == 15) {
 				perk15Count++;
 			}

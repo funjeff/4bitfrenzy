@@ -31,6 +31,10 @@ public class Textbox extends GameObject {
 	
 	int largestSize = 16;
 	
+	//hackyest shit Ive ever done in my life
+	int changeTextShake = 0;
+	int newLine = 0;
+	
 	double lineSpacing = 2;
 
 	ArrayList <double []> shakeInfo = new ArrayList <double []> ();
@@ -50,8 +54,8 @@ public class Textbox extends GameObject {
 	this.setBox ("Black");
 	spaceManipulation = 0;
 	text = textToDisplay;
-	width = 3200;
-	height = 1600;
+	width = textToDisplay.length() * 16;
+	height = 1;
 	
 	
 	this.setRenderPriority(1);
@@ -78,6 +82,73 @@ public class Textbox extends GameObject {
 	public void setLineSpacing(double lineSpacing) {
 		this.lineSpacing = lineSpacing;
 	}
+	
+	public boolean isFull () {
+		if (this.getTextLength() >= this.getSpace()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	public int getTextLength () {
+		int length = 0;
+		
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == '~') {
+				i = this.simulateTilde(text, i);
+			}
+			
+			length = length + 1;
+		}
+		return length;
+	}
+	public int [] getTextSpaceUsage() {
+		int textSize = 16;
+		int xSpaceUsed = 0;
+		int ySpaceUsed = 0;
+		int currentlyTrackingX = 0;
+		
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == '~') {
+				int [] data = this.simulateTildeForSpace(text, i);
+				i = data[0];
+				if (data[1] >= 1) {
+					ySpaceUsed = ySpaceUsed + textSize;
+					data[1] = data[1] - 1;
+					if (currentlyTrackingX > xSpaceUsed) {
+						xSpaceUsed = currentlyTrackingX;
+					}
+					currentlyTrackingX = 0;
+				}
+				textSize = data[2];
+				for (int j = 0; j < data[1]; j++) {
+					ySpaceUsed = ySpaceUsed + textSize;
+				}
+			}
+			
+			currentlyTrackingX = currentlyTrackingX + textSize;
+			if (currentlyTrackingX > this.width) {
+				xSpaceUsed = this.width;
+				currentlyTrackingX = 0;
+				ySpaceUsed = ySpaceUsed + 16;
+			}
+			
+		}
+		if (currentlyTrackingX > xSpaceUsed) {
+			xSpaceUsed = currentlyTrackingX;
+		}
+		if (ySpaceUsed == 0) {
+			ySpaceUsed = textSize;
+		}
+		
+		int [] spacesUsed = {xSpaceUsed,ySpaceUsed};
+		
+		return spacesUsed;
+		
+	}
+	
 	public static Sprite getTextboxResource (String path, String parseStr) {
 		//Construct the cache string
 		String cacheStr = path + ":" + parseStr;
@@ -183,58 +254,21 @@ public void drawBox () {
 		
 		if (drawChar == '~') {
 			
-			i = i + 1;
-			char identifyingChar = text.charAt(i);
-			switch (identifyingChar) {
-				case 'C':
-					i = i + 1;
-					identifyingChar = text.charAt(i);
-					
-					String color = "";
-					while (identifyingChar != '~') {
-						color = color + identifyingChar;
-						i = i + 1;
-						identifyingChar = text.charAt(i);
-					}
-					this.setFontTemporarily(color);
-					i = i + 1;
-					break;
-				case 'S':
-					i = i + 1;
-					identifyingChar = text.charAt(i);
-					
-					String size = "";
-					while (identifyingChar != '~') {
-						size = size + identifyingChar;
-						i = i + 1;
-						identifyingChar = text.charAt(i);
-					}
-					this.setTextSize(Integer.parseInt(size));
-					i = i + 1;
-					break;
-				case 'T':
-					i = i + 1;
-					identifyingChar = text.charAt(i);
-					
-					String transparancy = "";
-					while (identifyingChar != '~') {
-						transparancy = transparancy + identifyingChar;
-						i = i + 1;
-						identifyingChar = text.charAt(i);
-					}
-					fontSheet.setOpacity(Integer.parseInt(transparancy));
-					break;
-				case 'H':
-					textShake = !textShake;
-					i = i +1;
-					break;
-				case 'N':
-					xPos = (int) this.getX();
-					yPos = yPos + (int)(largestSize * lineSpacing);
-					i = i + 1;
-					break;
-				}
+			i = this.dealWithTilde(text, i);
+			
+			if (i >= text.length()) {
+				break;
 			}
+			while (newLine != 0) {
+				xPos = (int) this.getX();
+				yPos = yPos + (int)(largestSize * lineSpacing);
+				newLine = newLine - 1;
+			}
+			while (changeTextShake != 0) {
+				textShake = !textShake;
+			}
+			
+		}
 		
 		double shakeOffsetX = 0;
 		double shakeOffsetY = 0;
@@ -316,9 +350,12 @@ public void drawBox () {
 			}
 			
 		}
-		fontSheet.draw(xPos + (int)shakeOffsetX - GameCode.getViewX (), yPos + (int)shakeOffsetY - GameCode.getViewY (), text.charAt(i));
+		if (xPos > GameCode.getViewX() && xPos < GameCode.getViewX() + GameCode.getSettings().getResolutionX() && yPos > GameCode.getViewY() && yPos < GameCode.getViewY() + GameCode.getSettings().getResolutionY()) {
+			fontSheet.draw(xPos + (int)shakeOffsetX - GameCode.getViewX (), yPos + (int)shakeOffsetY - GameCode.getViewY (), text.charAt(i));
+		}
 		
 		xPos = xPos + textSize;
+		
 		
 		if ((xPos - this.getX()) > width) {
 			xPos = (int) this.getX();
@@ -333,6 +370,185 @@ public void drawBox () {
 	}
 	this.resetFont();
 
+}
+private int simulateTilde (String message, int startI) {
+		int i = startI + 1;
+		char identifyingChar = message.charAt(i);
+		switch (identifyingChar) {
+			case 'C':
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+				while (identifyingChar != '~') {
+					i = i + 1;
+				
+					identifyingChar = text.charAt(i);
+				}
+				i = i + 1;
+				break;
+			case 'S':
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+				
+				String size = "";
+				while (identifyingChar != '~') {
+					size = size + identifyingChar;
+					i = i + 1;
+					identifyingChar = message.charAt(i);
+				}
+				i = i + 1;
+				break;
+			case 'T':
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+				
+				while (identifyingChar != '~') {
+					i = i + 1;
+					identifyingChar = message.charAt(i);
+				}
+				break;
+			case 'H':
+				i = i +1;
+				break;
+			case 'N':
+				i = i + 1;
+				break;
+			}
+		
+		try {
+			if (message.charAt(i) == '~') {
+				i = this.simulateTilde(message, i);
+			}
+		} catch (StringIndexOutOfBoundsException e) {
+			
+		}
+		
+		return i;
+		}
+
+private int [] simulateTildeForSpace (String message, int startI) {
+	int newLineAmount = 0;
+	int endSize = 16;
+	int i = startI + 1;
+	
+	char identifyingChar = message.charAt(i);
+	switch (identifyingChar) {
+		case 'C':
+			i = i + 1;
+			identifyingChar = message.charAt(i);
+			while (identifyingChar != '~') {
+				i = i + 1;
+				identifyingChar = text.charAt(i);
+			}
+			i = i + 1;
+			break;
+		case 'S':
+			i = i + 1;
+			identifyingChar = message.charAt(i);
+			
+			String size = "";
+			while (identifyingChar != '~') {
+				size = size + identifyingChar;
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+			}
+			endSize = Integer.parseInt(size);
+			i = i + 1;
+			break;
+		case 'T':
+			i = i + 1;
+			identifyingChar = message.charAt(i);
+			
+			while (identifyingChar != '~') {
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+			}
+			break;
+		case 'H':
+			i = i +1;
+			break;
+		case 'N':
+			newLineAmount = newLineAmount + 1;
+			i = i + 1;
+			break;
+		}
+	
+	try {
+		if (message.charAt(i) == '~') {
+			int [] values = this.simulateTildeForSpace(message,i);
+			i = values[0];
+			newLineAmount = newLineAmount + values[1];
+			endSize = values[2];
+		}
+	} catch (StringIndexOutOfBoundsException e) {
+		
+	}
+	
+	int [] returnValues = {i,newLineAmount,endSize};
+	return returnValues;
+	}
+
+
+private int dealWithTilde (String message, int startI) {
+	int i = startI;
+	
+	i = i + 1;
+	char identifyingChar = message.charAt(i);
+	switch (identifyingChar) {
+		case 'C':
+			i = i + 1;
+			identifyingChar = message.charAt(i);
+			
+			String color = "";
+			while (identifyingChar != '~') {
+				color = color + identifyingChar;
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+			}
+			i = i + 1;
+			this.setFontTemporarily(color);
+			break;
+		case 'S':
+			i = i + 1;
+			identifyingChar = message.charAt(i);
+			
+			String size = "";
+			while (identifyingChar != '~') {
+				size = size + identifyingChar;
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+			}
+			this.setTextSize(Integer.parseInt(size));
+			i = i + 1;
+			break;
+		case 'T':
+			i = i + 1;
+			identifyingChar = message.charAt(i);
+			
+			String transparancy = "";
+			while (identifyingChar != '~') {
+				transparancy = transparancy + identifyingChar;
+				i = i + 1;
+				identifyingChar = message.charAt(i);
+			}
+			fontSheet.setOpacity(Integer.parseInt(transparancy));
+			break;
+		case 'H':
+			changeTextShake = changeTextShake + 1;
+			i = i +1;
+			break;
+		case 'N':
+			newLine = newLine + 1;
+			i = i + 1;
+			break;
+		}
+	try {
+		if (message.charAt(i) == '~') {
+			i = this.dealWithTilde(message, i);
+		}
+	} catch (StringIndexOutOfBoundsException e) {
+		
+	}
+	return i;
 }
 
 @Override
