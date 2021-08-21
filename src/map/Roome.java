@@ -636,19 +636,19 @@ public class Roome extends GameObject {
 //					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
 //				}
 			} else {
-				walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
-				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
+				/*walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
 				walls[1] = new WallBox ((int)this.getX (), (int)this.getY () + 144, 216, 108);
 				walls[2] = new WallBox ((int)this.getX () + 648, (int)this.getY (), 432, 144);
 				walls[3] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 144, 216, 108);
 				walls[4] = new WallBox ((int)this.getX (), (int)this.getY () + 468, 216, 108);
 				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
 				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
-				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
+				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);*/
 				//Startpoints/endpoints are arranged in counter-clockwise order
 				//Top
+				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
 				if (!topJunction) {
-					walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
+					//walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
 					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
 				} else {
 					new Ribbon ((int)getX () + 432, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
@@ -658,7 +658,7 @@ public class Roome extends GameObject {
 				}
 				//Left
 				if (!leftJunction) {
-					walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
+					//walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 576);
 				} else {
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 252);
@@ -668,7 +668,7 @@ public class Roome extends GameObject {
 				}
 				//Right
 				if (!rightJunction) {
-					walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
+					//walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
 					new Ribbon ((int)getX () + 864, (int)getY () + 576, (int)getX () + 864, (int)getY () + 144);
 				} else {
 					new Ribbon ((int)getX () + 864, (int)getY () + 252, (int)getX () + 864, (int)getY () + 144);
@@ -678,7 +678,7 @@ public class Roome extends GameObject {
 				}
 				//Bottom
 				if (!bottomJunction) {
-					walls[11] = new WallBox ((int)this.getX () + 432, (int)this.getY () + 576, 216, 216);
+					//walls[11] = new WallBox ((int)this.getX () + 432, (int)this.getY () + 576, 216, 216);
 					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
 				} else {
 					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 432, (int)getY () + 576);
@@ -925,7 +925,9 @@ public class Roome extends GameObject {
 	}
 	public String pickWallColor () {
 		Random rand = new Random ();
-		String color = "~C" + getCodeWallColors().get(rand.nextInt(getCodeWallColors().size())) + "~";
+		int index = rand.nextInt(getCodeWallColors().size());
+		color = index;
+		String color = "~C" + getCodeWallColors().get(index) + "~";
 		setWallColor (color);
 		return color;
 	}

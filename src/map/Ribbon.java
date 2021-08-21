@@ -16,6 +16,13 @@ import engine.RenderLoop;
 public class Ribbon extends GameObject {
 
 	public static final Color defaultColor = new Color (0x157F41);
+	public static final Color[] defaultColors = new Color [] {
+			new Color (0x62A2C8),
+			new Color (0x82B686),
+			new Color (0xB77F83),
+			new Color (0xB5B282),
+			new Color (0x9E9E9E)
+	};
 	
 	int xFrom;
 	int yFrom;
@@ -122,7 +129,7 @@ public class Ribbon extends GameObject {
 	@Override
 	public void draw () {
 		Graphics g = RenderLoop.wind.getBufferGraphics ();
-		g.setColor (defaultColor);
+		g.setColor (defaultColors [Roome.getRoom ((xFrom + xTo) / 2, (yFrom + yTo) / 2).color]);
 		if (xFrom == xTo) {
 			int y1 = yFrom < yTo ? yFrom : yTo; //Swap if needed
 			int y2 = yFrom < yTo ? yTo : yFrom;
