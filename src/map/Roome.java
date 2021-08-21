@@ -63,6 +63,9 @@ public class Roome extends GameObject {
 	int id;
 	int color;
 	
+	public String wallColor = "NULL";
+	public String altWallColor = "NULL";
+	
 	boolean inRoomcollsions;
 	
 	GameObject [] walls = new GameObject [12];
@@ -77,10 +80,12 @@ public class Roome extends GameObject {
 	public static ArrayList<Integer> roomPool;
 	public static ArrayList<String> codeWallLines;
 	public static ArrayList<String> codeWallColors;
+	public static ArrayList<String> inlineTexts;
 	public static HashMap<Integer, ArrayList<Roome>> roomeIdMap;
 	public static HashMap<Integer, ArrayList<String>> roomeAltMap;
 	public static HashMap<Integer, ArrayList<String>> spawnsMap;
 	public static HashMap<Integer, ArrayList<Boolean>> allowedWallsMap;
+	
 	
 	public Roome ()
 	{
@@ -437,7 +442,7 @@ public class Roome extends GameObject {
 		
 	}
 	
-	public ArrayList<String> getCodeWallLines () {
+	public static ArrayList<String> getCodeWallLines () {
 		
 		//Populate the code wall lines list if it's empty
 		if (codeWallLines == null) {
@@ -460,7 +465,7 @@ public class Roome extends GameObject {
 		
 	}
 	
-	public ArrayList<String> getCodeWallColors () {
+	public static ArrayList<String> getCodeWallColors () {
 		
 		//Populate the code wall colors list if it's empty
 		if (codeWallColors == null) {
@@ -482,8 +487,28 @@ public class Roome extends GameObject {
 		return codeWallColors;
 		
 	}
+	public static ArrayList <String> getInwallMessages (){
+		//put all the wall texts into an arraylist
+				if (inlineTexts == null) {
+					inlineTexts = new ArrayList<String> ();
+					File f = new File ("resources/sprites/config/codeMessages.txt");
+					Scanner s;
+					try {
+						s = new Scanner (f);
+						while (s.hasNextLine ()) {
+							inlineTexts.add (s.nextLine ());
+						}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				//Return wall texts
+				return inlineTexts;
+	}
 	
-	public static HashMap<Integer, ArrayList<Roome>> getRoomeIdMap () {
+	private static HashMap<Integer, ArrayList<Roome>> getRoomeIdMap () {
 		
 		if (roomeIdMap == null) {
 			roomeIdMap = new HashMap<Integer, ArrayList<Roome>> ();
@@ -527,89 +552,89 @@ public class Roome extends GameObject {
 			this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432)); 
 			
 			if (!GameCode.devMode ()) {
-				walls[0] = new Textbox("");
-				((Textbox)walls[0]).changeBoxVisability();
-				((Textbox)walls[0]).changeWidth(432/16);
-				((Textbox)walls[0]).changeHeight(144/16);
-				((Textbox)walls[0]).declare((int)this.getX(), (int)this.getY());
-				
-				walls[1] = new Textbox("");
-				((Textbox)walls[1]).changeBoxVisability();
-				((Textbox)walls[1]).changeWidth(216/16);
-				((Textbox)walls[1]).changeHeight(108/16);
-				((Textbox)walls[1]).declare((int)this.getX(), (int)this.getY() + 144);
-				
-				
-				walls[2] = new Textbox("");
-				((Textbox)walls[2]).changeBoxVisability();
-				((Textbox)walls[2]).changeWidth(432/16);
-				((Textbox)walls[2]).changeHeight(144/16);
-				((Textbox)walls[2]).declare((int)this.getX() + 648, (int)this.getY());
-				
-				walls[3] = new Textbox("");
-				((Textbox)walls[3]).changeBoxVisability();
-				((Textbox)walls[3]).changeWidth(216/16);
-				((Textbox)walls[3]).changeHeight(108/16);
-				((Textbox)walls[3]).declare((int)this.getX() + 864, (int)this.getY() + 144);
-				
-				walls[4] = new Textbox("");
-				((Textbox)walls[4]).changeBoxVisability();
-				((Textbox)walls[4]).changeWidth(216/16);
-				((Textbox)walls[4]).changeHeight(108/16);
-				((Textbox)walls[4]).declare((int)this.getX(), (int)this.getY() + 468);
-				
-				walls[5] = new Textbox("");
-				((Textbox)walls[5]).changeBoxVisability();
-				((Textbox)walls[5]).changeWidth(432/16);
-				((Textbox)walls[5]).changeHeight(144/16);
-				((Textbox)walls[5]).declare((int)this.getX(), (int)this.getY() + 576);
-				
-				walls[6] = new Textbox("");
-				((Textbox)walls[6]).changeBoxVisability();
-				((Textbox)walls[6]).changeWidth(216/16);
-				((Textbox)walls[6]).changeHeight(108/16);
-				((Textbox)walls[6]).declare((int)this.getX() + 864, (int)this.getY() + 468);
-				
-				walls[7] = new Textbox("");
-				((Textbox)walls[7]).changeBoxVisability();
-				((Textbox)walls[7]).changeWidth(432/16);
-				((Textbox)walls[7]).changeHeight(144/16);
-				((Textbox)walls[7]).declare((int)this.getX() + 648, (int)this.getY() + 576);
-				
-				walls[8] = new Textbox("");
-				((Textbox)walls[8]).changeBoxVisability();
-				((Textbox)walls[8]).changeWidth(216/16);
-				((Textbox)walls[8]).changeHeight(144/16);
-				
-				
-				if (!topJunction) {
-					((Textbox)walls[8]).declare((int)this.getX() + 432, (int)this.getY());
-				}
-				
-				walls[9] = new Textbox("");
-				((Textbox)walls[9]).changeBoxVisability();
-				((Textbox)walls[9]).changeWidth(216/16);
-				((Textbox)walls[9]).changeHeight(216/16);
-				
-				if (!leftJunction) {
-					((Textbox)walls[9]).declare((int)this.getX(), (int)this.getY() + 252);
-				}
-				
-				walls[10] = new Textbox("");
-				((Textbox)walls[10]).changeBoxVisability();
-				((Textbox)walls[10]).changeWidth(216/16);
-				((Textbox)walls[10]).changeHeight(216/16);
-				if (!rightJunction) {
-					((Textbox)walls[10]).declare((int)this.getX() + 864, (int)this.getY() + 252);
-				}
-				
-				walls[11] = new Textbox("");
-				((Textbox)walls[11]).changeBoxVisability();
-				((Textbox)walls[11]).changeWidth(216/16);
-				((Textbox)walls[11]).changeHeight(144/16);
-				if (!bottomJunction) {
-					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
-				}
+//				walls[0] = new Textbox("");
+//				((Textbox)walls[0]).changeBoxVisability();
+//				((Textbox)walls[0]).changeWidth(432/16);
+//				((Textbox)walls[0]).changeHeight(144/16);
+//				((Textbox)walls[0]).declare((int)this.getX(), (int)this.getY());
+//				
+//				walls[1] = new Textbox("");
+//				((Textbox)walls[1]).changeBoxVisability();
+//				((Textbox)walls[1]).changeWidth(216/16);
+//				((Textbox)walls[1]).changeHeight(108/16);
+//				((Textbox)walls[1]).declare((int)this.getX(), (int)this.getY() + 144);
+//				
+//				
+//				walls[2] = new Textbox("");
+//				((Textbox)walls[2]).changeBoxVisability();
+//				((Textbox)walls[2]).changeWidth(432/16);
+//				((Textbox)walls[2]).changeHeight(144/16);
+//				((Textbox)walls[2]).declare((int)this.getX() + 648, (int)this.getY());
+//				
+//				walls[3] = new Textbox("");
+//				((Textbox)walls[3]).changeBoxVisability();
+//				((Textbox)walls[3]).changeWidth(216/16);
+//				((Textbox)walls[3]).changeHeight(108/16);
+//				((Textbox)walls[3]).declare((int)this.getX() + 864, (int)this.getY() + 144);
+//				
+//				walls[4] = new Textbox("");
+//				((Textbox)walls[4]).changeBoxVisability();
+//				((Textbox)walls[4]).changeWidth(216/16);
+//				((Textbox)walls[4]).changeHeight(108/16);
+//				((Textbox)walls[4]).declare((int)this.getX(), (int)this.getY() + 468);
+//				
+//				walls[5] = new Textbox("");
+//				((Textbox)walls[5]).changeBoxVisability();
+//				((Textbox)walls[5]).changeWidth(432/16);
+//				((Textbox)walls[5]).changeHeight(144/16);
+//				((Textbox)walls[5]).declare((int)this.getX(), (int)this.getY() + 576);
+//				
+//				walls[6] = new Textbox("");
+//				((Textbox)walls[6]).changeBoxVisability();
+//				((Textbox)walls[6]).changeWidth(216/16);
+//				((Textbox)walls[6]).changeHeight(108/16);
+//				((Textbox)walls[6]).declare((int)this.getX() + 864, (int)this.getY() + 468);
+//				
+//				walls[7] = new Textbox("");
+//				((Textbox)walls[7]).changeBoxVisability();
+//				((Textbox)walls[7]).changeWidth(432/16);
+//				((Textbox)walls[7]).changeHeight(144/16);
+//				((Textbox)walls[7]).declare((int)this.getX() + 648, (int)this.getY() + 576);
+//				
+//				walls[8] = new Textbox("");
+//				((Textbox)walls[8]).changeBoxVisability();
+//				((Textbox)walls[8]).changeWidth(216/16);
+//				((Textbox)walls[8]).changeHeight(144/16);
+//				
+//				
+//				if (!topJunction) {
+//					((Textbox)walls[8]).declare((int)this.getX() + 432, (int)this.getY());
+//				}
+//				
+//				walls[9] = new Textbox("");
+//				((Textbox)walls[9]).changeBoxVisability();
+//				((Textbox)walls[9]).changeWidth(216/16);
+//				((Textbox)walls[9]).changeHeight(216/16);
+//				
+//				if (!leftJunction) {
+//					((Textbox)walls[9]).declare((int)this.getX(), (int)this.getY() + 252);
+//				}
+//				
+//				walls[10] = new Textbox("");
+//				((Textbox)walls[10]).changeBoxVisability();
+//				((Textbox)walls[10]).changeWidth(216/16);
+//				((Textbox)walls[10]).changeHeight(216/16);
+//				if (!rightJunction) {
+//					((Textbox)walls[10]).declare((int)this.getX() + 864, (int)this.getY() + 252);
+//				}
+//				
+//				walls[11] = new Textbox("");
+//				((Textbox)walls[11]).changeBoxVisability();
+//				((Textbox)walls[11]).changeWidth(216/16);
+//				((Textbox)walls[11]).changeHeight(144/16);
+//				if (!bottomJunction) {
+//					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
+//				}
 			} else {
 				walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
 				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
@@ -663,30 +688,266 @@ public class Roome extends GameObject {
 				}
 			}
 			
-			color = colorNum;
-			String color = "";
-			
-			//thanks stack overflow :)
-			color = getCodeWallColors ().get (colorNum);
-			for (int i = 0; i < walls.length; i++) {
-				
-				StringBuilder finalMessage = new StringBuilder ();
-				if (walls[i] instanceof Textbox) { //Only relevant for testing\
-					Textbox working = (Textbox)walls[i];
-					while (working.getSpace()/2 > finalMessage.length()) {
-						int lineNum2 = rand.nextInt (getCodeWallLines ().size ());
-						finalMessage.append (' ');
-						finalMessage.append (getCodeWallLines ().get (lineNum2));
-					}
-					working.changeText(finalMessage.toString ().toUpperCase());
-					working.setFont(color);
-				}
-				
-			}
+//			color = colorNum;
+//			String color = "";
+//			
+//			int altNum = colorNum;
+//			
+//			while (altNum == colorNum) {
+//				altNum = rand.nextInt(getCodeWallColors().size());
+//			}
+//			String tipColor = "~C" + getCodeWallColors().get(altNum) + "~";
+//			//thanks stack overflow :)
+//			color = "~C" + getCodeWallColors ().get (colorNum) + "~";
+//			
+//			for (int i = 0; i < walls.length; i++) {
+//				
+//				StringBuilder finalMessage = new StringBuilder ();
+//				if (walls[i] instanceof Textbox) { //Only relevant for testing\
+//					Textbox working = (Textbox)walls[i];
+//					int realLenth = finalMessage.length();
+//					finalMessage.append(color);
+//					while (working.getSpace()/2 > realLenth) {
+//						if (rand.nextInt(30) == 14) {
+//							finalMessage.append(tipColor);
+//							
+//							int oldLength = finalMessage.length();
+//							finalMessage.append(getInwallMessages ().get(rand.nextInt(getInwallMessages().size())));
+//							realLenth = realLenth + (finalMessage.length() - oldLength);
+//							
+//							finalMessage.append(color);
+//						} else {
+//						int lineNum2 = rand.nextInt (getCodeWallLines ().size ());
+//						
+//							int oldLegth = finalMessage.length();
+//							finalMessage.append (' ');
+//							finalMessage.append (getCodeWallLines ().get (lineNum2));
+//							realLenth = realLenth + (finalMessage.length() - oldLegth);
+//						}
+//					}
+//					working.changeText(finalMessage.toString ().toUpperCase());
+//				}
+//				
+//			}
 			
 		}
 	}
+	public static void initText () {;
+		Textbox[] wallLines = new Textbox[(Roome.getMapHeight() * 720)/36];
+		
+		String startMessage = "";
+		for (int i = 0; i < wallLines.length; i++) {
+			wallLines[i] = new Textbox ("");
+			wallLines[i].changeBoxVisability();
+			wallLines[i].changeWidth((getMapWidth() * 1080)/16 -1);
+			wallLines[i].changeHeight(1);
+			wallLines[i].declare(0, i * 36);
+			startMessage = fillArea(0,wallLines[i],startMessage);
+		}
+		while (!allFull(wallLines)) {
+			for (int i = 0; i < wallLines.length; i++) {
+				if (!wallLines[i].isFull()) {
+					startMessage = fillArea(wallLines[i].getTextLength() * 16,wallLines[i],startMessage);
+				}
+			}
+		}
+	}
 	
+	public static boolean allFull (Textbox [] toCheck) {
+		for (int i = 0; i < toCheck.length; i++) {
+			if (!toCheck[i].isFull()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	private static String fillArea (int startPos, Textbox b, String startMessage) {
+
+		Roome r = Roome.getRoom(startPos, b.getY());
+		
+		String color = "";
+		
+		
+		if (r.getWallColor() != "NULL") {
+			color = r.getWallColor();
+		} else {
+			color = r.pickWallColor ();
+		}
+		
+		String tipColor = "";
+		
+		if (r.getAltWallColor() != "NULL") {
+			tipColor = r.getAltWallColor();
+		} else {
+			tipColor = r.pickAltWallColor();
+		}
+			int length = 0;
+			StringBuilder finalMessage = new StringBuilder ();
+			finalMessage.append(b.getText());
+			
+			Textbox working = b;
+			Random rand = new Random ();
+			
+			
+			boolean tip = false;
+			
+			try {
+				if (startMessage.charAt(0) == '~') {
+					int ending = 0;
+					while (true) {
+						ending = ending + 1;
+						if (startMessage.charAt(ending) == '~') {
+							ending = ending + 1;
+							break;
+						}
+					}
+					finalMessage.append(startMessage.substring(0, ending));
+					startMessage = startMessage.substring(ending);
+					tip = true;
+				} else {
+					finalMessage.append(color);
+				}
+			} catch (StringIndexOutOfBoundsException e) {
+				finalMessage.append(color);
+			}
+			
+			String toApend = startMessage;
+				
+				String remainder = "";
+				
+				boolean done = false;
+				
+				while (true) {
+					int lineNum2 = rand.nextInt (getCodeWallLines ().size ());
+					
+						
+						for (int i = 0; i < toApend.length(); i++) {
+							if (!r.inRoom(startPos + (length + 1) * 16, working.getY())) {
+								try {
+									r = Roome.getRoom(startPos + (length + 1) * 16, working.getY());
+								} catch (ArrayIndexOutOfBoundsException e) {
+									
+									remainder = toApend.substring(i);
+									done = true;
+									break;
+								}
+								if (r.getWallColor() != "NULL") {
+									color = r.getWallColor();
+								} else {
+									color = r.pickWallColor ();
+								}
+								
+								
+								if (!tip) {
+									finalMessage.append(color);
+									
+									if (r.getAltWallColor() != "NULL") {
+										tipColor = r.getAltWallColor();
+									} else {
+										tipColor = r.pickAltWallColor();
+									}
+								}
+								
+							} 
+							if (r.inWall(startPos + (length + 1) * 16, (int)working.getY())) {
+								finalMessage.append(toApend.charAt(i));
+								length = length + 1;
+							} else {
+								finalMessage.append(toApend.charAt(i));
+								length = length + 1;
+								i = i + 1;
+								
+								if (tip) {
+									finalMessage.append(color);
+									remainder = tipColor;
+								}
+								remainder = remainder + toApend.substring(i);
+								
+								while (!r.inWall(startPos + (length + 1) * 16, (int)working.getY())) { 
+									finalMessage.append(" ");
+									length = length + 1;
+									
+									if (!r.inRoom(startPos + (length + 1) * 16, working.getY())) {
+										r = Roome.getRoom(startPos + (length + 1) * 16, working.getY());
+										
+										if (r.getWallColor() != "NULL") {
+											color = r.getWallColor();
+										} else {
+											color = r.pickWallColor ();
+										}
+										
+										if (r.getAltWallColor() != "NULL") {
+											tipColor = r.getAltWallColor();
+										} else {
+											tipColor = r.pickAltWallColor();
+										}
+										
+									}
+								}
+								done = true;
+								break;
+							}
+						}
+						if (done) {
+							break;
+						}
+						if (tip) {
+							finalMessage.append(color);
+							
+							if (r.getAltWallColor() != "NULL") {
+								tipColor = r.getAltWallColor();
+							} else {
+								tipColor = r.pickAltWallColor();
+							}
+							
+							tip = false;
+						}
+					if (rand.nextInt(30) == 14) {
+						finalMessage.append(tipColor);
+						toApend = getInwallMessages ().get(rand.nextInt(getInwallMessages().size()));
+						tip = true;
+						
+					} else {
+						toApend = " " + getCodeWallLines ().get(lineNum2);
+					}
+					
+				}
+				b.changeText(finalMessage.toString ().toUpperCase());
+				return remainder;
+			}
+			
+	public String getWallColor() {
+		return wallColor;
+	}
+
+	public void setWallColor(String wallColor) {
+		this.wallColor = wallColor;
+	}
+	public String pickWallColor () {
+		Random rand = new Random ();
+		String color = "~C" + getCodeWallColors().get(rand.nextInt(getCodeWallColors().size())) + "~";
+		setWallColor (color);
+		return color;
+	}
+	public String pickAltWallColor () {
+		altWallColor = wallColor;
+		
+		while (altWallColor.equals(wallColor)) {
+			Random rand = new Random ();
+			String color = "~C" + getCodeWallColors().get(rand.nextInt(getCodeWallColors().size())) + "~";
+			setAltWallColor (color);
+		}
+		return altWallColor;
+	}
+
+	public String getAltWallColor() {
+		return altWallColor;
+	}
+
+	public void setAltWallColor(String altWallColor) {
+		this.altWallColor = altWallColor;
+	}
+
 	public static void fillDistMaps () {
 		
 		//Make the distance maps
@@ -816,7 +1077,7 @@ public class Roome extends GameObject {
 		}
 		
 		fillDistMaps ();
-		
+		initText();
 	}
 	
 	public static void loadMap (String mapString) {
@@ -859,7 +1120,7 @@ public class Roome extends GameObject {
 			r.roomPosY = (i / mapWidth);
 		}
 		
-		
+		initText();
 	}
 	
 	public static String saveMap () {
@@ -1116,7 +1377,7 @@ public class Roome extends GameObject {
 	}
 	
 	public GameObject spawnObject (Class<?> obj) {
-		System.out.println (obj);
+	//	System.out.println (obj);
 		//NOTE: ONLY WORKS WITH OBJECTS THAT HAVE DEFINED HITBOX DIMENSIONS VIA GameObject.getHitboxDimensions (Class<?> c)
 		
 		Dimension defaultHitbox = GameObject.getHitboxDimensions (obj);
@@ -1140,7 +1401,7 @@ public class Roome extends GameObject {
 			do {
 				int idx = indices.remove (0);
 				String params = spawnParams.get (idx);
-				System.out.println (params);
+				//System.out.println (params);
 				Scanner s = new Scanner (params);
 				x = s.nextInt () + (int)this.getX ();
 				y = s.nextInt () + (int)this.getY ();
@@ -1167,6 +1428,42 @@ public class Roome extends GameObject {
 		
 	}
 	
+	public boolean inWall (int x, int y) {
+		Rectangle objHitbox = new Rectangle (x,y,2,2);
+		
+		objHitbox.x = objHitbox.x - (1080 * roomPosX);
+		objHitbox.y = objHitbox.y -  (720 * roomPosY);
+		
+		int displacedX = GameCode.getViewX() - (1080 * roomPosX);
+		int displacedY = GameCode.getViewY() - (720 * roomPosY);
+		
+		displacedX = displacedX * -1;
+		displacedY = displacedY * -1;
+		
+		objHitbox.x = objHitbox.x + displacedX;
+		objHitbox.y = objHitbox.y + displacedY;
+		
+		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
+		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,92);
+		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
+		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,92);
+		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
+		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
+		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);
+		Rectangle rect8 = new Rectangle ( 648 + displacedX,576 + displacedY,432,144);
+		
+		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,128);
+		Rectangle rect10 = new Rectangle (0 + displacedX,236 + displacedY, 216, 232);
+		Rectangle rect11 = new Rectangle (864 + displacedX, 236 + displacedY, 216, 232);
+		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
+		
+		if ((!objHitbox.intersects(rect12) || bottomJunction) && (!objHitbox.intersects(rect11) || rightJunction) && (!objHitbox.intersects(rect10) || leftJunction) && (!objHitbox.intersects(rect9) || topJunction) && !objHitbox.intersects(rect8) && !objHitbox.intersects(rect7) && !objHitbox.intersects(rect6) && !objHitbox.intersects(rect5) && !objHitbox.intersects(rect4) && !objHitbox.intersects(rect3) && !objHitbox.intersects(rect2) && !objHitbox.intersects(rect1)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	@Override
 	public boolean isColliding (GameObject obj) {
 		Rectangle objHitbox = new Rectangle (obj.hitbox());
@@ -1184,16 +1481,16 @@ public class Roome extends GameObject {
 		objHitbox.x = objHitbox.x + displacedX;
 		objHitbox.y = objHitbox.y + displacedY;
 		
-		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 144);
-		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,108);
-		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,144);
-		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,108);
+		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
+		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,92);
+		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
+		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,92);
 		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
 		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
 		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);
 		Rectangle rect8 = new Rectangle ( 648 + displacedX,576 + displacedY,432,144);
 		
-		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,144);
+		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,128);
 		Rectangle rect10 = new Rectangle (0 + displacedX,252 + displacedY, 216, 216);
 		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);

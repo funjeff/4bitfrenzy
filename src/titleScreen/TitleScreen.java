@@ -226,6 +226,7 @@ public class TitleScreen extends GameObject {
 					System.out.println ("STARTING");
 					titleClosed = true;
 					ipBox.forget ();
+					infoBox.forget();
 					forget ();
 				}
 			}

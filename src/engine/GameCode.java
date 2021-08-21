@@ -230,7 +230,7 @@ public class GameCode {
 			int mouseY = bits.get (0).getCursorY () + getViewY ();
 			Point pt = Ribbon.getRibbonFromPoint (new Point (mouseX, mouseY));
 			if (pt != null) {
-				System.out.println (pt);
+				//System.out.println (pt);
 				new RibbonPulse (pt.x, pt.y).declare (0, 0);
 			}
 			
@@ -382,7 +382,6 @@ public class GameCode {
 		//Check for perk 15 (score booster, no longer default)
 		int perk15Count = 0;
 		for (int i = 0; i < 4; i++) {
-			System.out.println(perks[i]);
 			if (perks [i] == 15) {
 				perk15Count++;
 			}
