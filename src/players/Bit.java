@@ -417,6 +417,9 @@ public class Bit extends GameObject {
 				resistance = 0.5/regestersBeingCarried.size();
 			}
 		}
+		if (regestersBeingCarried != null && regestersBeingCarried.size () == 0) {
+			resistance = 1;
+		}
 		double newSpeed = this.speed * resistance;
 		
 		if (resistance == 1) {
@@ -452,6 +455,14 @@ public class Bit extends GameObject {
 		}
 	}
 	@Override
+	public void setY (double y) {
+		System.out.println (y);
+		if (y < 0) {
+			Thread.dumpStack();
+		}
+		super.setY (y);
+	}
+	@Override
 	public boolean goX(double val) {
 		double x = this.getX();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
@@ -467,6 +478,7 @@ public class Bit extends GameObject {
 				ArrayList <GameObject> regesters = this.getCollisionInfo().getCollidingObjects();
 				for (int i = 0; i < regesters.size(); i++) {
 					if (regestersBeingCarried == null || !regestersBeingCarried.contains (regesters.get (i))) {
+						if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {regestersBeingCarried.remove (0);} //TODO TEMPORARY FIX FOR REMOTE PULLING
 						setX (x);
 						((Register)regesters.get (i)).push (this, val - x, 0);
 					}
@@ -504,6 +516,7 @@ public class Bit extends GameObject {
 				ArrayList <GameObject> regesters = this.getCollisionInfo().getCollidingObjects();
 				for (int i = 0; i < regesters.size(); i++) {
 					if (regestersBeingCarried == null || !regestersBeingCarried.contains (regesters.get (i))) {
+						if (regestersBeingCarried != null && regestersBeingCarried.size () != 0) {regestersBeingCarried.remove (0);} //TODO TEMPORARY FIX FOR REMOTE PULLING
 						setY (y);
 						((Register)regesters.get (i)).push (this, 0, val - y);
 					}
