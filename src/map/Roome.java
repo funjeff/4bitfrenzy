@@ -1394,7 +1394,7 @@ public class Roome extends GameObject {
 				spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
 				gObj.setX (spawnCoords [0]);
 				gObj.setY (spawnCoords [1]);
-			}
+			} //Patch for objects spawning inside each other
 			return gObj;
 		} else {
 			boolean spawnAllowed = false;

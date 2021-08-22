@@ -105,7 +105,7 @@ public class TitleScreen extends GameObject {
 		
 		//Make the textboxes
 		ipBox = new Textbox ("");
-		ipBox.declare ();
+		ipBox.declare (0, 32);
 		ipBox.changeWidth (128);
 		ipBox.changeHeight (128);
 		ipBox.setFont ("text (red)");
@@ -114,7 +114,7 @@ public class TitleScreen extends GameObject {
 		ipBox.setRenderPriority(99);
 		
 		infoBox = new Textbox ("");
-		infoBox.declare (0, 32);
+		infoBox.declare (0, 48);
 		infoBox.changeWidth (128);
 		infoBox.changeHeight (128);
 		infoBox.setFont ("text (red)");
@@ -371,7 +371,7 @@ public class TitleScreen extends GameObject {
 	
 	@Override
 	public void draw () {
-		clearScreen ();
+		//clearScreen ();
 		super.draw ();
 		
 		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
