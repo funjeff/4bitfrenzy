@@ -1120,6 +1120,7 @@ public class Roome extends GameObject {
 			r.init (ids[i], colors[i]);
 			r.roomPosX = (i % mapWidth);
 			r.roomPosY = (i / mapWidth);
+			r.wallColor = "~C" + getCodeWallColors().get (colors [i]) + "~"; //Sync the colors
 		}
 		
 		initText();
