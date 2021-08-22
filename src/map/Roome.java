@@ -1389,7 +1389,13 @@ public class Roome extends GameObject {
 		ArrayList<String> spawnParams = this.getSpawnParameters ();
 		if (spawnParams == null) {
 			int[] spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
-			return GameCode.makeInstanceOfGameObject (obj, spawnCoords [0], spawnCoords [1]);
+			GameObject gObj = GameCode.makeInstanceOfGameObject (obj, spawnCoords [0], spawnCoords [1]);
+			while (gObj.isColliding ("Register") || gObj.isColliding ("DataSlot") || gObj.isCollidingChildren ("NPC")) {
+				spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
+				gObj.setX (spawnCoords [0]);
+				gObj.setY (spawnCoords [1]);
+			}
+			return gObj;
 		} else {
 			boolean spawnAllowed = false;
 			int attempts = 0;

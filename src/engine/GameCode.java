@@ -431,6 +431,11 @@ public class GameCode {
 				bits.add(bit1dot5);
 			}
 			bit.declare(spawnCoords[0],spawnCoords[1]);
+			while (bit.isColliding ("Register")) {
+				spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+				bit.setX (spawnCoords [0]);
+				bit.setY (spawnCoords [1]); //Fix for bit spawning inside register
+			}
 			bit.setPerk(perks[i]);
 			bit.updateIcon ();
 			bits.add(bit);
