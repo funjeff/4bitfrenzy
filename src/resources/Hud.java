@@ -38,6 +38,8 @@ public class Hud extends GameObject {
 	long prevTime;
 	static int lives = 11;
 	
+	static boolean waitingForNewWave = false;
+	
 	//Register spawning parameters
 	public static int minRegisterDistance = 1;
 	public static int maxRegisterDistance = 4;
@@ -121,9 +123,13 @@ public class Hud extends GameObject {
 		ArrayList<GameObject> dataSlots = ObjectHandler.getObjectsByName ("DataSlot");
 		int numSlots = 0;
 		for (int i = 0; i < dataSlots.size (); i++) {
-			if (!((DataSlot)dataSlots.get(i)).isScrambled ()) {
+			if (!((DataSlot)dataSlots.get(i)).isCleared () && !((DataSlot)dataSlots.get(i)).isScrambled ()) {
 				numSlots++;
 			}
+		}
+		if (NetworkHandler.isHost () && numSlots == 0 && !waitingForNewWave) {
+			waitingForNewWave = true;
+			waveOver ();
 		}
 		registersRemaining.changeText("" + numSlots);
 		registersRemaining.draw();
@@ -158,6 +164,7 @@ public class Hud extends GameObject {
 	}
 	public static void newWave() {	
 		
+		waitingForNewWave = false;
 		roundNum = roundNum + 1;
 		waveNum.changeText(Integer.toString(roundNum));
 
@@ -236,7 +243,7 @@ public class Hud extends GameObject {
 		}
 		
 		//Spawn in registers
-		int newRegisters = (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
+		int newRegisters = 1 + (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
 		for (int i = 0; i < newRegisters; i++) {
 				
 			try {

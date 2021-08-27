@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import engine.GameCode;
 import engine.GameObject;
+import engine.ObjectHandler;
 import engine.RenderLoop;
 import engine.Sprite;
 
@@ -25,6 +27,15 @@ public class ControlsHint extends GameObject {
 	@Override
 	public void draw () {
 		
+		if (mode == MODE_GRAB_REGISTER) {
+			setX (32 + GameCode.getViewX ());
+			setY (180 + GameCode.getViewY ());
+		} else if (mode == MODE_GAMBLE) {
+			GameObject dice = ObjectHandler.getObjectsByName ("LoadedDice").get (0);
+			setX ((int)dice.getX () - 4);
+			setY ((int)dice.getY () - 64);
+		}
+		
 		if (this.isVisable() && mode != MODE_NOT_VISIBLE) {
 			
 			Graphics g = RenderLoop.wind.getBufferGraphics();
@@ -44,33 +55,33 @@ public class ControlsHint extends GameObject {
 			
 			//Draw border
 			g.setColor (outerColor);
-			g.fillRect ((int)getX (), (int)getY (), boxWidth, boxHeight);
+			g.fillRect ((int)getX () - GameCode.getViewX (), (int)getY () - GameCode.getViewY (), boxWidth, boxHeight);
 			g.setColor (innerColor);
-			g.fillRect ((int)getX () + borderWidth, (int)getY () + borderHeight, boxWidth - borderWidth * 2, boxHeight - borderHeight * 2);
+			g.fillRect ((int)getX () - GameCode.getViewX () + borderWidth, (int)getY () - GameCode.getViewY () + borderHeight, boxWidth - borderWidth * 2, boxHeight - borderHeight * 2);
 			
 			if (mode == MODE_GRAB_REGISTER) {
 				
 				//Draw button
-				buttonSprite.draw ((int)getX () + textOffsetX + 30, (int)getY () + textOffsetY);
+				buttonSprite.draw ((int)getX () - GameCode.getViewX () + textOffsetX + 30, (int)getY () - GameCode.getViewY () + textOffsetY);
 				g.setColor (textColor);
-				g.drawString("shift", (int)this.getX() + textOffsetX + 34, (int)this.getY() + textOffsetY + 12);
+				g.drawString("shift", (int)getX () - GameCode.getViewX () + textOffsetX + 34, (int)getY () - GameCode.getViewY () + textOffsetY + 12);
 				
 				//Draw text
-				g.drawString("hold", (int)this.getX () + textOffsetX + 1, (int)this.getY () + textOffsetY + 14);
-				g.drawString("to grab", (int)this.getX () + textOffsetX + 10, (int)this.getY () + textOffsetY + 28);
+				g.drawString("hold", (int)getX () - GameCode.getViewX () + textOffsetX + 1, (int)getY () - GameCode.getViewY () + textOffsetY + 14);
+				g.drawString("to grab", (int)getX () - GameCode.getViewX () + 10, (int)getY () - GameCode.getViewY () + textOffsetY + 28);
 			
 			}
 			
 			if (mode == MODE_GAMBLE) {
 				
 				//Draw button
-				buttonSprite.draw ((int)getX () + textOffsetX + 34, (int)getY () + textOffsetY);
+				buttonSprite.draw ((int)getX () - GameCode.getViewX () + textOffsetX + 34, (int)getY () - GameCode.getViewY () + textOffsetY);
 				g.setColor (textColor);
-				g.drawString("shift", (int)this.getX() + textOffsetX + 37, (int)this.getY() + textOffsetY + 12);
+				g.drawString("shift", (int)getX () - GameCode.getViewX () + textOffsetX + 37, (int)getY () - GameCode.getViewY () + textOffsetY + 12);
 				
 				//Draw text
-				g.drawString("press", (int)this.getX () + textOffsetX + 1, (int)this.getY () + textOffsetY + 14);
-				g.drawString("to gamble", (int)this.getX () + textOffsetX + 5, (int)this.getY () + textOffsetY + 28);
+				g.drawString("press", (int)getX () - GameCode.getViewX () + textOffsetX + 1, (int)getY () - GameCode.getViewY () + textOffsetY + 14);
+				g.drawString("to gamble", (int)getX () - GameCode.getViewX () + textOffsetX + 5, (int)getY () - GameCode.getViewY () + textOffsetY + 28);
 				
 			}
 		
@@ -87,6 +98,8 @@ public class ControlsHint extends GameObject {
 	
 	public void showGrabHint () {
 		mode = MODE_GRAB_REGISTER;
+		setX (32);
+		setY (180);
 	}
 	
 	public void showGambleHint () {

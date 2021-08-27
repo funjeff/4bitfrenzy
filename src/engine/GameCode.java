@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import gameObjects.DataSlot;
+import gameObjects.HelpWindow;
 import gameObjects.MovableRectHighlight;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
@@ -402,7 +403,6 @@ public class GameCode {
 		//DEBUG SPAWNING STARTS HERE
 		//Roome.map [5][5].spawnObject (Lighter.class);
 		//Roome.map [5][5].spawnObject (Bombs.class);
-		new Tutorial ();
 		//DEBUG SPAWNING ENDS HERE
 		//Declare the hud and make the bits
 		hud.declare();
@@ -441,6 +441,9 @@ public class GameCode {
 			bits.add(bit);
 			i = i + 1;
 		}
+		
+		new Tutorial ();
+		new HelpWindow ();
 		
 	
 		

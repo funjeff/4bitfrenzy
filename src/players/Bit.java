@@ -153,7 +153,7 @@ public class Bit extends GameObject {
 			//Init the controlsHint
 			if (NetworkHandler.getPlayerNum () == playerNum) {
 				controlsHint = new ControlsHint ();
-				controlsHint.declare (32, 180);
+				controlsHint.declare ();
 				
 				//Setup for next frame
 				firstFrame = false;
@@ -611,6 +611,16 @@ public class Bit extends GameObject {
 			}
 		}
 		
+	}
+	
+	public static Bit getCurrentPlayer () {
+		ArrayList<GameObject> bits = ObjectHandler.getObjectsByName ("Bit");
+		for (int i = 0; i < bits.size (); i++) {
+			if (((Bit)bits.get (i)).playerNum == NetworkHandler.getPlayerNum ()) {
+				return (Bit)bits.get (i);
+			}
+		}
+		return null; //Should never happen
 	}
 	
 	@Override

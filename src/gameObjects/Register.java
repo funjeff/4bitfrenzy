@@ -282,9 +282,6 @@ public class Register extends GameObject implements Highlightable {
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage ("FORGET REGISTER:" + this.id);
 		}
-		if (NetworkHandler.isHost () && ObjectHandler.getObjectsByName ("Register").size () == 1) {
-			Hud.waveOver ();
-		}
 		super.forget();
 	}
 	
