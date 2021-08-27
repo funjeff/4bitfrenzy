@@ -113,9 +113,6 @@ public class Register extends GameObject implements Highlightable {
 	public boolean goX (double val) {
 		double x = this.getX();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
-		if (currentRoom.r == null) {
-			currentRoom.r = this;
-		}
 		//Check register collision
 		this.setX(val);
 		if (currentRoom.isColliding(this) || this.isColliding("Register")) {
@@ -138,18 +135,12 @@ public class Register extends GameObject implements Highlightable {
 			}
 			return false;
 		}
-		if (!currentRoom.equals(Roome.getRoom(this.getX(), this.getY()))) {
-			currentRoom.r = null;
-		}
 		return true;
 	}
 	@Override
 	public boolean goY (double val) {
 		double y = this.getY();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
-		if (currentRoom.r == null) {
-			currentRoom.r = this;
-		}
 		this.setY(val);
 		
 		//Check collision for register
@@ -174,10 +165,6 @@ public class Register extends GameObject implements Highlightable {
 				bitsPushing.get (i).setY (yCoords [i]);
 			}
 			return false;
-		}
-		
-		if (!currentRoom.equals(Roome.getRoom(this.getX(), this.getY()))) {
-			currentRoom.r = null;
 		}
 		
 		return true;
@@ -295,11 +282,11 @@ public class Register extends GameObject implements Highlightable {
 		if (display != null) {
 			if (secondAddress == -1) {
 				display.setX(this.getX() + 35);
-				display.setY(this.getY() + 5);
+				display.setY(this.getY() + 12);
 				display.draw();
 			} else {
 				display.setX(this.getX() + 8);
-				display.setY(this.getY() + 5);
+				display.setY(this.getY() + 12);
 				display.changeText(Integer.toHexString(memAddress) + " " + Integer.toHexString(secondAddress));
 				display.draw();
 			}
