@@ -21,3 +21,4 @@ resources/sprites/rooms/keyboard/ 20
 resources/sprites/rooms/truck/ 0
 resources/sprites/rooms/pond/ 40
 resources/sprites/rooms/fryer/ 20
+resources/sprites/rooms/test/ 0
