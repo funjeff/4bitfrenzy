@@ -60,7 +60,7 @@ public class Roome extends GameObject {
 	int roomPosX; // the location of the room in the map array (x coordinate)
 	int roomPosY; // the location of the room in the map array (y coordinate)
 	
-	int id;
+	public int id;
 	int color;
 	
 	public String wallColor = "NULL";

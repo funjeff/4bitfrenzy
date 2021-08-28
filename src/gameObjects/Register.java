@@ -24,6 +24,7 @@ public class Register extends GameObject implements Highlightable {
 	
 	public static Sprite navArrow = new Sprite ("resources/sprites/register_nav_arrow.png");
 	public static Sprite regOutline = new Sprite ("resources/sprites/register_hint.png");
+	public static Sprite regIce = new Sprite ("resources/sprites/register_ice.png");
 	
 	public int memAddress = 17;
 	
@@ -36,6 +37,9 @@ public class Register extends GameObject implements Highlightable {
 	public boolean isLargeRegister = false;
 	
 	public boolean isBlue = false;
+	
+	public boolean isFrozen = false;
+	public int freezeTimer = 0;
 	
 	public boolean showNavArrow = true;
 	
@@ -95,6 +99,8 @@ public class Register extends GameObject implements Highlightable {
 		this.setX(Double.parseDouble(infos[7]));
 		this.setY(Double.parseDouble(infos[8]));
 		
+		this.isFrozen = Boolean.parseBoolean(infos[9]);
+		
 		this.updateTime = 0;
 		
 	}
@@ -128,7 +134,7 @@ public class Register extends GameObject implements Highlightable {
 				canAllMove = false;
 			}
 		}
-		if (isColliding ("Bit") || !canAllMove) {
+		if (isColliding ("Bit") || !canAllMove && !isFrozen) {
 			this.setX (x);
 			for (int i = 0; i < bitsPushing.size (); i++) {
 				bitsPushing.get (i).setX (xCoords [i]);
@@ -159,7 +165,7 @@ public class Register extends GameObject implements Highlightable {
 			}
 		}
 		
-		if (isColliding ("Bit") || !canAllMove) {
+		if (isColliding ("Bit") || !canAllMove && !isFrozen) {
 			this.setY (y);
 			for (int i = 0; i < bitsPushing.size (); i++) {
 				bitsPushing.get (i).setY (yCoords [i]);
@@ -215,15 +221,27 @@ public class Register extends GameObject implements Highlightable {
 		if (trajectory == null) {
 			trajectory = new Vector2D (x, y);
 		} else {
-			trajectory.add (new Vector2D (x, y));
+			if (!isFrozen) {
+				trajectory.add (new Vector2D (x, y));
+			}
 		}
 	}
 	
 	@Override
 	public void frameEvent () {
 		
+		//Handle freezing, if in club penguin room
+		if (NetworkHandler.isHost () && Roome.getRoom (getX (), getY ()).id == 24) { //24 is club penguin room
+			freezeTimer++;
+			if (freezeTimer > 200) {
+				this.isFrozen = true;
+			}
+		} else {
+			freezeTimer = 0;
+		}
+		
 		//Scale the trajectory by the number of bits
-		if (trajectory != null) {
+		if (trajectory != null && bitsPushing.size () != 0) {
 			trajectory.scale ((double)1 / bitsPushing.size ());
 		}
 		
@@ -252,15 +270,22 @@ public class Register extends GameObject implements Highlightable {
 		
 		//Move the register
 		if (canPush) {
+			boolean wasStopped = false;
 			if (trajectory != null) {
-				goX (getX () + trajectory.x);
-				goY (getY () + trajectory.y);
+				wasStopped = !goX (getX () + trajectory.x);
+				wasStopped |= !goY (getY () + trajectory.y);
+			}
+			if (wasStopped || (trajectory != null && trajectory.getLength () < .01)) {
+				trajectory = null;
 			}
 		}
 		
 		//Reset variables for next frame
 		bitsPushing = new ArrayList<Bit> ();
-		trajectory = null;
+		if (!isFrozen) {
+			trajectory = null;
+		} else {
+		}
 		
 	}
 	
@@ -333,10 +358,15 @@ public class Register extends GameObject implements Highlightable {
 			largeHintTime--;
 		}
 		
+		//Draw the ice
+		if (isFrozen) {
+			regIce.draw (getDrawX () - 6, getDrawY () - 7);
+		}
+		
 	}
 	@Override
 	public String toString () {
-		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + isLargeRegister + " " + isBlue + " " + spawnTime + " " + this.getX() + " " + this.getY();
+		return getId () + " " + memAddress + " " + secondAddress + " " + scrambled + " " + isLargeRegister + " " + isBlue + " " + spawnTime + " " + this.getX() + " " + this.getY() + " " + isFrozen;
 	}
 
 	@Override
