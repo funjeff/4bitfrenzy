@@ -22,3 +22,9 @@ resources/sprites/rooms/truck/ 0
 resources/sprites/rooms/pond/ 40
 resources/sprites/rooms/fryer/ 20
 resources/sprites/rooms/test/ 0
+resources/sprites/rooms/club_penguin/ 100
+resources/sprites/rooms/spaghetti/ 100
+resources/sprites/rooms/bitcoin_farm/ 100
+resources/sprites/rooms/pianos/ 100
+resources/sprites/rooms/leak/ 100
+resources/sprites/rooms/breakroom/ 100
