@@ -94,6 +94,8 @@ public class TitleScreen extends GameObject {
 	
 	private static Scene perkScene;
 	
+	private HintMessage hintMessage;
+	
 	@Override
 	public void onDeclare () {
 		
@@ -227,6 +229,7 @@ public class TitleScreen extends GameObject {
 					titleClosed = true;
 					ipBox.forget ();
 					infoBox.forget();
+					hintMessage.forget ();
 					forget ();
 				}
 			}
@@ -235,6 +238,10 @@ public class TitleScreen extends GameObject {
 			if (!isHost) {
 				ipBox.changeText ("ENTER THE CONNECTION IP: " + ip);
 				infoBox.changeText ("(PRESS ENTER AFTER TYPING THE IP TO JOIN)");
+			}
+			
+			if (hintMessage == null) {
+				hintMessage = new HintMessage ();
 			}
 			
 		}
