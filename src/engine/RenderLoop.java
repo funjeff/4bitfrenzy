@@ -75,6 +75,7 @@ public class RenderLoop {
 					gameThread.run ();
 				}
 				//Render the window
+			
 				GameCode.renderFunc ();
 				ObjectHandler.renderAll ();
 				wind.refresh();

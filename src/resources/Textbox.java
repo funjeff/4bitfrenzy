@@ -76,6 +76,83 @@ public class Textbox extends GameObject {
 	public String getText () {
 		return text;
 	}
+	/**
+	 * returns the text without any of the identifiers (ie stuff in tildes)
+	 * @return
+	 */
+	public String getPureText() {
+	String returnText = "";
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == '~') {
+				i = this.simulateTilde(text, i);
+			}
+			returnText = returnText + text.charAt(i);
+		}
+		return returnText;
+	}
+	
+	/**
+	 * @param pos the position of a charictar you are intrested
+	 * @return the real place that charictar is at in the string (takeing tildes into account)
+	 */
+	public int getRealPos (int pos) {
+		int posSoFar = 0; //amount of charictars passed including tildes
+		
+		int distanceTraveled = 0; // amount of real charictars pased (non tildes)
+		for (int i = 0; i < text.length(); i++) {
+			if (text.charAt(i) == '~') {
+				int newI = this.simulateTilde(text, i);
+				posSoFar = posSoFar + (newI - i);
+				i = newI;
+			}
+			
+			distanceTraveled = distanceTraveled + 1;
+		
+			
+			
+			if (distanceTraveled == pos) {
+				return posSoFar;
+			}
+			posSoFar = posSoFar + 1;
+		}
+		return posSoFar;
+	}
+	
+	/**
+	 * replaces an area of text with spaces starting at startPos
+	 * leaves a few behind intentionally for an effect
+	 * @param startPos the starting index for the area to clear out
+	 */
+	public void whiteOut (int startPos) {
+		int currentPos = startPos;
+		
+		Random rand = new Random ();
+		
+		while (text.charAt(currentPos) != ' ' || text.charAt(currentPos + 1) != ' ' || text.charAt(currentPos + 2) != ' ') {
+			if (text.charAt(currentPos) == '~') {
+				currentPos = this.simulateTilde(text, currentPos);
+			}
+			if (rand.nextInt(5) != 2) {
+				text = text.substring(0, currentPos) + ' ' + text.substring(currentPos + 1);
+			}
+			currentPos = currentPos + 1;
+		}
+	}
+	public void whiteOut (int startPos, int endPos) {
+		int currentPos = startPos;
+		
+		Random rand = new Random ();
+		
+		while (currentPos < endPos) {
+			if (text.charAt(currentPos) == '~') {
+				currentPos = this.simulateTilde(text, currentPos);
+			}
+			if (rand.nextInt(5) != 2) {
+				text = text.substring(0, currentPos) + ' ' + text.substring(currentPos + 1);
+			}
+			currentPos = currentPos + 1;
+		}
+	}
 	public double getLineSpacing() {
 		return lineSpacing;
 	}
@@ -122,7 +199,9 @@ public class Textbox extends GameObject {
 					}
 					currentlyTrackingX = 0;
 				}
-				textSize = data[2];
+				if (data[2] != -1) {
+					textSize = data[2];
+				}
 				for (int j = 0; j < data[1]; j++) {
 					ySpaceUsed = ySpaceUsed + textSize;
 				}
@@ -427,7 +506,7 @@ private int simulateTilde (String message, int startI) {
 
 private int [] simulateTildeForSpace (String message, int startI) {
 	int newLineAmount = 0;
-	int endSize = 16;
+	int endSize = -1;
 	int i = startI + 1;
 	
 	char identifyingChar = message.charAt(i);

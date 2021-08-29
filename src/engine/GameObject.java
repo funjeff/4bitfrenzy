@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import gameObjects.Catalogable;
 import gameObjects.DataSlot;
 import gameObjects.Register;
+import items.Bombs;
 import map.Roome;
 import npcs.Basketball;
 import npcs.CarKey;
@@ -288,6 +289,7 @@ public abstract class GameObject extends GameAPI implements Catalogable {
 		hitboxDimensions.put (Popcorn.class, new Dimension (16, 16));
 		hitboxDimensions.put (Trash.class, new Dimension (64, 64));
 		hitboxDimensions.put (CarKey.class, new Dimension (16, 36));
+		hitboxDimensions.put(Bombs.class, new Dimension(16,16));
 		
 	}
 	

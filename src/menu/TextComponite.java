@@ -28,15 +28,6 @@ public class TextComponite extends MenuComponite{
 		t.changeBoxVisability();
 	}
 	
-	public TextComponite(String text) {
-		super(getTextSpace(text), 16);
-		t = new Textbox (text);
-		t.changeWidth(text.length());
-		t.changeHeight(1);
-		t.setLineSpacing(1);
-		t.changeBoxVisability();
-	}
-	
 	public static int getTextSpace (String text) {
 		Textbox t = new Textbox(text);
 		return t.getTextSpaceUsage()[0];

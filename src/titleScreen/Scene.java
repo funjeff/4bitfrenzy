@@ -17,9 +17,9 @@ public class Scene extends GameObject {
 	private Scanner s;
 	private ArrayList<String> frame;
 	private int repeatCount;
+	boolean playing = false;
 	
 	public Scene (String path) {
-		System.out.println(path);
 		File f = new File (path);
 		objs = new ArrayList<SceneObject> ();
 		sceneObjMap = new HashMap<String, SceneObject> ();
@@ -35,7 +35,6 @@ public class Scene extends GameObject {
 					int objX = s2.nextInt ();
 					int objY = s2.nextInt ();
 					String objIcon = s2.next ();
-					System.out.println(objIcon);
 					Sprite objSpr = new Sprite (objIcon);
 					SceneObject obj = new SceneObject (objSpr, objX, objY, 0);
 					objs.add (obj);
@@ -54,6 +53,7 @@ public class Scene extends GameObject {
 	@Override
 	public void frameEvent () {
 		if (!s.hasNextLine () && repeatCount == 0) {
+			playing = false;
 			forget ();
 		}
 		if (repeatCount == 0) {
@@ -91,7 +91,15 @@ public class Scene extends GameObject {
 			objs.get (i).draw ();
 		}
 	}
-	
+	public void play () {
+		playing = true;
+	}
+	public void stop () {
+		playing = false;
+	}
+	public boolean isPlaying () {
+		return playing;
+	}
 	public class SceneObject {
 		
 		public double x;

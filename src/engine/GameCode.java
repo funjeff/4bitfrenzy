@@ -119,6 +119,25 @@ public class GameCode {
 		}
 	}
 	
+	public static int [] getDefaultControls () {
+		int [] defaultControls = new int [13];
+		defaultControls[0] = KeyEvent.VK_W;
+		defaultControls[1] = KeyEvent.VK_S;
+		defaultControls[2] = KeyEvent.VK_A;
+		defaultControls[3] = KeyEvent.VK_D;
+		defaultControls[4] = KeyEvent.VK_SHIFT;
+		defaultControls[5] = KeyEvent.VK_ENTER;
+		defaultControls[6] = KeyEvent.VK_SPACE;
+		defaultControls[7] = KeyEvent.VK_M;
+		defaultControls[8] = KeyEvent.VK_UP;
+		defaultControls[9] = KeyEvent.VK_DOWN;
+		defaultControls[10] = KeyEvent.VK_LEFT;
+		defaultControls[11] = KeyEvent.VK_RIGHT;
+		defaultControls[12] = KeyEvent.VK_CONTROL;
+		
+		return defaultControls;
+	}
+	
 	public static void initControls () {
 			File file = new File ("resources/saves/controls.txt");
 				if (!file.exists()) {
@@ -205,7 +224,6 @@ public class GameCode {
 		
 		getSettings (); //Initializes the settings
 		
-		initControls();
 		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		RenderLoop.wind.resizeWindow (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
 		
@@ -346,7 +364,7 @@ public class GameCode {
 	
 	public static void renderFunc () {
 		
-		if (titleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted) {
+		if (TitleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted) {
 			initGameState ();
 			gameStarted = true;
 			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
@@ -438,8 +456,7 @@ public class GameCode {
 		}
 		
 	
-		
-//		Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (FriedFood.class);
+	Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (Bombs.class);
 //		
 //		Register regBig = new Register (45);
 //		
@@ -614,6 +631,9 @@ public class GameCode {
 		}
 
 		public int [] getControls() {
+			if (controls[0] == 0) {
+				initControls();
+			}
 			return controls;
 		}
 

@@ -19,6 +19,8 @@ public class Menu extends GameObject {
 	Sprite bottomBar = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png", "rectangle 24 0 8 1");
 	Sprite top = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png", "rectangle 0 0 8 8");
 	
+	boolean disableCloseButton = false;
+	
 	double width = 0;
 	double height = 0;
 	
@@ -31,6 +33,8 @@ public class Menu extends GameObject {
 	public boolean open = false;
 
 	public Button closeButton = null; 
+	
+	boolean wasClosed = false;
 	
 	public Menu () {
 		
@@ -102,9 +106,13 @@ public class Menu extends GameObject {
 			}
 			if (closeButton != null) {
 				closeButton.frameEvent();
-				if (closeButton.isPressed()) {
+				if (closeButton.isPressed() && !disableCloseButton) {
 					closeButton.reset();
 					this.close();
+				} else {
+					if (closeButton.isPressed()) {
+						wasClosed = true;
+					}
 				}
 			}
 		}
@@ -131,6 +139,23 @@ public class Menu extends GameObject {
 		fixedHeight = true;
 	}
 	
+	/**
+	 * if the close button is disabled then when the close button is pushed this method will return true once
+	 * if you look for it you can use it to set a custom behavior when the menu closes
+	 */
+	public boolean closeAttempt() {
+		boolean oldClosed = wasClosed;
+		wasClosed = false;
+		closeButton.reset();
+		return oldClosed;
+	}
+	/**
+	 * makes the close button not work instead it will cause close attempt to return true
+	 */
+	public void disableCloseButton() {
+		this.disableCloseButton = true;
+	}
+
 	public void setColor (String color) {
 		verticalBar = Textbox.getTextboxResource("resources/sprites/Text/windowsprites" + color +".png","rectangle 16 0 1 8");
 		bottomBar = Textbox.getTextboxResource("resources/sprites/Text/windowsprites" + color +".png", "rectangle 24 0 8 1");

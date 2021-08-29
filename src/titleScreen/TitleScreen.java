@@ -25,6 +25,7 @@ import menu.TextComponite;
 import network.Client;
 import network.NetworkHandler;
 import network.Server;
+import npcs.ControlsTxt;
 import npcs.NPC;
 import npcs.PopcornMachine;
 import npcs.SettingsTxt;
@@ -52,6 +53,8 @@ public class TitleScreen extends GameObject {
 	private Button rulesButton;
 	private Button perksButton;
 	private Button settingsButton;
+	
+	private TitleCodeWalls walls = new TitleCodeWalls();
 	
 	private static boolean connected = false;
 	
@@ -81,7 +84,6 @@ public class TitleScreen extends GameObject {
 	private TitleSlot settingsSlot;
 	private TitleSlot helpSlot;
 	
-	private PerkStation defaultStation;
 	private PerkStation blastStation;
 	private PerkStation gripStation;
 	private PerkStation navStation;
@@ -91,8 +93,11 @@ public class TitleScreen extends GameObject {
 	private PerkStation gamblerStation;
 	
 	private SettingsTxt settingsBot;
+	private ControlsTxt controlMenu;
 	
 	private static Scene perkScene;
+	
+	public static final int OBJECT_SPAWN_RING_PADDING = 100;
 	
 	@Override
 	public void onDeclare () {
@@ -203,10 +208,7 @@ public class TitleScreen extends GameObject {
 		}
 		if (/*perksSlot.isSelected ()*/false) {
 			exitMainMenu ();
-			perkMenu menu = new perkMenu (this);
-			if (ObjectHandler.getObjectsByName("perkMenu") == null || ObjectHandler.getObjectsByName("perkMenu").size() == 0) {
-				menu.declare();
-			}
+			
 		}
 		if (/*settingsSlot.isSelected ()*/false) {
 			exitMainMenu ();
@@ -265,11 +267,11 @@ public class TitleScreen extends GameObject {
 //		helpSlot = new TitleSlot (TitleSlot.titleHelp);
 
 		settingsBot = new SettingsTxt (150,200);
-	
+		controlMenu = new ControlsTxt(450,200);
 		
 		settingsBot.setRenderPriority(101);
-		
-		defaultStation = new PerkStation (0);
+		controlMenu.setRenderPriority(101);
+	
 		blastStation = new PerkStation (1);
 		gripStation = new PerkStation (2);
 		navStation = new PerkStation (3);
@@ -279,23 +281,24 @@ public class TitleScreen extends GameObject {
 		gamblerStation = new PerkStation (7);
 		
 
-		titleBit.declare (920, 360);
-		titleReg.declare (487, 161);
-		startGameSlot.declare (331, 139);
+		titleBit.declare (430 + OBJECT_SPAWN_RING_PADDING , 580);
+		titleReg.declare (400 + OBJECT_SPAWN_RING_PADDING , 491);
+		startGameSlot.declare (405 + OBJECT_SPAWN_RING_PADDING , 339);
 //		joinSlot.declare (1150, 180);
 //		helpSlot.declare (1150, 322);
 //		perksSlot.declare (1150, 460);
 //		settingsSlot.declare (1150, 600);
-		settingsBot.declare(150,200);
+		settingsBot.declare(310 + OBJECT_SPAWN_RING_PADDING ,350);
+		controlMenu.declare(490 + OBJECT_SPAWN_RING_PADDING ,350);
 		
-		defaultStation.declare (676, 168);
-		blastStation.declare (676, 316);
-		gripStation.declare (676, 464);
-		navStation.declare (676, 612);
-		dupeStation.declare (783, 168);
-		powerStation.declare (783, 316);
-		dualStation.declare (783, 464);
-		gamblerStation.declare (783, 612);
+
+		blastStation.declare (90 + OBJECT_SPAWN_RING_PADDING , 416);
+		gripStation.declare (146 + OBJECT_SPAWN_RING_PADDING , 314);
+		navStation.declare (228 + OBJECT_SPAWN_RING_PADDING , 220);
+		dupeStation.declare (400 + OBJECT_SPAWN_RING_PADDING , 168);
+		powerStation.declare (558 + OBJECT_SPAWN_RING_PADDING , 225);
+		dualStation.declare (636 + OBJECT_SPAWN_RING_PADDING , 314);
+		gamblerStation.declare (690 + OBJECT_SPAWN_RING_PADDING , 416);
 		
 	}
 	
@@ -316,7 +319,7 @@ public class TitleScreen extends GameObject {
 		perksButton.forget();
 		settingsButton.forget();*/
 		
-		defaultStation.forget ();
+
 		blastStation.forget ();
 		gripStation.forget ();
 		navStation.forget ();
@@ -361,19 +364,17 @@ public class TitleScreen extends GameObject {
 	
 	public static Scene playScene (String path, int x, int y) {
 		perkScene = new Scene (path);
-		perkScene.declare (x, y);
 		return perkScene;
 	}
 	
 	public static boolean scenePlaying () {
-		return perkScene != null && perkScene.declared ();
+		return perkScene != null && perkScene.isPlaying ();
 	}
 	
 	@Override
 	public void draw () {
 		clearScreen ();
 		super.draw ();
-		
 		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
@@ -458,6 +459,7 @@ public class TitleScreen extends GameObject {
 				}
 			}
 		}
+		walls.draw();
 	}
 	
 	public void enterHostMode () {
@@ -648,7 +650,8 @@ public class TitleScreen extends GameObject {
 			if (this.isVisable()) {
 				super.draw();
 				Graphics g = RenderLoop.wind.getBufferGraphics();
-				g.drawString(text, (int)this.getX() + 1, (int)this.getY() + 14);
+				g.setColor(new Color (0x000000));
+				g.drawString(text, (int)this.getX() + 1 - GameCode.getViewX(), (int)this.getY() + 14 - GameCode.getViewY());
 			}
 		}
 		
@@ -688,6 +691,17 @@ public class TitleScreen extends GameObject {
 		}
 		public int getIndex () {
 			return selectedIndex;
+		}
+		/**
+		 * sets the selected index to the place where the value of index of is does nothing if index of is not in the list
+		 */
+		public void setTo (String indexOf) {
+			for (int i = 0; i < stringList.length; i++) {
+				if (stringList[i].equals(indexOf)) {
+					selectedIndex = i;
+					break;
+				}
+			}
 		}
 		@Override
 		public void frameEvent () {
@@ -861,288 +875,279 @@ public class TitleScreen extends GameObject {
 		}
 		
 	}
-	public class ControlMenu extends GameObject {
-		
-		
-		TextButton [] buttons = new TextButton[13];
-		
-		Button backButton;
-		
-		TitleScreen screen;
-		
-		int selectedButton = -1;
-		
-		Button defaultButton;
-		
-		public ControlMenu (TitleScreen screen) {
-		
-			this.screen = screen;
-			this.setSprite(new Sprite ("resources/sprites/controls menu.png"));
-			this.setRenderPriority(72);
-			
-	
-			
-		}
-		
-		@Override
-		public void onDeclare () {
-			
-			for (int i = 0; i < buttons.length; i++) {
-				buttons[i] = new TextButton ();
-				buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
-				buttons[i].setRenderPriority(73);
-			}
-			
-			buttons[0].declare(120, 125);
-			buttons[1].declare(180, 170);
-			buttons[2].declare(140, 210);
-			buttons[3].declare(170, 260);
-			buttons[4].declare(160, 340);
-			buttons[5].declare(240, 385);
-			buttons[6].declare(400, 430);
-			buttons[7].declare(480, 520);
-			buttons[8].declare(690, 135);
-			buttons[9].declare(750, 180);
-			buttons[10].declare(710, 220);
-			buttons[11].declare(730, 265);
-			buttons[12].declare(940, 350);
-			
-			backButton = new Button (new Sprite ("resources/sprites/back.png"));
-			
-			backButton.declare(550, 452);
-			
-			backButton.setRenderPriority(73);
-			
-			
-			defaultButton = new Button (new Sprite ("resources/sprites/default button.png"));
-			
-			defaultButton.declare(550, 402);
-			
-			defaultButton.setRenderPriority(73);
-			
-		}
-		
-		
-		@Override
-		public void frameEvent () {
-			if (backButton.isPressed()) {
-				this.forgetStuff();
-				this.forget();
-				
-				SettingMenu menu = new SettingMenu (screen);
-				menu.declare();
-			}
-			
-			for (int i = 0; i < buttons.length; i++) {
-				if (buttons[i].isPressed()) {
-					if (i != selectedButton) {
-						if (selectedButton != -1) {
-							buttons[selectedButton].reset();
-						}
-						selectedButton = i;
-					} else {
-						if (getKeysDown().length != 0) {
-							int [] oldControls = GameCode.getSettings().getControls();
-							oldControls[i] = getKeysDown()[0];
-							
-							
-							
-							GameCode.getSettings().setControls(oldControls);
-							GameCode.getSettings().updateControlFile();
-							
-							buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
-							selectedButton = -1;
-						}
-					}
-				}
-			}
-			if (defaultButton.isPressed()) {
-				File oldControls = new File ("resources/saves/controls.txt");
-				oldControls.delete();
-				GameCode.initControls();
-				
-				
-				for (int i = 0; i < buttons.length; i++) {
-					buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
-				}
-			}
-		}
-		
-		
-		private void forgetStuff () {
-
-			for (int i = 0; i < buttons.length; i++) {
-				buttons[i].forget();
-			}
-			
-			backButton.forget();
-			
-			defaultButton.forget();
-			
-			this.forget();
-		}
-	}
-	public class perkMenu extends GameObject {
-		//Make the buttons
-			
-			Button blastButton;
-			Button haulerButton;
-			Button naviationButton;
-			Button duplicatieButton;
-			Button dualButton;
-			Button powerButton;
-			
-			Button backButton;
-			
-			TitleScreen screen;
-			
-			Sprite sideImage;
-			
-			Sprite check;
-			
-			@Override
-			public void onDeclare () {
-				blastButton = new Button (new Sprite ("resources/sprites/blast processsing  red.png"));
-				haulerButton = new Button (new Sprite ("resources/sprites/grip strength.png"));
-				naviationButton = new Button (new Sprite ("resources/sprites/navigation bit green.png"));
-				duplicatieButton = new Button (new Sprite ("resources/sprites/duplication red.png"));
-				powerButton = new Button (new Sprite ("resources/sprites/power house red.png"));
-				dualButton = new Button (new Sprite ("resources/sprites/duel core red.png"));
-				
-				backButton = new Button (new Sprite ("resources/sprites/back.png"));
-				
-				sideImage = new Sprite ("resources/sprites/blast processsing explanation.png");
-				
-				blastButton.declare (100, 32);
-				haulerButton.declare (470, 32);
-				naviationButton.declare(100, 212);
-				duplicatieButton.declare(470, 212);
-				powerButton.declare(100, 412);
-				dualButton.declare(470, 412);
-				
-				backButton.declare(300, 512);
-				
-				check = new Sprite ("resources/sprites/check.png");
-				
-				blastButton.setRenderPriority(71);
-				haulerButton.setRenderPriority(71);
-				naviationButton.setRenderPriority(71);
-				duplicatieButton.setRenderPriority(71);
-				powerButton.setRenderPriority(71);
-				dualButton.setRenderPriority(71);
-				
-				backButton.setRenderPriority(71);
-	}
-			
-				@Override
-				public void draw () {
-					super.draw();
-					if (sideImage != null) {
-						sideImage.draw(790,0);
-					}
-						switch (perkNum) {
-							case 0:
-								check.draw(170, 62);
-								break;
-							
-							case 1:
-								check.draw(540, 62);
-								break;
-							
-							case 2:
-								check.draw(190, 242);
-								break;
-								
-							case 3:
-								check.draw(190, 442);
-								break;
-								
-							case 4:
-								check.draw(540, 242);
-								break;
-							
-							case 5:
-								check.draw(540, 442);
-								break;
-	
-						}
-				}
-				public perkMenu (TitleScreen screen) {
-					this.screen = screen;
-					this.setSprite (new Sprite ("resources/sprites/perk Menu.png"));
-					this.setRenderPriority(70);
-				}
-				
-				@Override
-				public void frameEvent () {
-					if (blastButton.isPressed ()) {	
-						blastButton.pressed = false;
-						perkNum = 0;
-					}
-					
-					if (haulerButton.isPressed ()) {
-						haulerButton.pressed = false;
-						perkNum = 1;
-					}
-					if (naviationButton.isPressed ()) {
-						naviationButton.pressed = false;
-						perkNum = 2;
-					}
-					
-					if (duplicatieButton.isPressed ()) {
-						duplicatieButton.pressed = false;
-						perkNum = 4;
-					}
-					if (powerButton.isPressed ()) {
-						powerButton.pressed = false;
-						perkNum = 3;
-						
-					}
-					if (dualButton.isPressed ()) {
-						dualButton.pressed = false;
-						perkNum = 5;
-					}
-					
-					if (backButton.isPressed()) {
-						screen.initMainMenu();
-						//screen.perksButton.pressed = false;
-						forgetStuff();
-					}
-					
-					if (blastButton.mouseInside) {
-						sideImage = new Sprite ("resources/sprites/blast processsing explanation.png");
-					}
-					if (haulerButton.mouseInside) {
-						sideImage = new Sprite ("resources/sprites/grip strength explination.png");
-					}
-					if (naviationButton.mouseInside) {
-						sideImage = new Sprite ("resources/sprites/navigation bit explanation.png");
-					}
-					if (duplicatieButton.mouseInside) {
-						sideImage = new Sprite ("resources/sprites/duplication explination.png");
-					}
-					if (powerButton.mouseInside) {
-						sideImage = new Sprite ("resources/sprites/powerhouse explination.png");
-					}
-					if (dualButton.mouseInside) {
-						sideImage = new Sprite ("resources/sprites/duel core explination.png");
-					}
-					
-				}	
-				private void forgetStuff () {
-
-					blastButton.forget();
-					haulerButton.forget();
-					naviationButton.forget();
-					duplicatieButton.forget();
-					powerButton.forget();
-					dualButton.forget();
-					
-					backButton.forget();
-					
-					this.forget();
-				}
-		}
+//	public class ControlMenu extends GameObject {
+//		
+//		
+//	
+//		
+//		Button backButton;
+//		
+//		TitleScreen screen;
+//		
+//		int selectedButton = -1;
+//		
+//		
+//		public ControlMenu (TitleScreen screen) {
+//		
+//			this.screen = screen;
+//			this.setSprite(new Sprite ("resources/sprites/controls menu.png"));
+//			this.setRenderPriority(72);
+//			
+//	
+//			
+//		}
+//		
+////		@Override
+////		public void onDeclare () {
+////			
+////			
+////			
+////			buttons[0].declare(120, 125);
+////			buttons[1].declare(180, 170);
+////			buttons[2].declare(140, 210);
+////			buttons[3].declare(170, 260);
+////			buttons[4].declare(160, 340);
+////			buttons[5].declare(240, 385);
+////			buttons[6].declare(400, 430);
+////			buttons[7].declare(480, 520);
+////			buttons[8].declare(690, 135);
+////			buttons[9].declare(750, 180);
+////			buttons[10].declare(710, 220);
+////			buttons[11].declare(730, 265);
+////			buttons[12].declare(940, 350);
+////			
+////			backButton = new Button (new Sprite ("resources/sprites/back.png"));
+////			
+////			backButton.declare(550, 452);
+////			
+////			backButton.setRenderPriority(73);
+////			
+////			
+////		
+////			
+////		}
+//		
+//		
+//		@Override
+//		public void frameEvent () {
+////			if (backButton.isPressed()) {
+////				this.forgetStuff();
+////				this.forget();
+////				
+////				SettingMenu menu = new SettingMenu (screen);
+////				menu.declare();
+////			}
+//			
+//			for (int i = 0; i < buttons.length; i++) {
+//				if (buttons[i].isPressed()) {
+//					if (i != selectedButton) {
+//						if (selectedButton != -1) {
+//							buttons[selectedButton].reset();
+//						}
+//						selectedButton = i;
+//					} else {
+//						if (getKeysDown().length != 0) {
+//							int [] oldControls = GameCode.getSettings().getControls();
+//							oldControls[i] = getKeysDown()[0];
+//							
+//							
+//							
+//							GameCode.getSettings().setControls(oldControls);
+//							GameCode.getSettings().updateControlFile();
+//							
+//							buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
+//							selectedButton = -1;
+//						}
+//					}
+//				}
+//			}
+//			if (defaultButton.isPressed()) {
+//				File oldControls = new File ("resources/saves/controls.txt");
+//				oldControls.delete();
+//				GameCode.initControls();
+//				
+//				
+//				for (int i = 0; i < buttons.length; i++) {
+//					buttons[i].setText(KeyEvent.getKeyText(GameCode.getSettings().getControls()[i]));
+//				}
+//			}
+//		}
+//		
+//		
+//		private void forgetStuff () {
+//
+//			for (int i = 0; i < buttons.length; i++) {
+//				buttons[i].forget();
+//			}
+//			
+//			backButton.forget();
+//			
+//			defaultButton.forget();
+//			
+//			this.forget();
+//		}
+//	}
+//	public class perkMenu extends GameObject {
+//		//Make the buttons
+//			
+//			Button blastButton;
+//			Button haulerButton;
+//			Button naviationButton;
+//			Button duplicatieButton;
+//			Button dualButton;
+//			Button powerButton;
+//			
+//			Button backButton;
+//			
+//			TitleScreen screen;
+//			
+//			Sprite sideImage;
+//			
+//			Sprite check;
+//			
+//			@Override
+//			public void onDeclare () {
+//				blastButton = new Button (new Sprite ("resources/sprites/blast processsing  red.png"));
+//				haulerButton = new Button (new Sprite ("resources/sprites/grip strength.png"));
+//				naviationButton = new Button (new Sprite ("resources/sprites/navigation bit green.png"));
+//				duplicatieButton = new Button (new Sprite ("resources/sprites/duplication red.png"));
+//				powerButton = new Button (new Sprite ("resources/sprites/power house red.png"));
+//				dualButton = new Button (new Sprite ("resources/sprites/duel core red.png"));
+//				
+//				backButton = new Button (new Sprite ("resources/sprites/back.png"));
+//				
+//				sideImage = new Sprite ("resources/sprites/blast processsing explanation.png");
+//				
+//				blastButton.declare (100, 32);
+//				haulerButton.declare (470, 32);
+//				naviationButton.declare(100, 212);
+//				duplicatieButton.declare(470, 212);
+//				powerButton.declare(100, 412);
+//				dualButton.declare(470, 412);
+//				
+//				backButton.declare(300, 512);
+//				
+//				check = new Sprite ("resources/sprites/check.png");
+//				
+//				blastButton.setRenderPriority(71);
+//				haulerButton.setRenderPriority(71);
+//				naviationButton.setRenderPriority(71);
+//				duplicatieButton.setRenderPriority(71);
+//				powerButton.setRenderPriority(71);
+//				dualButton.setRenderPriority(71);
+//				
+//				backButton.setRenderPriority(71);
+//	}
+//			
+//				@Override
+//				public void draw () {
+//					super.draw();
+//					if (sideImage != null) {
+//						sideImage.draw(790,0);
+//					}
+//						switch (perkNum) {
+//							case 0:
+//								check.draw(170, 62);
+//								break;
+//							
+//							case 1:
+//								check.draw(540, 62);
+//								break;
+//							
+//							case 2:
+//								check.draw(190, 242);
+//								break;
+//								
+//							case 3:
+//								check.draw(190, 442);
+//								break;
+//								
+//							case 4:
+//								check.draw(540, 242);
+//								break;
+//							
+//							case 5:
+//								check.draw(540, 442);
+//								break;
+//	
+//						}
+//				}
+//				public perkMenu (TitleScreen screen) {
+//					this.screen = screen;
+//					this.setSprite (new Sprite ("resources/sprites/perk Menu.png"));
+//					this.setRenderPriority(70);
+//				}
+//				
+//				@Override
+//				public void frameEvent () {
+//					if (blastButton.isPressed ()) {	
+//						blastButton.pressed = false;
+//						perkNum = 0;
+//					}
+//					
+//					if (haulerButton.isPressed ()) {
+//						haulerButton.pressed = false;
+//						perkNum = 1;
+//					}
+//					if (naviationButton.isPressed ()) {
+//						naviationButton.pressed = false;
+//						perkNum = 2;
+//					}
+//					
+//					if (duplicatieButton.isPressed ()) {
+//						duplicatieButton.pressed = false;
+//						perkNum = 4;
+//					}
+//					if (powerButton.isPressed ()) {
+//						powerButton.pressed = false;
+//						perkNum = 3;
+//						
+//					}
+//					if (dualButton.isPressed ()) {
+//						dualButton.pressed = false;
+//						perkNum = 5;
+//					}
+//					
+//					if (backButton.isPressed()) {
+//						screen.initMainMenu();
+//						//screen.perksButton.pressed = false;
+//						forgetStuff();
+//					}
+//					
+//					if (blastButton.mouseInside) {
+//						sideImage = new Sprite ("resources/sprites/blast processsing explanation.png");
+//					}
+//					if (haulerButton.mouseInside) {
+//						sideImage = new Sprite ("resources/sprites/grip strength explination.png");
+//					}
+//					if (naviationButton.mouseInside) {
+//						sideImage = new Sprite ("resources/sprites/navigation bit explanation.png");
+//					}
+//					if (duplicatieButton.mouseInside) {
+//						sideImage = new Sprite ("resources/sprites/duplication explination.png");
+//					}
+//					if (powerButton.mouseInside) {
+//						sideImage = new Sprite ("resources/sprites/powerhouse explination.png");
+//					}
+//					if (dualButton.mouseInside) {
+//						sideImage = new Sprite ("resources/sprites/duel core explination.png");
+//					}
+//					
+//				}	
+//				private void forgetStuff () {
+//
+//					blastButton.forget();
+//					haulerButton.forget();
+//					naviationButton.forget();
+//					duplicatieButton.forget();
+//					powerButton.forget();
+//					dualButton.forget();
+//					
+//					backButton.forget();
+//					
+//					this.forget();
+//				}
+//		}
 	
 	public class GameMenu extends GameObject {
 		

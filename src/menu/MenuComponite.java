@@ -19,9 +19,6 @@ public class MenuComponite extends GameObject{
 		menu = m;
 	}
 	
-	public MenuComponite (int width, int height) {
-		
-	}
 	public Menu getMenu() {
 		return menu;
 	}

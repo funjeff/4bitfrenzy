@@ -49,6 +49,8 @@ public class Roome extends GameObject {
 	private static int mapWidth = 10;
 	private static int mapHeight = 10;
 	
+	static Textbox[] wallLines;
+	
 	private static HashMap<Point, HashMap<Point, Integer>> distMaps;
 	
 	//true = open false = closed
@@ -68,7 +70,7 @@ public class Roome extends GameObject {
 	
 	boolean inRoomcollsions;
 	
-	GameObject [] walls = new GameObject [12];
+	//GameObject [] walls = new GameObject [12];
 	
 	public Register r = null;
 	public DataSlot ds = null;
@@ -636,19 +638,19 @@ public class Roome extends GameObject {
 //					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
 //				}
 			} else {
-				walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
+				//walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
 				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
-				walls[1] = new WallBox ((int)this.getX (), (int)this.getY () + 144, 216, 108);
-				walls[2] = new WallBox ((int)this.getX () + 648, (int)this.getY (), 432, 144);
-				walls[3] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 144, 216, 108);
-				walls[4] = new WallBox ((int)this.getX (), (int)this.getY () + 468, 216, 108);
-				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
-				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
-				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
+//				walls[1] = new WallBox ((int)this.getX (), (int)this.getY () + 144, 216, 108);
+//				walls[2] = new WallBox ((int)this.getX () + 648, (int)this.getY (), 432, 144);
+//				walls[3] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 144, 216, 108);
+//				walls[4] = new WallBox ((int)this.getX (), (int)this.getY () + 468, 216, 108);
+//				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
+//				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
+//				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
 				//Startpoints/endpoints are arranged in counter-clockwise order
 				//Top
 				if (!topJunction) {
-					walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
+					//walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
 					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
 				} else {
 					new Ribbon ((int)getX () + 432, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
@@ -658,7 +660,7 @@ public class Roome extends GameObject {
 				}
 				//Left
 				if (!leftJunction) {
-					walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
+				//	walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 576);
 				} else {
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 252);
@@ -668,7 +670,7 @@ public class Roome extends GameObject {
 				}
 				//Right
 				if (!rightJunction) {
-					walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
+					//walls[10] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 252, 216, 216);
 					new Ribbon ((int)getX () + 864, (int)getY () + 576, (int)getX () + 864, (int)getY () + 144);
 				} else {
 					new Ribbon ((int)getX () + 864, (int)getY () + 252, (int)getX () + 864, (int)getY () + 144);
@@ -678,7 +680,7 @@ public class Roome extends GameObject {
 				}
 				//Bottom
 				if (!bottomJunction) {
-					walls[11] = new WallBox ((int)this.getX () + 432, (int)this.getY () + 576, 216, 216);
+					//walls[11] = new WallBox ((int)this.getX () + 432, (int)this.getY () + 576, 216, 216);
 					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 864, (int)getY () + 576);
 				} else {
 					new Ribbon ((int)getX () + 216, (int)getY () + 576, (int)getX () + 432, (int)getY () + 576);
@@ -732,8 +734,8 @@ public class Roome extends GameObject {
 			
 		}
 	}
-	public static void initText () {;
-		Textbox[] wallLines = new Textbox[(Roome.getMapHeight() * 720)/36];
+	public static void initText () {
+		wallLines = new Textbox[(Roome.getMapHeight() * 720)/36];
 		
 		String startMessage = "";
 		for (int i = 0; i < wallLines.length; i++) {
@@ -1234,26 +1236,26 @@ public class Roome extends GameObject {
 //		
 //		displacedX = displacedX * -1;
 //		displacedY = displacedY * -1;
+//	
 //		
-//		
-//		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 144);
-//		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,108);
-//		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,144);
-//		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,108);
+//		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
+//		Rectangle rect2 = new Rectangle (0 + displacedX,128 + displacedY,216,108);
+//		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
+//		Rectangle rect4 = new Rectangle (864 + displacedX,128 + displacedY,216,108);
 //		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
 //		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
 //		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);
 //		Rectangle rect8 = new Rectangle ( 648 + displacedX,576 + displacedY,432,144);
 //		
-//		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,144);
-//		Rectangle rect10 = new Rectangle (0 + displacedX,252 + displacedY, 216, 216);
-//		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
+//		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,128);
+//		Rectangle rect10 = new Rectangle (0 + displacedX,236 + displacedY, 216, 232);
+//		Rectangle rect11 = new Rectangle (864 + displacedX, 236 + displacedY, 216, 232);
 //		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
-//		
+////		
 //	Graphics2D grapics =(Graphics2D) RenderLoop.wind.getBufferGraphics();
-//		
+////		
 //		grapics.setColor(new Color (0x5afa48));
-//	
+////	
 //		grapics.drawRect(rect1.x,rect1.y,rect1.width,rect1.height);
 //		grapics.drawRect(rect2.x,rect2.y,rect2.width,rect2.height);
 //		grapics.drawRect(rect3.x,rect3.y,rect3.width,rect3.height);
@@ -1281,7 +1283,26 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY - 1][roomPosX];
 			nextRoom.bottomJunction = true;
-			nextRoom.walls[11].forget();
+			//nextRoom.walls[11].forget();
+			
+			//4 up 8 high
+			ArrayList <Textbox> relvantLines = new ArrayList <Textbox> ();
+			
+			int startingIndex = (roomPosY * 20) - 4;
+			
+			for (int i = 0; i < 8; i++) {
+				relvantLines.add(wallLines[startingIndex + i]);
+			}
+			
+			int startingCharPos = (int)(roomPosX * 67.5) + 28;
+			int endingCharPos = (int)(roomPosX * 67.5) + 42;
+			
+			for (int i = 0; i < relvantLines.size(); i++) {
+				int relvantStartPos = relvantLines.get(i).getRealPos(startingCharPos);
+				int relvantEndPos = relvantLines.get(i).getRealPos(endingCharPos);
+				
+				relvantLines.get(i).whiteOut(relvantStartPos, relvantEndPos);
+			}
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -1289,7 +1310,7 @@ public class Roome extends GameObject {
 			
 		}
 		topJunction = true;
-		walls[8].forget();
+		//walls[8].forget();
 		
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:top:" + roomPosX + ":" + roomPosY);
@@ -1299,7 +1320,27 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY + 1][roomPosX];
 			nextRoom.topJunction = true;
-			nextRoom.walls[8].forget();
+			//nextRoom.walls[8].forget();
+			
+			
+			//16 down 8 high
+			ArrayList <Textbox> relvantLines = new ArrayList <Textbox> ();
+			
+			int startingIndex = (roomPosY * 20) + 16;
+			
+			for (int i = 0; i < 8; i++) {
+				relvantLines.add(wallLines[startingIndex + i]);
+			}
+			
+			int startingCharPos = (int)(roomPosX * 67.5) + 28;
+			int endingCharPos = (int)(roomPosX * 67.5) + 42;
+			
+			for (int i = 0; i < relvantLines.size(); i++) {
+				int relvantStartPos = relvantLines.get(i).getRealPos(startingCharPos);
+				int relvantEndPos = relvantLines.get(i).getRealPos(endingCharPos);
+				
+				relvantLines.get(i).whiteOut(relvantStartPos, relvantEndPos);
+			}
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -1307,16 +1348,33 @@ public class Roome extends GameObject {
 			
 		}
 		bottomJunction = true;
-		walls[11].forget();
+		//walls[11].forget();
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:bottom:" + roomPosX + ":" + roomPosY);
 		}
 	}
 	public void destroyRightWall() {
+		
 		try {
 			Roome nextRoom = map[roomPosY][roomPosX + 1];
 			nextRoom.leftJunction = true;
-			nextRoom.walls[9].forget();
+			//nextRoom.walls[9].forget();
+			
+			//7 down 6 high
+			ArrayList <Textbox> relvantLines = new ArrayList <Textbox> ();
+			
+			int startingIndex = (roomPosY * 20) + 7;
+			
+			for (int i = 0; i < 6; i++) {
+				relvantLines.add(wallLines[startingIndex + i]);
+			}
+			
+			int startingCharPos = (int)(roomPosX * 67.5) + 55;
+			
+			for (int i = 0; i < relvantLines.size(); i++) {
+				int relvantPos = relvantLines.get(i).getRealPos(startingCharPos);
+				relvantLines.get(i).whiteOut(relvantPos);
+			}
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -1324,7 +1382,7 @@ public class Roome extends GameObject {
 			
 		}
 		rightJunction = true;
-		walls[10].forget();
+		//walls[10].forget();
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:right:" + roomPosX + ":" + roomPosY);
 		}
@@ -1333,7 +1391,24 @@ public class Roome extends GameObject {
 		try {
 			Roome nextRoom = map[roomPosY][roomPosX - 1];
 			nextRoom.rightJunction = true;
-			nextRoom.walls[10].forget();
+			//nextRoom.walls[10].forget();
+			
+			
+			//7 down 6 high
+			ArrayList <Textbox> relvantLines = new ArrayList <Textbox> ();
+			
+			int startingIndex = (roomPosY * 20) + 7;
+			
+			for (int i = 0; i < 6; i++) {
+				relvantLines.add(wallLines[startingIndex + i]);
+			}
+			
+			int startingCharPos = (int)(roomPosX * 67.5) -14;
+			
+			for (int i = 0; i < relvantLines.size(); i++) {
+				int relvantPos = relvantLines.get(i).getRealPos(startingCharPos);
+				relvantLines.get(i).whiteOut(relvantPos);
+			}
 			
 		} catch (IndexOutOfBoundsException e) {
 				
@@ -1342,7 +1417,7 @@ public class Roome extends GameObject {
 		}
 		
 		leftJunction = true;
-		walls[9].forget();
+	//	walls[9].forget();
 		if (NetworkHandler.isHost()) {
 			NetworkHandler.getServer().sendMessage("DESTROY:left:" + roomPosX + ":" + roomPosY);
 		}
@@ -1444,9 +1519,9 @@ public class Roome extends GameObject {
 		objHitbox.y = objHitbox.y + displacedY;
 		
 		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
-		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,92);
+		Rectangle rect2 = new Rectangle (0 + displacedX,128 + displacedY,216,108);
 		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
-		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,92);
+		Rectangle rect4 = new Rectangle (864 + displacedX,128 + displacedY,216,108);
 		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
 		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
 		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);

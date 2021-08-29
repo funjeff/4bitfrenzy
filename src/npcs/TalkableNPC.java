@@ -14,6 +14,7 @@ public class TalkableNPC extends NPC {
 	
 	Menu diolog;
 	
+	
 	TitleBit pausedBit;
 	Bit alternativeBit;
 	
@@ -34,7 +35,6 @@ public class TalkableNPC extends NPC {
 		
 		if (diolog.isClosed()) {
 			closed = true;
-			
 			if (pausedBit != null) {
 				pausedBit.unfreeze();
 			}
@@ -73,10 +73,10 @@ public class TalkableNPC extends NPC {
 					diolog.open();
 					diolog.setRenderPriority(this.getRenderPriority());
 				}
-				
-				
-				
 			}
+		}
+		if (diolog.closeAttempt()) {
+			this.onCloseAttempt();
 		}
 	}
 	
@@ -101,6 +101,10 @@ public class TalkableNPC extends NPC {
 			}
 			
 		}
+	}
+	
+	public void onCloseAttempt () {
+		
 	}
 	
 	public Menu getMenu() {
