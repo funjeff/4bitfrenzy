@@ -29,6 +29,8 @@ public class HintMessage extends GameObject {
 		hintHeader.setText ("HELPFUL TIP:");
 		hintMenu.open ();
 		hintMenu.setBackgroundColor (0);
+		hintMenu.setX (100 - getDrawX ());
+		hintMenu.setY (200 - getDrawY ());
 		pickHint ();
 		
 		declare ();
