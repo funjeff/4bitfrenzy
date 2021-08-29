@@ -152,7 +152,10 @@ public class Tutorial extends GameObject {
 					menuText.setText (
 					"NOW, GO FORTH AND DELIVER ~N" +
 					"REGISTERS AS QUICKLY AS   ~N" +
-					"YOU CAN!"
+					"YOU CAN!                  ~N" +
+					"(YOU CAN PRESS H TO SEE   ~N" +
+					"THE CONTROLS AGAIN AT     ~N" +
+					"ANY TIME)"
 					);
 					moveHighlight (screenRect, 20);
 					break;

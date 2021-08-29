@@ -1,6 +1,11 @@
 package items;
 
+import java.util.ArrayList;
+
+import engine.GameObject;
 import engine.Sprite;
+import gameObjects.Register;
+import npcs.Piano;
 import npcs.Truck;
 import players.Bit;
 import util.DummyCollider;
@@ -19,6 +24,22 @@ public class Lighter extends Item {
 		if (dc.isColliding ("Truck")) {
 			Truck truck = (Truck)dc.getCollisionInfo ().getCollidingObjects ().get (0);
 			truck.lightOnFire ();
+			return true;
+		}
+		if (dc.isColliding ("Piano")) {
+			Piano piano = (Piano)dc.getCollisionInfo ().getCollidingObjects ().get (0);
+			piano.lightOnFire ();
+			return true;
+		}
+		if (dc.isColliding ("Register")) {
+			ArrayList<GameObject> regs = dc.getCollisionInfo ().getCollidingObjects ();
+			for (int i = 0; i < regs.size (); i++) {
+				Register r = (Register)regs.get (i);
+				if (r.isFrozen) {
+					r.isFrozen = false;
+					r.freezeTimer = 0;
+				}
+			}
 			return true;
 		}
 		return false;

@@ -41,7 +41,7 @@ public class Lake extends NPC implements Highlightable {
 	
 	@Override
 	public int getMaxQuestItemDist () {
-		return 4;
+		return 2;
 	}
 	
 	@Override

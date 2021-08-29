@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import gameObjects.DataSlot;
+import gameObjects.HelpWindow;
 import gameObjects.MovableRectHighlight;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
@@ -420,7 +421,6 @@ public class GameCode {
 		//DEBUG SPAWNING STARTS HERE
 		//Roome.map [5][5].spawnObject (Lighter.class);
 		//Roome.map [5][5].spawnObject (Bombs.class);
-		new Tutorial ();
 		//DEBUG SPAWNING ENDS HERE
 		//Declare the hud and make the bits
 		hud.declare();
@@ -449,11 +449,19 @@ public class GameCode {
 				bits.add(bit1dot5);
 			}
 			bit.declare(spawnCoords[0],spawnCoords[1]);
+			while (bit.isColliding ("Register")) {
+				spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+				bit.setX (spawnCoords [0]);
+				bit.setY (spawnCoords [1]); //Fix for bit spawning inside register
+			}
 			bit.setPerk(perks[i]);
 			bit.updateIcon ();
 			bits.add(bit);
 			i = i + 1;
 		}
+		
+		new Tutorial ();
+		new HelpWindow ();
 		
 	
 	Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (Bombs.class);

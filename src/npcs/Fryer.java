@@ -12,9 +12,9 @@ public class Fryer extends NPC implements Highlightable {
 	private Sprite fryerHighlight = new Sprite ("resources/sprites/fryer_highlight.png");
 	
 	public Fryer (double x, double y) {
-		super (x, y);
+		super (x - 10, y - 10);
 		setSprite (fryerSprite);
-		setHitboxAttributes (114, 63);
+		setHitboxAttributes (100, 95);
 	}
 
 	@Override
@@ -33,13 +33,18 @@ public class Fryer extends NPC implements Highlightable {
 	}
 	
 	@Override
+	public void draw () {
+		getSprite ().draw (getDrawX () + 10, getDrawY () + 10);
+	}
+	
+	@Override
 	public boolean usesDefaultHightlight() {
 		return false;
 	}
 
 	@Override
 	public void highlight() {
-		fryerHighlight.draw (getDrawX () - 2, getDrawY () - 3);
+		fryerHighlight.draw (getDrawX () + 7, getDrawY () + 7);
 	}
 	
 }

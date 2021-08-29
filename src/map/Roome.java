@@ -62,7 +62,7 @@ public class Roome extends GameObject {
 	int roomPosX; // the location of the room in the map array (x coordinate)
 	int roomPosY; // the location of the room in the map array (y coordinate)
 	
-	int id;
+	public int id;
 	int color;
 	
 	public String wallColor = "NULL";
@@ -638,6 +638,7 @@ public class Roome extends GameObject {
 //					((Textbox)walls[11]).declare((int)this.getX() + 432, (int)this.getY() + 576);
 //				}
 			} else {
+
 				//walls[0] = new WallBox ((int)this.getX (), (int)this.getY (), 432, 144);
 				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
 //				walls[1] = new WallBox ((int)this.getX (), (int)this.getY () + 144, 216, 108);
@@ -647,8 +648,10 @@ public class Roome extends GameObject {
 //				walls[5] = new WallBox ((int)this.getX (), (int)this.getY () + 576, 432, 144);
 //				walls[6] = new WallBox ((int)this.getX () + 864, (int)this.getY () + 468, 216, 108);
 //				walls[7] = new WallBox ((int)this.getX () + 648, (int)this.getY () + 576, 432, 144);
+
 				//Startpoints/endpoints are arranged in counter-clockwise order
 				//Top
+				new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 432, (int)getY () + 144);
 				if (!topJunction) {
 					//walls[8] = new WallBox ((int)this.getX () + 432, (int)this.getY (), 216, 144);
 					new Ribbon ((int)getX () + 864, (int)getY () + 144, (int)getX () + 216, (int)getY () + 144);
@@ -660,7 +663,6 @@ public class Roome extends GameObject {
 				}
 				//Left
 				if (!leftJunction) {
-				//	walls[9] = new WallBox ((int)this.getX (), (int)this.getY () + 252, 216, 216);
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 576);
 				} else {
 					new Ribbon ((int)getX () + 216, (int)getY () + 144, (int)getX () + 216, (int)getY () + 252);
@@ -927,7 +929,9 @@ public class Roome extends GameObject {
 	}
 	public String pickWallColor () {
 		Random rand = new Random ();
-		String color = "~C" + getCodeWallColors().get(rand.nextInt(getCodeWallColors().size())) + "~";
+		int index = rand.nextInt(getCodeWallColors().size());
+		color = index;
+		String color = "~C" + getCodeWallColors().get(index) + "~";
 		setWallColor (color);
 		return color;
 	}
@@ -1120,6 +1124,7 @@ public class Roome extends GameObject {
 			r.init (ids[i], colors[i]);
 			r.roomPosX = (i % mapWidth);
 			r.roomPosY = (i / mapWidth);
+			r.wallColor = "~C" + getCodeWallColors().get (colors [i]) + "~"; //Sync the colors
 		}
 		
 		initText();
@@ -1462,7 +1467,13 @@ public class Roome extends GameObject {
 		ArrayList<String> spawnParams = this.getSpawnParameters ();
 		if (spawnParams == null) {
 			int[] spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
-			return GameCode.makeInstanceOfGameObject (obj, spawnCoords [0], spawnCoords [1]);
+			GameObject gObj = GameCode.makeInstanceOfGameObject (obj, spawnCoords [0], spawnCoords [1]);
+			while (gObj.isColliding ("Register") || gObj.isColliding ("DataSlot") || gObj.isCollidingChildren ("NPC")) {
+				spawnCoords = getSpawningMask ().getPosibleCoords ((int)defaultHitbox.getWidth (), (int)defaultHitbox.getHeight ());
+				gObj.setX (spawnCoords [0]);
+				gObj.setY (spawnCoords [1]);
+			} //Patch for objects spawning inside each other
+			return gObj;
 		} else {
 			boolean spawnAllowed = false;
 			int attempts = 0;

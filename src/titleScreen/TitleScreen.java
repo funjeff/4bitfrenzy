@@ -97,8 +97,11 @@ public class TitleScreen extends GameObject {
 	
 	private static Scene perkScene;
 	
+
 	public static final int OBJECT_SPAWN_RING_PADDING = 100;
-	
+
+	private HintMessage hintMessage;
+
 	@Override
 	public void onDeclare () {
 		
@@ -110,7 +113,7 @@ public class TitleScreen extends GameObject {
 		
 		//Make the textboxes
 		ipBox = new Textbox ("");
-		ipBox.declare ();
+		ipBox.declare (0, 32);
 		ipBox.changeWidth (128);
 		ipBox.changeHeight (128);
 		ipBox.setFont ("text (red)");
@@ -119,7 +122,7 @@ public class TitleScreen extends GameObject {
 		ipBox.setRenderPriority(99);
 		
 		infoBox = new Textbox ("");
-		infoBox.declare (0, 32);
+		infoBox.declare (0, 48);
 		infoBox.changeWidth (128);
 		infoBox.changeHeight (128);
 		infoBox.setFont ("text (red)");
@@ -229,6 +232,7 @@ public class TitleScreen extends GameObject {
 					titleClosed = true;
 					ipBox.forget ();
 					infoBox.forget();
+					hintMessage.forget ();
 					forget ();
 				}
 			}
@@ -237,6 +241,10 @@ public class TitleScreen extends GameObject {
 			if (!isHost) {
 				ipBox.changeText ("ENTER THE CONNECTION IP: " + ip);
 				infoBox.changeText ("(PRESS ENTER AFTER TYPING THE IP TO JOIN)");
+			}
+			
+			if (hintMessage == null) {
+				hintMessage = new HintMessage ();
 			}
 			
 		}
@@ -373,7 +381,7 @@ public class TitleScreen extends GameObject {
 	
 	@Override
 	public void draw () {
-		clearScreen ();
+		//clearScreen ();
 		super.draw ();
 		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
 			for (int i = 0; i < 2; i++) {

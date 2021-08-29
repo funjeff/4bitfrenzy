@@ -106,7 +106,6 @@ public class DataSlot extends GameObject implements Highlightable {
 				if (working.getMemAddress() == memAddress || working.scrambled && this.scrambled || working.secondAddress == memAddress) {
 					this.awardPoints(working);
 					working.forget();
-					Roome.getRoom(this.getX(), this.getY()).ds = null;
 					
 					//play a sound effect TODO make it only play for the player who put it in
 
@@ -140,7 +139,7 @@ public class DataSlot extends GameObject implements Highlightable {
 		super.draw();
 		if (display != null) {
 			display.setX(this.getX() + 10);
-			display.setY(this.getY() + 5);
+			display.setY(this.getY() + 12);
 			display.draw();
 		}
 		if (reward != null) {
@@ -225,9 +224,6 @@ public class DataSlot extends GameObject implements Highlightable {
 		this.setY(Double.parseDouble(infos[5]));
 		this.scrambled = Boolean.parseBoolean (infos[6]);
 		updateTime = 0;
-		if (Roome.getRoom(this.getX(), this.getY()) != null) {
-			Roome.getRoom(this.getX(), this.getY()).ds = this;
-		}
 	}
 	
 	public void scramble () {

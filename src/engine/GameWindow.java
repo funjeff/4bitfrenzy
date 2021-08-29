@@ -88,8 +88,8 @@ public class GameWindow extends JFrame {
 		}
 	
 		//Set the colors
-		windowGraphics.setColor (GameCode.devMode () ? new Color (0x2F2F2F) : new Color (0x000000));
-		bufferGraphics.setColor (GameCode.devMode () ? new Color (0x2F2F2F) : new Color (0x000000));
+		windowGraphics.setColor (new Color (0x000000));
+		bufferGraphics.setColor (new Color (0x000000));
 		
 		//Fill the blank space on the sides
 		if (scalingMode == GameCode.GameSettings.SCALE_MODE_HORIZONTAL_BORDER || scalingMode == GameCode.GameSettings.SCALE_MODE_FULL_BORDER) {

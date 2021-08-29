@@ -38,6 +38,8 @@ public class Hud extends GameObject {
 	long prevTime;
 	static int lives = 11;
 	
+	static boolean waitingForNewWave = false;
+	
 	//Register spawning parameters
 	public static int minRegisterDistance = 1;
 	public static int maxRegisterDistance = 4;
@@ -102,6 +104,32 @@ public class Hud extends GameObject {
 	}
 	
 	@Override
+	public void frameEvent () {
+		//Update registers and data slots
+		for (int wy = 0; wy < Roome.getMapHeight (); wy++) {
+			for (int wx = 0; wx < Roome.getMapWidth (); wx++) {
+				Roome currRoome = Roome.map [wy][wx];
+				currRoome.r = null;
+				currRoome.ds = null;
+			}
+		}
+		ArrayList<GameObject> regs = ObjectHandler.getObjectsByName ("Register");
+		if (regs != null) {
+			for (int i = 0; i < regs.size (); i++) {
+				Register r = (Register)regs.get (i);
+				Roome.getRoom (r.getX (), r.getY ()).r = r;
+			}
+		}
+		ArrayList<GameObject> dSlots = ObjectHandler.getObjectsByName ("DataSlot");
+		if (dSlots != null) {
+			for (int i = 0; i < dSlots.size (); i++) {
+				DataSlot ds = (DataSlot)dSlots.get (i);
+				Roome.getRoom (ds.getX (), ds.getY ()).ds = ds;
+			}
+		}
+	}
+	
+	@Override
 	public void draw () {
 		// once we do multiplayer put something here that make this happen only if its the right player
 		try {
@@ -121,9 +149,13 @@ public class Hud extends GameObject {
 		ArrayList<GameObject> dataSlots = ObjectHandler.getObjectsByName ("DataSlot");
 		int numSlots = 0;
 		for (int i = 0; i < dataSlots.size (); i++) {
-			if (!((DataSlot)dataSlots.get(i)).isScrambled ()) {
+			if (!((DataSlot)dataSlots.get(i)).isCleared () && !((DataSlot)dataSlots.get(i)).isScrambled ()) {
 				numSlots++;
 			}
+		}
+		if (NetworkHandler.isHost () && numSlots == 0 && !waitingForNewWave) {
+			waitingForNewWave = true;
+			waveOver ();
 		}
 		registersRemaining.changeText("" + numSlots);
 		registersRemaining.draw();
@@ -158,6 +190,7 @@ public class Hud extends GameObject {
 	}
 	public static void newWave() {	
 		
+		waitingForNewWave = false;
 		roundNum = roundNum + 1;
 		waveNum.changeText(Integer.toString(roundNum));
 
@@ -228,15 +261,13 @@ public class Hud extends GameObject {
 			//Register
 			Register r = (Register)registerRoome.spawnObject (Register.class);
 			r.setMemAddress (memNum);
-			registerRoome.r = r;
 			//Data slot
 			DataSlot ds = (DataSlot)slotRoome.spawnObject (DataSlot.class);
 			ds.setMemAddress (memNum);
-			slotRoome.ds = ds;
 		}
 		
 		//Spawn in registers
-		int newRegisters = (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
+		int newRegisters = 1 + (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
 		for (int i = 0; i < newRegisters; i++) {
 				
 			try {
@@ -272,7 +303,6 @@ public class Hud extends GameObject {
 			
 			Register r = (Register)Roome.map[wy][wx].spawnObject (Register.class);
 			r.setMemAddress (memNum);
-			Roome.map[wy][wx].r = r;
 			
 			int xCoord, yCoord;
 			Point p1 = new Point (wx, wy);
@@ -303,7 +333,6 @@ public class Hud extends GameObject {
 			Roome dataRoom = Roome.map [yCoord][xCoord];
 			DataSlot slot = (DataSlot)dataRoom.spawnObject (DataSlot.class);
 			slot.setMemAddress (memNum);
-			dataRoom.ds = slot;
 			
 		}
 		
@@ -359,6 +388,8 @@ public class Hud extends GameObject {
 				}
 			}
 		}
+		
+		//Update the round timer
 		if (roundNum == 1) {
 			timeLeft = 360000; // 6 minutes
 		} else {
