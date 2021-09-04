@@ -1,5 +1,6 @@
 package titleScreen;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.Sprite;
 import menu.Menu;
@@ -72,8 +73,8 @@ public class HintMessage extends GameObject {
 	
 	@Override
 	public void draw () {
-		hintMenu.setX (100 - getDrawX ());
-		hintMenu.setY (200 - getDrawY ());
+		hintMenu.setX (100 - getDrawX () - GameCode.getViewX ());
+		hintMenu.setY (200 - getDrawY () - GameCode.getViewY ());
 	}
 	
 	private class FlamingPiano extends GameObject {

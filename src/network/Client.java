@@ -255,7 +255,7 @@ public class Client extends Thread {
 				System.out.println(str);
 				String[] data = str.split (":");
 				String room_data = data[1];
-				TitleScreen.titleClosed = true;
+				TitleScreen.closeTitleScreen ();
 				
 			
 				

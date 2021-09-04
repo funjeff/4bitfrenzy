@@ -100,7 +100,7 @@ public class TitleScreen extends GameObject {
 
 	public static final int OBJECT_SPAWN_RING_PADDING = 100;
 
-	private HintMessage hintMessage;
+	private static HintMessage hintMessage;
 
 	@Override
 	public void onDeclare () {
@@ -229,10 +229,9 @@ public class TitleScreen extends GameObject {
 				infoBox.changeText ("PRESS ENTER ONCE ALL PLAYERS HAVE JOINED TO START THE GAME");
 				if (keyPressed (KeyEvent.VK_ENTER)) {
 					System.out.println ("STARTING");
-					titleClosed = true;
+					closeTitleScreen ();
 					ipBox.forget ();
 					infoBox.forget();
-					hintMessage.forget ();
 					forget ();
 				}
 			}
@@ -243,7 +242,7 @@ public class TitleScreen extends GameObject {
 				infoBox.changeText ("(PRESS ENTER AFTER TYPING THE IP TO JOIN)");
 			}
 			
-			if (hintMessage == null) {
+			if (!isHost && hintMessage == null) {
 				hintMessage = new HintMessage ();
 			}
 			
@@ -368,6 +367,13 @@ public class TitleScreen extends GameObject {
 		perksButton.setRenderPriority(69);
 		settingsButton.setRenderPriority(69);*/
 	
+	}
+	
+	public static void closeTitleScreen () {
+		titleClosed = true;
+		if (hintMessage != null) {
+			hintMessage.forget ();
+		}
 	}
 	
 	public static Scene playScene (String path, int x, int y) {
