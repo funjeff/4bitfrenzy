@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import engine.GameCode;
 import engine.GameObject;
+import engine.ObjectHandler;
 import engine.Sprite;
 import gameObjects.Register;
 import resources.SoundPlayer;
@@ -84,16 +85,16 @@ public class TitleBit extends GameObject {
 		double startY = getY ();
 		if (!frozen) {
 			if (keyDown (GameCode.getSettings().getControls()[0])) {
-				setY (getY () - speed);
+				goY (getY () - speed);
 			}
 			if (keyDown (GameCode.getSettings().getControls()[2])) {
-				setX (getX () - speed);
+				goX (getX () - speed);
 			}
 			if (keyDown (GameCode.getSettings().getControls()[1])) {
-				setY (getY () + speed);
+				goY (getY () + speed);
 			}
 			if (keyDown (GameCode.getSettings().getControls()[3])) {
-				setX (getX () + speed);
+				goX (getX () + speed);
 			}
 		}
 		//Handle the pushing and pulling of the TitleRegister
@@ -145,5 +146,31 @@ public class TitleBit extends GameObject {
 	}
 	public void unfreeze () {
 		frozen = false;
+	}
+	
+	@Override
+	public boolean goX(double val) {
+		double ogVal = this.getX();
+		this.setX(val);
+		
+		//the title code walls is coliding method is overriden so we need to run its is colling on this instead of the other way around
+		if (ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).isColliding(this)) {
+			this.setX(ogVal);
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean goY(double val) {
+		double ogVal = this.getY();
+		this.setY(val);
+		
+		//the title code walls is coliding method is overriden so we need to run its is colling on this instead of the other way around
+		if (ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).isColliding(this)) {
+			this.setY(ogVal);
+			return false;
+		}
+		return true;
 	}
 }

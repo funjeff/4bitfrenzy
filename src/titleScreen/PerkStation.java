@@ -81,11 +81,6 @@ public class PerkStation extends GameObject {
 				sceenMenu.setY(20);
 				sceenMenu.open();
 			}
-			try {
-				scene.frameEvent();
-			} catch (NullPointerException e) {
-				
-			}
 		} else {
 			if (scene != null && scene.isPlaying()) {
 				scene.stop();

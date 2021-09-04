@@ -55,7 +55,7 @@ public class Textbox extends GameObject {
 	spaceManipulation = 0;
 	text = textToDisplay;
 	width = textToDisplay.length() * 16;
-	height = 1;
+	height = 32;
 	
 	
 	this.setRenderPriority(1);
@@ -298,9 +298,10 @@ public class Textbox extends GameObject {
 	//2017 Jeffrey appologizes for this garbage code (he would never admit it though)
 	//EDIT I FINALLY FUCKIN REWROTE IT AFTER 5 FUCKING YEARS geez I can't belive ive been doing this for so long
 public void drawBox () {
-	
 	//draws the box itself
 	if (renderBox) {
+		
+		
 		
 		for (int i = 0; i < width/8; i++) {
 			for (int j = 0; j < height/8; j++) {

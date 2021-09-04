@@ -98,7 +98,7 @@ public class TitleScreen extends GameObject {
 	private static Scene perkScene;
 	
 
-	public static final int OBJECT_SPAWN_RING_PADDING = 100;
+	public static final int OBJECT_SPAWN_RING_PADDING = 140;
 
 	private HintMessage hintMessage;
 
@@ -289,24 +289,26 @@ public class TitleScreen extends GameObject {
 		gamblerStation = new PerkStation (7);
 		
 
-		titleBit.declare (430 + OBJECT_SPAWN_RING_PADDING , 580);
-		titleReg.declare (400 + OBJECT_SPAWN_RING_PADDING , 491);
-		startGameSlot.declare (405 + OBJECT_SPAWN_RING_PADDING , 339);
+		titleBit.declare (410 + OBJECT_SPAWN_RING_PADDING , 580);
+		titleReg.declare (380 + OBJECT_SPAWN_RING_PADDING , 491);
+		startGameSlot.declare (385 + OBJECT_SPAWN_RING_PADDING , 339);
 //		joinSlot.declare (1150, 180);
 //		helpSlot.declare (1150, 322);
 //		perksSlot.declare (1150, 460);
 //		settingsSlot.declare (1150, 600);
-		settingsBot.declare(310 + OBJECT_SPAWN_RING_PADDING ,350);
-		controlMenu.declare(490 + OBJECT_SPAWN_RING_PADDING ,350);
+		settingsBot.declare(290 + OBJECT_SPAWN_RING_PADDING ,350);
+		controlMenu.declare(470 + OBJECT_SPAWN_RING_PADDING ,350);
 		
 
 		blastStation.declare (90 + OBJECT_SPAWN_RING_PADDING , 416);
 		gripStation.declare (146 + OBJECT_SPAWN_RING_PADDING , 314);
 		navStation.declare (228 + OBJECT_SPAWN_RING_PADDING , 220);
-		dupeStation.declare (400 + OBJECT_SPAWN_RING_PADDING , 168);
+		dupeStation.declare (390 + OBJECT_SPAWN_RING_PADDING , 168);
 		powerStation.declare (558 + OBJECT_SPAWN_RING_PADDING , 225);
 		dualStation.declare (636 + OBJECT_SPAWN_RING_PADDING , 314);
-		gamblerStation.declare (690 + OBJECT_SPAWN_RING_PADDING , 416);
+		gamblerStation.declare (700 + OBJECT_SPAWN_RING_PADDING , 416);
+		
+		walls.declare();
 		
 	}
 	
@@ -320,7 +322,8 @@ public class TitleScreen extends GameObject {
 //		settingsSlot.forget ();
 //		helpSlot.forget ();
 		settingsBot.forget();
-		
+		controlMenu.forget();
+		walls.forget();
 		/*hostButton.forget();
 		joinButton.forget();
 		rulesButton.forget();
@@ -467,7 +470,6 @@ public class TitleScreen extends GameObject {
 				}
 			}
 		}
-		walls.draw();
 	}
 	
 	public void enterHostMode () {

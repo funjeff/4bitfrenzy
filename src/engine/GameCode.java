@@ -464,7 +464,7 @@ public class GameCode {
 		new HelpWindow ();
 		
 	
-	Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (Bombs.class);
+//	Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (Bombs.class);
 //		
 //		Register regBig = new Register (45);
 //		
