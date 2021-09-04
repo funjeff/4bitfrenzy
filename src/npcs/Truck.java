@@ -47,7 +47,10 @@ public class Truck extends NPC implements Highlightable {
 				this.setX(this.getX() + 6);
 				Rectangle rect9 = new Rectangle ((int)(864 + Roome.getRoom(this.getX(),this.getY()).getX()), (int)(252 + Roome.getRoom(this.getX(), this.getY()).getY()),216,144);
 				if (this.hitbox().intersects(rect9)) {
-					Roome.getRoom(this.getX(), this.getY()).destroyRightWall();
+					Roome currRoome = Roome.getRoom(this.getX(), this.getY());
+					currRoome.destroyRightWall();
+					currRoome.update (0); //Replace the room's background with nothing
+					NetworkHandler.getServer ().sendMessage ("RUPDATE:" + (int)(getX () / 1080) + "," + (int)(getY () / 720) + "," + 0);
 					if (NetworkHandler.isHost()) {
 						SoundPlayer play = new SoundPlayer ();
 						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");

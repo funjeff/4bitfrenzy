@@ -255,7 +255,7 @@ public class Client extends Thread {
 				System.out.println(str);
 				String[] data = str.split (":");
 				String room_data = data[1];
-				TitleScreen.titleClosed = true;
+				TitleScreen.closeTitleScreen ();
 				
 			
 				
@@ -294,6 +294,15 @@ public class Client extends Thread {
 				String[] data = str.split (":");
 				updateGameData (data);
 				
+			}
+			
+			if (str.length () >= 7 && str.substring (0, 7).equals ("RUPDATE")) {
+				String[] data = str.split (":");
+				String[] params = data [1].split (",");
+				int x = Integer.parseInt (params[0]);
+				int y = Integer.parseInt (params[1]);
+				int id = Integer.parseInt (params[2]);
+				Roome.map [y][x].update (id);
 			}
 			
 			//This section has been copy-pasted into TitleScreen
