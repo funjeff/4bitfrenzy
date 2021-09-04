@@ -531,27 +531,31 @@ public class Roome extends GameObject {
 		
 	}
 	
+	public void update (int id) {
+		Random rand = new Random ();
+		
+		String toUse = "";
+
+		int lineNum = getBaseRoomeId (id); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
+		this.id = id;
+
+		//Get the room path
+		String roomPath = getRoomePathFromId (id);
+		
+		Sprite bgSprite = new Sprite (roomPath + "background.png");
+		Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
+		Sprite collisionMask = new Sprite (roomPath + "collision_mask.png");
+
+		this.setSprite (bgSprite);
+		this.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMask.getFrame(0).getSubimage(216, 144, 648, 432));
+		this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432)); 
+	}
+	
 	public void init (int id, int colorNum) {
 		
 		if (spawningBitch == null || collisionBitch == null) {
 			
-			Random rand = new Random ();
-			
-			String toUse = "";
-
-			int lineNum = getBaseRoomeId (id); // thers probably a more elegant way for me to do this but I can't think of it so I just put the number of lines here
-			this.id = id;
-
-			//Get the room path
-			String roomPath = getRoomePathFromId (id);
-			
-			Sprite bgSprite = new Sprite (roomPath + "background.png");
-			Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
-			Sprite collisionMask = new Sprite (roomPath + "collision_mask.png");
-
-			this.setSprite (bgSprite);
-			this.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMask.getFrame(0).getSubimage(216, 144, 648, 432));
-			this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432)); 
+			update (id);
 			
 			if (!GameCode.devMode ()) {
 //				walls[0] = new Textbox("");
