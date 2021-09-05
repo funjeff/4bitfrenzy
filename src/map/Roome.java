@@ -51,6 +51,8 @@ public class Roome extends GameObject {
 	
 	static Textbox[] wallLines;
 	
+	boolean isSpecial = false; // make true if you want a room to be unoverridable
+	
 	private static HashMap<Point, HashMap<Point, Integer>> distMaps;
 	
 	//true = open false = closed
@@ -78,6 +80,8 @@ public class Roome extends GameObject {
 	private PixelBitch spawningBitch;
 	private PixelBitch collisionBitch;
 	
+	private int bigRoomSegment = -1;
+	
 	public static ArrayList<String> roomData;
 	public static ArrayList<Integer> roomPool;
 	public static ArrayList<String> codeWallLines;
@@ -88,6 +92,7 @@ public class Roome extends GameObject {
 	public static HashMap<Integer, ArrayList<String>> spawnsMap;
 	public static HashMap<Integer, ArrayList<Boolean>> allowedWallsMap;
 	
+	public static final int BIG_ROOM_CHANCE = 30;
 	
 	public Roome ()
 	{
@@ -259,6 +264,12 @@ public class Roome extends GameObject {
 		}
 	}
 	
+	public static String getRoomNameFromId (int id) {
+		String path = getRoomePathFromId(id);
+		String [] pathParts = path.split("/");
+		return pathParts[3];
+	}
+	
 	public static int rollRoomeId (Roome r) {
 		
 		//Get the id for the roome
@@ -269,6 +280,17 @@ public class Roome extends GameObject {
 			ArrayList<Integer> ids = getRoomeIdPool ();
 			int idx = (int)(Math.random () * ids.size ());
 			idVal = ids.get (idx);
+			
+			if (getRoomNameFromId(idVal).contains("big")) {
+				System.out.println("bg");
+				if (!r.makeBigRoom(getRoomePathFromId(idVal))) {
+					System.out.println("dez nutsg");
+					while (getRoomNameFromId(idVal).contains("big")) {
+						idx = (int)(Math.random () * ids.size ());
+						idVal = ids.get (idx);
+					}
+				}
+			}
 			
 			//Check to see if the room can have the given walls
 			ArrayList<Boolean> walls = getAllowedWalls (idVal);
@@ -541,7 +563,7 @@ public class Roome extends GameObject {
 
 		//Get the room path
 		String roomPath = getRoomePathFromId (id);
-		
+	
 		Sprite bgSprite = new Sprite (roomPath + "background.png");
 		Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
 		Sprite collisionMask = new Sprite (roomPath + "collision_mask.png");
@@ -552,7 +574,6 @@ public class Roome extends GameObject {
 	}
 	
 	public void init (int id, int colorNum) {
-		
 		if (spawningBitch == null || collisionBitch == null) {
 			
 			update (id);
@@ -876,6 +897,7 @@ public class Roome extends GameObject {
 									length = length + 1;
 									
 									if (!r.inRoom(startPos + (length + 1) * 16, working.getY())) {
+									
 										r = Roome.getRoom(startPos + (length + 1) * 16, working.getY());
 										
 										if (r.getWallColor() != "NULL") {
@@ -1066,16 +1088,19 @@ public class Roome extends GameObject {
 		Roome working = null;
 		while (working == null) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
 		working.init (13, r.nextInt (5)); //Casino ID is 13
+		working.isSpecial = true;
 		
 		//Place in the truck room
 		working = null;
 		while (working == null || mapWidth * 1080 - working.getX () < (1080 * (mapWidth - 1))) {working = (Roome)finalRooms.get (r.nextInt (finalRooms.size ()));}
 		working.init (20, r.nextInt (5));
+		working.isSpecial = true;
 		
 		for (int i = 0; i < finalRooms.size(); i++) {
 			working = (Roome)finalRooms.get(i);
-			if (working != null && working.getSprite () == null) {
-				working.init(rollRoomeId (working), r.nextInt (5));
+			if (working != null && working.getSprite () == null && !working.isSpecial) {
+				int lol = rollRoomeId (working);
+				working.init(lol, r.nextInt (5));
 			}
 		}
 		
@@ -1107,7 +1132,12 @@ public class Roome extends GameObject {
 		
 		for (int i = 0; i < mapWidth * mapHeight; i++) {
 			String curr = roomStrings[i];
-			Roome r = new Roome ();
+			Roome r;
+			if (map [i / mapWidth][i % mapWidth] == null) {
+				r = new Roome ();
+			} else {
+				r = map [i / mapWidth][i % mapWidth];
+			}
 			r.declare ();
 			r.topJunction = curr.charAt (0) == 'y' ? true : false;
 			r.leftJunction = curr.charAt (1) == 'y' ? true : false;
@@ -1118,16 +1148,22 @@ public class Roome extends GameObject {
 			r.setX ((i % mapWidth) * 1080);
 			r.setY ((i / mapWidth) * 720);
 			
+			if (getRoomNameFromId(ids[i]).contains("big")) {
+				map [(i / mapWidth) + 1][(i % mapWidth)] = new Roome ();
+				map [(i / mapWidth)][(i % mapWidth) + 1] = new Roome ();
+				map [(i / mapWidth) + 1][(i % mapWidth) + 1] = new Roome ();
+				r.makeBigRoom(getRoomePathFromId(ids[i]));
+			}
+			
 			map [i / mapWidth][i % mapWidth] = r;
 		}
 		
 		for (int i = 0; i < mapWidth * mapHeight; i++) {
-			Roome r = new Roome ();
 			
-			r = map [i / mapWidth][i % mapWidth];
+			Roome r = map [i / mapWidth][i % mapWidth];
 			r.init (ids[i], colors[i]);
 			r.roomPosX = (i % mapWidth);
-			r.roomPosY = (i / mapWidth);
+			r.roomPosY = (i / mapWidth); //exuse me what
 			r.wallColor = "~C" + getCodeWallColors().get (colors [i]) + "~"; //Sync the colors
 		}
 		
@@ -1216,7 +1252,107 @@ public class Roome extends GameObject {
 		}
 		
 	}
+	
+	public boolean makeBigRoom (String path) {
+		Roome right;
+		
+		try {
+			right = getRoom(this.getX() + 1081, this.getY());
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+		if (right.isSpecial) {
+			return false;
+		}
+		
+		Roome bottom;
+		
+		try {
+			bottom = getRoom(this.getX(), this.getY() + 721);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+		
+		if (bottom.isSpecial) {
+			return false;
+		}
+		
+		Roome bottomRight;
+		
+		try {
+			bottomRight = getRoom(this.getX() + 1081, this.getY() + 721);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+				
+		if (bottomRight.isSpecial) {
+			return false;
+		}
+		
+		//left room
+		
+		this.bigRoomSegment = 0;
+		this.bottomJunction = true;
+		this.rightJunction = true;
+		this.isSpecial = true;
+		
+		
+		//right room
+		
+		Sprite bgRight = new Sprite (path + "background2.png");
+		Sprite spawnMaskRight = new Sprite (path + "spawn_mask2.png");
+		Sprite collisionMaskRight = new Sprite (path + "collision_mask2.png");
 
+		right.setSprite (bgRight);
+		right.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMaskRight.getFrame(0).getSubimage(216, 144, 648, 432));
+		right.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMaskRight.getFrame(0).getSubimage(216, 144, 648, 432)); 
+
+		
+		
+		right.bigRoomSegment = 1;
+		right.bottomJunction = true;
+		right.leftJunction = true;
+		right.isSpecial = true;
+		
+		
+		//bottom room
+		
+		Sprite bgBottom = new Sprite (path + "background3.png");
+		Sprite spawnMaskBottom = new Sprite (path + "spawn_mask3.png");
+		Sprite collisionMaskBottom = new Sprite (path + "collision_mask3.png");
+
+		bottom.setSprite (bgBottom);
+		bottom.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMaskBottom.getFrame(0).getSubimage(216, 144, 648, 432));
+		bottom.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMaskBottom.getFrame(0).getSubimage(216, 144, 648, 432)); 
+
+		
+		bottom.bigRoomSegment = 2;
+		bottom.topJunction = true;
+		bottom.rightJunction = true;
+		bottom.isSpecial = true;
+		
+		
+		//bottom right room
+		
+		Sprite bgBottomRight = new Sprite (path + "background4.png");
+		Sprite spawnMaskBottomRight = new Sprite (path + "spawn_mask4.png");
+		Sprite collisionMaskBottomRight = new Sprite (path + "collision_mask4.png");
+
+		bottomRight.setSprite (bgBottomRight);
+		bottomRight.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMaskBottomRight.getFrame(0).getSubimage(216, 144, 648, 432));
+		bottomRight.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMaskBottomRight.getFrame(0).getSubimage(216, 144, 648, 432)); 
+
+		
+		
+		
+		bottomRight.bigRoomSegment = 3;
+		bottomRight.topJunction = true;
+		bottomRight.leftJunction = true;
+		bottomRight.isSpecial = true;
+		
+		return true;
+		
+	}
 	public static void draw (Graphics g) {
 		Color green = new Color (0x00FF00);
 		Color white = new Color (0xFFFFFFF);
@@ -1453,11 +1589,22 @@ public class Roome extends GameObject {
 	}
 	
 	public PixelBitch getCollisionMask () {
-		return collisionBitch;
+		if (collisionBitch != null) {
+			return collisionBitch;
+		} else {
+			Sprite collisionMask = new Sprite ( "resources/sprites/rooms/default/"+ "collision_mask.png");
+			return new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432));
+		}
 	}
 	
 	public PixelBitch getSpawningMask () {
-		return spawningBitch;
+		if (spawningBitch != null) {
+			return spawningBitch;
+		} else {
+			Sprite spawnMask = new Sprite ( "resources/sprites/rooms/default/"+ "spawn_mask.png");
+			return new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMask.getFrame(0).getSubimage(216, 144, 648, 432)); 
+
+		}
 	}
 	
 	public GameObject spawnObject (Class<?> obj) {
@@ -1520,7 +1667,6 @@ public class Roome extends GameObject {
 	
 	public boolean inWall (int x, int y) {
 		Rectangle objHitbox = new Rectangle (x,y,2,2);
-		
 		objHitbox.x = objHitbox.x - (1080 * roomPosX);
 		objHitbox.y = objHitbox.y -  (720 * roomPosY);
 		
@@ -1532,6 +1678,25 @@ public class Roome extends GameObject {
 		
 		objHitbox.x = objHitbox.x + displacedX;
 		objHitbox.y = objHitbox.y + displacedY;
+		
+		ArrayList <Rectangle> visableRectangles = this.getVisableRectangles();
+		
+		for (int i = 0; i < visableRectangles.size(); i++) {
+			if (objHitbox.intersects(visableRectangles.get(i))) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList <Rectangle> getVisableRectangles (){
+		ArrayList <Rectangle> rectangles = new ArrayList <Rectangle> ();
+		
+		int displacedX = GameCode.getViewX() - (1080 * roomPosX);
+		int displacedY = GameCode.getViewY() - (720 * roomPosY);
+		
+		displacedX = displacedX * -1;
+		displacedY = displacedY * -1;
 		
 		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
 		Rectangle rect2 = new Rectangle (0 + displacedX,128 + displacedY,216,108);
@@ -1547,20 +1712,70 @@ public class Roome extends GameObject {
 		Rectangle rect11 = new Rectangle (864 + displacedX, 236 + displacedY, 216, 232);
 		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
 		
-		if ((!objHitbox.intersects(rect12) || bottomJunction) && (!objHitbox.intersects(rect11) || rightJunction) && (!objHitbox.intersects(rect10) || leftJunction) && (!objHitbox.intersects(rect9) || topJunction) && !objHitbox.intersects(rect8) && !objHitbox.intersects(rect7) && !objHitbox.intersects(rect6) && !objHitbox.intersects(rect5) && !objHitbox.intersects(rect4) && !objHitbox.intersects(rect3) && !objHitbox.intersects(rect2) && !objHitbox.intersects(rect1)) {
-			return false;
-		} else {
-			return true;
+		
+		switch (bigRoomSegment) {
+		case 0:
+			rectangles.add(rect1);
+			rectangles.add(rect2);
+			rectangles.add(rect3);
+			rectangles.add(rect5);
+			rectangles.add(new Rectangle (0 + displacedX,576 + displacedY,216,144));
+			break;
+		case 1:
+			rectangles.add(rect1);
+			rectangles.add(rect3);
+			rectangles.add(rect4);
+			rectangles.add(rect7);
+			rectangles.add(new Rectangle ( 876 + displacedX,576 + displacedY,216,144));
+			break;
+		case 2:
+			rectangles.add(new Rectangle (0 + displacedX, 0 + displacedY, 216, 128));
+			rectangles.add(rect5);
+			rectangles.add(rect6);
+			rectangles.add(rect8);
+			rectangles.add(rect2);
+			break;
+		case 3:
+			rectangles.add(new Rectangle (876 + displacedX,0 + displacedY,216,128));
+			rectangles.add(rect4);
+			rectangles.add(rect6);
+			rectangles.add(rect7);
+			rectangles.add(rect8);
+			break;
+		case -1:
+			rectangles.add(rect1);
+			rectangles.add(rect2);
+			rectangles.add(rect3);
+			rectangles.add(rect4);
+			rectangles.add(rect5);
+			rectangles.add(rect6);
+			rectangles.add(rect7);
+			rectangles.add(rect8);
+			break;
+			
 		}
+		
+		if (!topJunction || roomPosY == 0) {
+			rectangles.add(rect9);
+		}
+		if (!leftJunction || roomPosX == 0) {
+			rectangles.add(rect10);
+		}
+		if (!bottomJunction|| roomPosY == mapHeight - 1) {
+			rectangles.add(rect12);
+		}
+		if (!rightJunction|| roomPosX == mapWidth -1) {
+			rectangles.add(rect11);
+		}
+		return rectangles;
 	}
 	
 	@Override
 	public boolean isColliding (GameObject obj) {
-		Rectangle objHitbox = new Rectangle (obj.hitbox());
+	Rectangle objHitbox = obj.hitbox();
 		
 		objHitbox.x = objHitbox.x - (1080 * roomPosX);
 		objHitbox.y = objHitbox.y -  (720 * roomPosY);
-		
 		
 		int displacedX = GameCode.getViewX() - (1080 * roomPosX);
 		int displacedY = GameCode.getViewY() - (720 * roomPosY);
@@ -1571,26 +1786,19 @@ public class Roome extends GameObject {
 		objHitbox.x = objHitbox.x + displacedX;
 		objHitbox.y = objHitbox.y + displacedY;
 		
-		Rectangle rect1 = new Rectangle (0 + displacedX, 0 + displacedY, 432, 128);
-		Rectangle rect2 = new Rectangle (0 + displacedX,144 + displacedY,216,92);
-		Rectangle rect3 = new Rectangle (648 + displacedX,0 + displacedY,432,128);
-		Rectangle rect4 = new Rectangle (864 + displacedX,144 + displacedY,216,92);
-		Rectangle rect5 = new Rectangle ( 0 + displacedX,468 + displacedY,216,108);
-		Rectangle rect6 = new Rectangle (0 + displacedX,576 + displacedY,432,144);
-		Rectangle rect7 = new Rectangle (864 + displacedX,468 + displacedY,216,108);
-		Rectangle rect8 = new Rectangle ( 648 + displacedX,576 + displacedY,432,144);
+		ArrayList <Rectangle> visableRectangles = this.getVisableRectangles();
 		
-		Rectangle rect9 = new Rectangle (432 + displacedX,0 + displacedY,216,128);
-		Rectangle rect10 = new Rectangle (0 + displacedX,252 + displacedY, 216, 216);
-		Rectangle rect11 = new Rectangle (864 + displacedX, 252 + displacedY, 216, 216);
-		Rectangle rect12 = new Rectangle (432 + displacedX,576 + displacedY,216,144);
-		
-		//ROOMS ARE 648x432
-		
-		
+		for (int i = 0; i < visableRectangles.size(); i++) {
+			if (objHitbox.intersects(visableRectangles.get(i))) {
+				return true;
+			}
+		}
+		if (collisionBitch != null) {
 			if (collisionBitch.isColliding(obj)) {
 				return true;
 			}
+		}
+		return false;
 //	Graphics2D grapics =(Graphics2D) RenderLoop.wind.getBufferGraphics();
 //		
 //		grapics.drawRect(rect1.x,rect1.y,rect1.width,rect1.height);
@@ -1607,13 +1815,11 @@ public class Roome extends GameObject {
 //		grapics.drawRect(rect12.x,rect12.y,rect12.width,rect12.height);
 //		
 //		grapics.drawRect(objHitbox.x, objHitbox.y, objHitbox.width, objHitbox.height);
-//	
-		if ((!objHitbox.intersects(rect12) || bottomJunction) && (!objHitbox.intersects(rect11) || rightJunction) && (!objHitbox.intersects(rect10) || leftJunction) && (!objHitbox.intersects(rect9) || topJunction) && !objHitbox.intersects(rect8) && !objHitbox.intersects(rect7) && !objHitbox.intersects(rect6) && !objHitbox.intersects(rect5) && !objHitbox.intersects(rect4) && !objHitbox.intersects(rect3) && !objHitbox.intersects(rect2) && !objHitbox.intersects(rect1)) {
-			return false;
-		} else {
-			return true;
-		}
-		
+//		
+	}
+
+	public int bigRoomSegment() {
+		return bigRoomSegment;
 	}
 	
 }
