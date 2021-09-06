@@ -67,6 +67,8 @@ public class HintMessage extends GameObject {
 				hintContent.setText ("THE TRUCK NEEDS A KEY TO BE TURNED ON...~N"
 										+ "BUT YOU DON'T NEED A KEY TO BURN IT!");
 				break;
+			case 4:
+				hintContent.setText ("");
 		}
 		
 	}

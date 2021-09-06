@@ -23,6 +23,7 @@ import items.Speed;
 import items.Teleporter;
 import map.Roome;
 import network.NetworkHandler;
+import npcs.Basketball;
 import npcs.NPC;
 import titleScreen.TitleScreen;
 
@@ -196,6 +197,7 @@ public class Hud extends GameObject {
 
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
+		//Remove completed data slots
 		if (roundNum != 1) {
 			for (int i = 0; i < slots.size(); i++) {
 				DataSlot currentSlot = (DataSlot) slots.get(i);
@@ -219,174 +221,214 @@ public class Hud extends GameObject {
 				}
 			}
 		}
-		Random rand = new Random ();
 		
-		//Spawn in items
-		int numItems = rand.nextInt (TitleScreen.getNumberOfPlayers () + 4);
+		if (!TitleScreen.tutorialMode) {
 			
-		for (int i = 0; i < numItems; i++) {
-			int wx = rand.nextInt (Roome.getMapWidth ());
-			int wy = rand.nextInt (Roome.getMapHeight ());
-			Roome r = Roome.map[wy][wx];
-		
-			//IMPORTANT client is unresponsive if there are no items
-			switch (rand.nextInt(6)) {
-				case 0:
-					r.spawnObject (Glue.class);
-					break;
-				case 1:
-					r.spawnObject (Bombs.class);
-					break;
-				case 2:
-					r.spawnObject (Speed.class);
-					break;
-				case 3:
-					r.spawnObject (Teleporter.class);
-					break;
-				case 4:
-					r.spawnObject (DataScrambler.class);
-					break;
-				case 5:
-					r.spawnObject (Lighter.class);
-			}
-		}
-		
-		//Spawn in first register (always in starting room)
-		if (roundNum == 1) {
-			Point pt1 = new Point (Roome.getMapWidth () / 2, Roome.getMapHeight () / 2);
-			Point pt2 = getNearbyRoome (pt1, 1, 1);
-			Roome registerRoome = Roome.map [pt1.y][pt1.x];
-			Roome slotRoome = Roome.map [pt2.y][pt2.x];
-			int memNum = rand.nextInt (256);
-			//Register
-			Register r = (Register)registerRoome.spawnObject (Register.class);
-			r.setMemAddress (memNum);
-			//Data slot
-			DataSlot ds = (DataSlot)slotRoome.spawnObject (DataSlot.class);
-			ds.setMemAddress (memNum);
-		}
-		
-		//Spawn in registers
-		int newRegisters = 1 + (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
-		for (int i = 0; i < newRegisters; i++) {
+			Random rand = new Random ();
+			
+			//Spawn in items
+			int numItems = rand.nextInt (TitleScreen.getNumberOfPlayers () + 4);
 				
-			try {
-				if (ObjectHandler.getObjectsByName ("Register").size () >= 50) {
-					return;
+			for (int i = 0; i < numItems; i++) {
+				int wx = rand.nextInt (Roome.getMapWidth ());
+				int wy = rand.nextInt (Roome.getMapHeight ());
+				Roome r = Roome.map[wy][wx];
+			
+				//IMPORTANT client is unresponsive if there are no items
+				switch (rand.nextInt(6)) {
+					case 0:
+						r.spawnObject (Glue.class);
+						break;
+					case 1:
+						r.spawnObject (Bombs.class);
+						break;
+					case 2:
+						r.spawnObject (Speed.class);
+						break;
+					case 3:
+						r.spawnObject (Teleporter.class);
+						break;
+					case 4:
+						r.spawnObject (DataScrambler.class);
+						break;
+					case 5:
+						r.spawnObject (Lighter.class);
 				}
-			} catch (NullPointerException e) {
-				//Do nothing
 			}
 			
-			int memNum = rand.nextInt(256);
-			int wx = rand.nextInt (Roome.getMapWidth ());
-			int wy = rand.nextInt (Roome.getMapHeight ());
+			//Spawn in first register (always in starting room)
+			if (roundNum == 1) {
+				Point pt1 = new Point (Roome.getMapWidth () / 2, Roome.getMapHeight () / 2);
+				Point pt2 = getNearbyRoome (pt1, 1, 1);
+				Roome registerRoome = Roome.map [pt1.y][pt1.x];
+				Roome slotRoome = Roome.map [pt2.y][pt2.x];
+				int memNum = rand.nextInt (256);
+				//Register
+				Register r = (Register)registerRoome.spawnObject (Register.class);
+				r.setMemAddress (memNum);
+				//Data slot
+				DataSlot ds = (DataSlot)slotRoome.spawnObject (DataSlot.class);
+				ds.setMemAddress (memNum);
+			}
 			
-			if (ObjectHandler.getObjectsByName("Register") != null) {
-				while (true) {
+			//Spawn in registers
+			int newRegisters = 1 + (roundNum) * TitleScreen.getNumberOfPlayers() + rand.nextInt (TitleScreen.getNumberOfPlayers() + 1);
+			for (int i = 0; i < newRegisters; i++) {
 					
-					boolean broken = false;
-					
-					for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
-						Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
-						if (reg.getMemAddress() == memNum) {
-							broken = true;
-							break;
-						}
+				try {
+					if (ObjectHandler.getObjectsByName ("Register").size () >= 50) {
+						return;
 					}
-						if (!broken) {
-							break;
-						}
-						memNum = rand.nextInt(256);
+				} catch (NullPointerException e) {
+					//Do nothing
 				}
-			}
-			
-			Register r = (Register)Roome.map[wy][wx].spawnObject (Register.class);
-			r.setMemAddress (memNum);
-			
-			int xCoord, yCoord;
-			Point p1 = new Point (wx, wy);
-			Point p2 = new Point (wx, wy);
-			
-			boolean isBlue = rand.nextDouble () < blueRegisterOdds;
-			boolean isLarge = isBlue ? false : rand.nextDouble () < largeRegisterOdds; //Blue registers can't be large
-			if (TitleScreen.getNumberOfPlayers() == 1) {
-				isLarge = false;
-			}
-			
-			//Change the register as needed
-			if (isBlue) {
-				r.makeBlue ();
-			}
-			if (isLarge) {
-				r.makeLarge ();
-			}
-			
-			if (isBlue) {
-				p2 = getNearbyRoome (p1, minBlueRegisterDistance, maxBlueRegisterDistance);
-			} else {
-				p2 = getNearbyRoome (p1, minRegisterDistance, maxRegisterDistance);
-			}
-			xCoord = p2.x;
-			yCoord = p2.y;
-			
-			Roome dataRoom = Roome.map [yCoord][xCoord];
-			DataSlot slot = (DataSlot)dataRoom.spawnObject (DataSlot.class);
-			slot.setMemAddress (memNum);
-			
-		}
-		
-		//Spawn in quest NPCs/Quest items
-		ArrayList<ArrayList<GameObject>> npcs = ObjectHandler.getChildrenByName ("NPC");
-		if (npcs != null) {
-			for (int i = 0; i < npcs.size (); i++) {
-				ArrayList<GameObject> currNpcs = npcs.get (i);
-				if (currNpcs.size () > 0) {
-					NPC firstNpc = (NPC)currNpcs.get (0);
-					if (firstNpc.spawnsQuestItem()) {
-					
-					//Uhhh
-					
-						for (int j = 0; j < currNpcs.size (); j++) {
-							
-							//Get the curr npc
-							NPC currNpc = (NPC)currNpcs.get (j);
+				
+				int memNum = rand.nextInt(256);
+				int wx = rand.nextInt (Roome.getMapWidth ());
+				int wy = rand.nextInt (Roome.getMapHeight ());
+				
+				if (ObjectHandler.getObjectsByName("Register") != null) {
+					while (true) {
 						
-							//Establish quest item parameters
-							boolean canSpawn = true;
-							double spawnOdds = currNpc.getQuestItemSpawnOdds ();
-							Class<?> spawnClass = currNpc.getQuestItemType ();
-							ArrayList<GameObject> alreadySpawned = ObjectHandler.getObjectsByName (spawnClass.getSimpleName ());
-							int spawnedSize = alreadySpawned == null ? 0 : alreadySpawned.size ();
-							if (spawnedSize >= currNpc.getMaxQuestItems ()) {
-								canSpawn = false; //Ensure no more than the maximum # of items are present
-							}
-							if (spawnedSize < currNpc.getMinQuestItems () && roundNum == 1) {
-								spawnOdds = 1.0;
-							}
+						boolean broken = false;
 						
-							//Prevent spawning if this already has a spawn
-							if (currNpc.getLinkedQuestsItem() != null && currNpc.getLinkedQuestsItem ().declared ()) {
-								canSpawn = false;
-							}
-						
-							if (canSpawn && Math.random () < spawnOdds) {
-							
-								//Find the spawn location
-								int roomX = (int)(currNpc.getX () / 1080);
-								int roomY = (int)(currNpc.getY () / 720);
-								Point p1 = new Point (roomX, roomY);
-								Point p2 = getNearbyRoome (p1, currNpc.getMinQuestItemDist (), currNpc.getMaxQuestItemDist ());
-							
-								//Spawn the quest item
-								GameObject newObj = Roome.map [p2.y][p2.x].spawnObject (spawnClass);
-								if (newObj != null) currNpc.linkQuestObject (newObj);
-							
+						for (int b = 0; b < ObjectHandler.getObjectsByName("Register").size(); b++) {
+							Register reg = (Register)ObjectHandler.getObjectsByName("Register").get(b);
+							if (reg.getMemAddress() == memNum) {
+								broken = true;
+								break;
 							}
 						}
+							if (!broken) {
+								break;
+							}
+							memNum = rand.nextInt(256);
 					}
 				}
+				
+				Register r = (Register)Roome.map[wy][wx].spawnObject (Register.class);
+				r.setMemAddress (memNum);
+				
+				int xCoord, yCoord;
+				Point p1 = new Point (wx, wy);
+				Point p2 = new Point (wx, wy);
+				
+				boolean isBlue = rand.nextDouble () < blueRegisterOdds;
+				boolean isLarge = isBlue ? false : rand.nextDouble () < largeRegisterOdds; //Blue registers can't be large
+				if (TitleScreen.getNumberOfPlayers() == 1) {
+					isLarge = false;
+				}
+				
+				//Change the register as needed
+				if (isBlue) {
+					r.makeBlue ();
+				}
+				if (isLarge) {
+					r.makeLarge ();
+				}
+				
+				if (isBlue) {
+					p2 = getNearbyRoome (p1, minBlueRegisterDistance, maxBlueRegisterDistance);
+				} else {
+					p2 = getNearbyRoome (p1, minRegisterDistance, maxRegisterDistance);
+				}
+				xCoord = p2.x;
+				yCoord = p2.y;
+				
+				Roome dataRoom = Roome.map [yCoord][xCoord];
+				DataSlot slot = (DataSlot)dataRoom.spawnObject (DataSlot.class);
+				slot.setMemAddress (memNum);
+				
 			}
+			
+			//Spawn in quest NPCs/Quest items
+			ArrayList<ArrayList<GameObject>> npcs = ObjectHandler.getChildrenByName ("NPC");
+			if (npcs != null) {
+				for (int i = 0; i < npcs.size (); i++) {
+					ArrayList<GameObject> currNpcs = npcs.get (i);
+					if (currNpcs.size () > 0) {
+						NPC firstNpc = (NPC)currNpcs.get (0);
+						if (firstNpc.spawnsQuestItem()) {
+						
+						//Uhhh
+						
+							for (int j = 0; j < currNpcs.size (); j++) {
+								
+								//Get the curr npc
+								NPC currNpc = (NPC)currNpcs.get (j);
+							
+								//Establish quest item parameters
+								boolean canSpawn = true;
+								double spawnOdds = currNpc.getQuestItemSpawnOdds ();
+								Class<?> spawnClass = currNpc.getQuestItemType ();
+								ArrayList<GameObject> alreadySpawned = ObjectHandler.getObjectsByName (spawnClass.getSimpleName ());
+								int spawnedSize = alreadySpawned == null ? 0 : alreadySpawned.size ();
+								if (spawnedSize >= currNpc.getMaxQuestItems ()) {
+									canSpawn = false; //Ensure no more than the maximum # of items are present
+								}
+								if (spawnedSize < currNpc.getMinQuestItems () && roundNum == 1) {
+									spawnOdds = 1.0;
+								}
+							
+								//Prevent spawning if this already has a spawn
+								if (currNpc.getLinkedQuestsItem() != null && currNpc.getLinkedQuestsItem ().declared ()) {
+									canSpawn = false;
+								}
+							
+								if (canSpawn && Math.random () < spawnOdds) {
+								
+									//Find the spawn location
+									int roomX = (int)(currNpc.getX () / 1080);
+									int roomY = (int)(currNpc.getY () / 720);
+									Point p1 = new Point (roomX, roomY);
+									Point p2 = getNearbyRoome (p1, currNpc.getMinQuestItemDist (), currNpc.getMaxQuestItemDist ());
+								
+									//Spawn the quest item
+									GameObject newObj = Roome.map [p2.y][p2.x].spawnObject (spawnClass);
+									if (newObj != null) currNpc.linkQuestObject (newObj);
+								
+								}
+							}
+						}
+					}
+				}
+			}
+		} else {
+			
+			if (roundNum == 1) {
+				
+				//Spawn in second wave for tutorial
+				Register r = (Register)Roome.map [0][1].spawnObject (Register.class);
+				r.setMemAddress (255);
+				
+				DataSlot ds = (DataSlot)Roome.map [2][0].spawnObject (DataSlot.class);
+				ds.setMemAddress (255);
+				
+				Basketball bb = (Basketball)Roome.map [2][2].spawnObject (Basketball.class);
+				
+			} else if (roundNum == 2) {
+				
+				//Spawn in third wave for tutorial
+				Register r = (Register)Roome.map [2][0].spawnObject (Register.class);
+				r.setMemAddress (105);
+				r = (Register)Roome.map [1][1].spawnObject (Register.class);
+				r.setMemAddress (66);
+				r = (Register)Roome.map [0][2].spawnObject (Register.class);
+				r.setMemAddress (0);
+				
+				DataSlot ds = (DataSlot)Roome.map [0][1].spawnObject (DataSlot.class);
+				ds.setMemAddress (105);
+				ds = (DataSlot)Roome.map [0][0].spawnObject (DataSlot.class);
+				ds.setMemAddress (66);
+				ds = (DataSlot)Roome.map [1][1].spawnObject (DataSlot.class);
+				ds.setMemAddress (0);
+				
+			} else if (roundNum >= 3) {
+				
+				System.exit (0); //TODO proper tutorial exit
+				
+			}
+			
 		}
 		
 		//Update the round timer
@@ -400,6 +442,9 @@ public class Hud extends GameObject {
 		}
 	}
 	public static void waveOver () {
+		if (TitleScreen.tutorialMode && roundNum == 2) {
+			System.exit (0); //TODO tutorial ending
+		}
 		if (NetworkHandler.isHost ()) {
 			NetworkHandler.getServer ().sendMessage ("ROUND COMPLETE");
 		}

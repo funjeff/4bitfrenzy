@@ -101,6 +101,8 @@ public class TitleScreen extends GameObject {
 	public static final int OBJECT_SPAWN_RING_PADDING = 140;
 
 	private static HintMessage hintMessage;
+	
+	public static boolean tutorialMode = false;
 
 	@Override
 	public void onDeclare () {
@@ -135,6 +137,10 @@ public class TitleScreen extends GameObject {
 	@Override
 	public void frameEvent () {
 		
+		if (keyPressed ('T')) {
+			tutorialMode = true;
+		}
+		
 		//Center the title screen
 		Point centeringPt = calculateCenteringPoint ();
 		GameCode.setView ((int)-centeringPt.getX (), (int)-centeringPt.getY ());
@@ -156,26 +162,7 @@ public class TitleScreen extends GameObject {
 							ip = ip.substring (0, ip.length () - 1);
 						}
 					} else if (currEvent.getKeyCode () == KeyEvent.VK_ENTER) {
-						if (!failedMode && !connected) {
-							try {
-								client = new Client (ip);
-								client.start ();
-								NetworkHandler.setClient (client);
-							} catch (Exception e) {
-								failedMode = true;
-								ipBox.changeText ("CONNECTION FAILED. TRY USING A DIFFERENT IP OR CHECK YOUR FIREWALL SETTINGS.");
-								infoBox.changeText ("");
-								return;
-							}
-							//Connected, try to ping host
-							waitMode = true;
-							ipBox.changeText ("WAITING FOR HOST...");
-							infoBox.changeText ("(IF THIS TAKES A LONG TIME, THERE MAY BE A CONNECTION ERROR)");
-							client.joinServer ();
-							
-						} else {
-							failedMode = false;
-						}
+						doConnect ();
 					} else if (currEvent.getKeyCode () == KeyEvent.VK_ESCAPE) {
 						System.exit (0);
 					}
@@ -185,8 +172,15 @@ public class TitleScreen extends GameObject {
 		
 		if (startGameSlot.isSelected ()) {
 			
-			exitMainMenu ();
-			new GameMenu ().declare (0, 0);
+			if (tutorialMode) {
+				mapLoadPath = "resources/maps/tutorial_map.txt";
+				exitMainMenu ();
+				enterHostMode ();
+				doConnect ();
+			} else {	
+				exitMainMenu ();
+				new GameMenu ().declare (0, 0);
+			}
 			
 		}
 		
@@ -225,29 +219,63 @@ public class TitleScreen extends GameObject {
 			
 			//Change box contents for host
 			if (isHost) {
-				ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
-				infoBox.changeText ("PRESS ENTER ONCE ALL PLAYERS HAVE JOINED TO START THE GAME");
-				if (keyPressed (KeyEvent.VK_ENTER)) {
-					System.out.println ("STARTING");
-					closeTitleScreen ();
-					ipBox.forget ();
-					infoBox.forget();
-					forget ();
-				}
+				setupHostMode ();
+			} else {
+				//Change box contents for join
+				setupJoinMode ();
 			}
 			
-			//Change box contents for joining
-			if (!isHost) {
-				ipBox.changeText ("ENTER THE CONNECTION IP: " + ip);
-				infoBox.changeText ("(PRESS ENTER AFTER TYPING THE IP TO JOIN)");
-			}
-			
-			if (!isHost && hintMessage == null) {
-				hintMessage = new HintMessage ();
+			if (keyPressed (KeyEvent.VK_ENTER)) {
+				doConnect ();
 			}
 			
 		}
 		
+	}
+	
+	public void doConnect () {
+		if (isHost) {
+			System.out.println ("STARTING");
+			closeTitleScreen ();
+			ipBox.forget ();
+			infoBox.forget();
+			forget ();
+		} else {
+			if (!failedMode && !connected) {
+				try {
+					client = new Client (ip);
+					client.start ();
+					NetworkHandler.setClient (client);
+				} catch (Exception e) {
+					failedMode = true;
+					ipBox.changeText ("CONNECTION FAILED. TRY USING A DIFFERENT IP OR CHECK YOUR FIREWALL SETTINGS.");
+					infoBox.changeText ("");
+					return;
+				}
+				//Connected, try to ping host
+				waitMode = true;
+				ipBox.changeText ("WAITING FOR HOST...");
+				infoBox.changeText ("(IF THIS TAKES A LONG TIME, THERE MAY BE A CONNECTION ERROR)");
+				client.joinServer ();
+				
+			} else {
+				failedMode = false;
+			}
+		}
+	}
+	
+	public void setupHostMode () {
+		//Change box contents for host
+		ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
+		infoBox.changeText ("PRESS ENTER ONCE ALL PLAYERS HAVE JOINED TO START THE GAME");
+	}
+	
+	public void setupJoinMode () {
+		ipBox.changeText ("ENTER THE CONNECTION IP: " + ip);
+		infoBox.changeText ("(PRESS ENTER AFTER TYPING THE IP TO JOIN)");
+		if (hintMessage != null) {
+			hintMessage = new HintMessage ();
+		}
 	}
 	
 	public Point calculateCenteringPoint () {
@@ -495,6 +523,7 @@ public class TitleScreen extends GameObject {
 		
 		//If there is a map to load
 		if (mapLoadPath != null) {
+			System.out.println(mapLoadPath);
 			//Load the map
 			File f = new File (mapLoadPath);
 			try {
@@ -549,7 +578,6 @@ public class TitleScreen extends GameObject {
 	
 	public void enterIpMode () {
 		
-		
 		//Setup the server if hosting
 		if (isHost) {
 			server = new Server ();
@@ -559,6 +587,7 @@ public class TitleScreen extends GameObject {
 		
 		ipMode = true;
 		System.out.println (isHost);
+		
 	}
 	
 	public static void connectSuccess () {

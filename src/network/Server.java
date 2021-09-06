@@ -35,6 +35,8 @@ public class Server extends Thread {
 	
 	private FileWriter saveWriter;
 	
+	private boolean doneLogging = false;
+	
 	public Server () {
 		connections = new ArrayList<ServerConnection> ();
 		if (TitleScreen.doMapSave) {
@@ -113,7 +115,7 @@ public class Server extends Thread {
 		}
 		
 		allMessages.add (message);
-		if (message.substring (0, 5).equals("START")) {
+		if (!doneLogging && message.substring (0, 4).equals("DATA")) {
 			File f = new File ("log.txt");
 			FileWriter fw;
 			try {
@@ -127,6 +129,7 @@ public class Server extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			doneLogging = true;
 		}
 		writeMessage.add (message);
 	}

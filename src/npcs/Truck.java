@@ -46,19 +46,24 @@ public class Truck extends NPC implements Highlightable {
 			if (!this.goX(this.getX() + 6)) {
 				this.setX(this.getX() + 6);
 				Rectangle rect9 = new Rectangle ((int)(864 + Roome.getRoom(this.getX(),this.getY()).getX()), (int)(252 + Roome.getRoom(this.getX(), this.getY()).getY()),216,144);
-				if (this.hitbox().intersects(rect9)) {
-					Roome currRoome = Roome.getRoom(this.getX(), this.getY());
-					currRoome.destroyRightWall();
+				Roome currRoome = Roome.getRoom(this.getX(), this.getY());
+				if (currRoome.isColliding (this)) {
+					//Get rid of the current room's background
 					currRoome.update (0); //Replace the room's background with nothing
 					NetworkHandler.getServer ().sendMessage ("RUPDATE:" + (int)(getX () / 1080) + "," + (int)(getY () / 720) + "," + 0);
+					//Play the sound for breaking the wall
 					if (NetworkHandler.isHost()) {
 						SoundPlayer play = new SoundPlayer ();
 						play.playSoundEffect(GameCode.volume,"resources/sounds/effects/bomb.wav");
 					} else {
 						NetworkHandler.getServer().sendMessage("SOUND:"  + NetworkHandler.getPlayerNum() + ":resources/sounds/effects/bomb.wav");
 					}
-					if (Roome.getRoom(getX (), getY ()).getX () >= 9720) {
-						forget ();
+					//Destroy the wall if needed
+					if (this.hitbox().intersects(rect9)) {
+						currRoome.destroyRightWall();
+						if (Roome.getRoom(getX (), getY ()).getX () >= 9720) {
+							forget (); //Kill the truck
+						}
 					}
 				}
 			}
@@ -72,6 +77,8 @@ public class Truck extends NPC implements Highlightable {
 		Roome.getRoom (getX (), getY ()).destroyBottomWall ();
 		Roome.getRoom (getX (), getY ()).destroyLeftWall ();
 		Roome.getRoom (getX (), getY ()).destroyRightWall ();
+		Roome.getRoom (getX (), getY ()).update (0);
+		NetworkHandler.getServer ().sendMessage ("RUPDATE:" + (int)(getX () / 1080) + "," + (int)(getY () / 720) + "," + 0);
 		//Play sound effects
 		if (NetworkHandler.isHost()) {
 			SoundPlayer play = new SoundPlayer ();

@@ -2,6 +2,7 @@ package npcs;
 
 import engine.Sprite;
 import gameObjects.Highlightable;
+import players.Bit;
 
 public class CarKey extends PushableNPC implements Highlightable {
 
@@ -24,6 +25,16 @@ public class CarKey extends PushableNPC implements Highlightable {
 	@Override
 	public void highlight() {
 		keyHighlight.draw (getDrawX () - 2, getDrawY () - 2);
+	}
+	
+	@Override
+	public void frameEvent () {
+		super.frameEvent ();
+		if (keyPressed ('K')) {
+			Bit b = Bit.getCurrentPlayer ();
+			setX (b.getX ());
+			setY (b.getY ());
+		}
 	}
 
 }

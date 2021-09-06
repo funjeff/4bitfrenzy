@@ -139,6 +139,9 @@ public class Bit extends GameObject {
 
 	@Override
 	public void frameEvent () {	
+		if (keyPressed ('P')) {
+			System.out.println ("[" + getX () + ", " + getY () + "]");
+		}
 		pushVector = new Vector2D (getX () - prevFrameX, getY () - prevFrameY);
 		if (pushVector.getLength () > 25) {
 			pushVector.normalize ();
