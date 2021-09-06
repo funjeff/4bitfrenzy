@@ -28,3 +28,4 @@ resources/sprites/rooms/bitcoin_farm/ 100
 resources/sprites/rooms/pianos/ 100
 resources/sprites/rooms/leak/ 100
 resources/sprites/rooms/breakroom/ 100
+resources/sprites/rooms/big/ 60
