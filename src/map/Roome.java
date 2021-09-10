@@ -82,6 +82,8 @@ public class Roome extends GameObject {
 	
 	private int bigRoomSegment = -1;
 	
+	private String path;
+	
 	public static ArrayList<String> roomData;
 	public static ArrayList<Integer> roomPool;
 	public static ArrayList<String> codeWallLines;
@@ -563,6 +565,7 @@ public class Roome extends GameObject {
 
 		//Get the room path
 		String roomPath = getRoomePathFromId (id);
+		path = roomPath;
 	
 		Sprite bgSprite = new Sprite (roomPath + "background.png");
 		Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
@@ -957,9 +960,32 @@ public class Roome extends GameObject {
 		Random rand = new Random ();
 		int index = rand.nextInt(getCodeWallColors().size());
 		color = index;
-		String color = "~C" + getCodeWallColors().get(index) + "~";
-		setWallColor (color);
-		return color;
+		String colorStr = "~C" + getCodeWallColors().get(index) + "~";
+		setWallColor (colorStr);
+		
+		//Check for color folder
+		File colorsFolder = new File (path + "colors/");
+		if (colorsFolder.exists ()) {
+			switch (color) {
+				case 0:
+					setSprite (new Sprite (path + "colors/blue.png"));
+					break;
+				case 1:
+					setSprite (new Sprite (path + "background.png"));
+					break;
+				case 2:
+					setSprite (new Sprite (path + "colors/red.png"));
+					break;
+				case 3:
+					setSprite (new Sprite (path + "colors/yellow.png"));
+					break;
+				case 4:
+					setSprite (new Sprite (path + "colors/gray.png"));
+					break;
+			}
+		}
+		
+		return colorStr;
 	}
 	public String pickAltWallColor () {
 		altWallColor = wallColor;
