@@ -14,7 +14,7 @@ public class Dartboard extends NPC implements Highlightable {
 	public Dartboard (double x, double y) {
 		super (x, y);
 		setSprite (dartboardSprite);
-		setHitboxAttributes (105, 104);
+		setHitboxAttributes (2, 2);
 	}
 	
 	@Override

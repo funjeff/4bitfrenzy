@@ -33,7 +33,7 @@ public class ControlsHint extends GameObject {
 		} else if (mode == MODE_GAMBLE) {
 			GameObject dice = ObjectHandler.getObjectsByName ("LoadedDice").get (0);
 			setX ((int)dice.getX () - 4);
-			setY ((int)dice.getY () - 64);
+			setY ((int)dice.getY () - 8);
 		}
 		
 		if (this.isVisable() && mode != MODE_NOT_VISIBLE) {

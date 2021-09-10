@@ -1,2 +1,2 @@
-LoadedDice 540 360
-Dartboard 300 300
+LoadedDice 559 302
+Dartboard 450 318

@@ -181,8 +181,10 @@ public class Bit extends GameObject {
 			
 			//Check for colliding with loaded dice
 			if (this.isColliding ("LoadedDice")) {
-				controlsHint.showGambleHint ();
-				showHint = true;
+				if (((LoadedDice)getCollisionInfo ().getCollidingObjects ().get (0)).useable ()) {
+					controlsHint.showGambleHint ();
+					showHint = true;
+				}
 			}
 			
 			//Get rid of the hint if unused

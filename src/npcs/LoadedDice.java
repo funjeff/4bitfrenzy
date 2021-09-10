@@ -15,6 +15,7 @@ import gameObjects.DataSlot;
 import gameObjects.Register;
 import network.NetworkHandler;
 import resources.Hud;
+import resources.SoundPlayer;
 
 public class LoadedDice extends NPC {
 
@@ -23,19 +24,19 @@ public class LoadedDice extends NPC {
 	private int die1 = 1;
 	private int die2 = 1;
 	
-	private int timer = 0;
+	private int timer = -150;
 	
 	private int lastUsed = 0;
 	private int useDenyTimer = 0;
 	
 	public LoadedDice (double x, double y) {
 		super (x, y);
-		setHitboxAttributes (66, 32);
+		setHitboxAttributes (86, 120);
 	}
 	
 	public boolean roll () {
-		if (lastUsed == Hud.roundNum) {
-			if (timer == 0) {
+		if (!useable ()) {
+			if (timer <= 0) {
 				useDenyTimer = 150;
 			}
 			return false;
@@ -46,9 +47,13 @@ public class LoadedDice extends NPC {
 		}
 	}
 	
+	public boolean useable () {
+		return lastUsed != Hud.roundNum;
+	}
+	
 	@Override
 	public void frameEvent () {
-		if (timer != 0) {
+		if (timer > 0) {
 			timer--;
 			Random r = new Random ();
 			boolean diceWereUpdated = false;
@@ -56,6 +61,13 @@ public class LoadedDice extends NPC {
 				die1 = r.nextInt (6) + 1;
 				die2 = r.nextInt (6) + 1;
 				diceWereUpdated = true;
+			}
+			if (timer % 10 == 0) {
+				SoundPlayer play = new SoundPlayer ();
+				play.playSoundEffect(GameCode.volume,"resources/sounds/effects/pickup.wav");
+				NetworkHandler.getServer().sendMessage("SOUND:"  + 2 + ":resources/sounds/effects/pickup.wav");
+				NetworkHandler.getServer().sendMessage("SOUND:"  + 3 + ":resources/sounds/effects/pickup.wav");
+				NetworkHandler.getServer().sendMessage("SOUND:"  + 4 + ":resources/sounds/effects/pickup.wav");
 			}
 			if (timer == 0) {
 				if (r.nextInt (4) == 0 || (die1 == 1 && die2 == 1)) {
@@ -88,6 +100,9 @@ public class LoadedDice extends NPC {
 		if (useDenyTimer != 0) {
 			useDenyTimer--;
 		}
+		if (timer <= 0 && timer > -150) {
+			timer--;
+		}
 		
 	}
 	
@@ -96,8 +111,10 @@ public class LoadedDice extends NPC {
 		
 		int drawX = (int)(getX () - GameCode.getViewX ());
 		int drawY = (int)(getY () - GameCode.getViewY ());
-		diceSprite.draw (drawX, drawY, die1 - 1);
-		diceSprite.draw (drawX + 34, drawY, die2 - 1);
+		if (timer != -150) {
+			diceSprite.draw (drawX, drawY, die1 - 1);
+			diceSprite.draw (drawX + 34, drawY, die2 - 1);
+		}
 		
 		if (useDenyTimer != 0) {
 			

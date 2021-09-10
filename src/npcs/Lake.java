@@ -13,7 +13,7 @@ public class Lake extends NPC implements Highlightable {
 	public Lake (double x, double y) {
 		super (x, y);
 		setSprite (lakeSprite);
-		setHitboxAttributes (234, 114);
+		setHitboxAttributes (144, 138);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class Lake extends NPC implements Highlightable {
 	
 	@Override
 	public void highlight() {
-		lakeHighlight.draw (getDrawX () - 6, getDrawY () - 6);
+		lakeHighlight.draw (getDrawX () - 3, getDrawY () - 3);
 	}
 
 }
