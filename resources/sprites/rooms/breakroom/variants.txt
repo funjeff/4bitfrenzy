@@ -1,2 +1,2 @@
-default 1
+default 68
 sus 1
