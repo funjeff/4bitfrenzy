@@ -27,7 +27,7 @@ resources/sprites/rooms/spaghetti/ 100
 resources/sprites/rooms/bitcoin_farm/ 100
 resources/sprites/rooms/pianos/ 100
 resources/sprites/rooms/leak/ 100
-resources/sprites/rooms/breakroom/ 100000
+resources/sprites/rooms/breakroom/ 100
 resources/sprites/rooms/big/ 60
 resources/sprites/rooms/church/ 200
 resources/sprites/rooms/computer/ 100
