@@ -1,4 +1,4 @@
 NPC CREATE Hoop:581502:2399.0:321.0
 NPC CREATE Hoop:903126:2949.0:321.0
-START:3,3;nnny0100,nnnn0000,nnny0123,ynyn0263,nyyn0013,yyny0293,nnyn0030,nyyn0023,yynn0063
-DATA:360000:0:1609,1080:99 224 -1 false false false 1630895612679 1575.0 926.0 false:100 224 false null 2849.0 1085.0 false:581854 items.Speed 409 330 2,null
+START:3,3;nnny0100,nnnn0000,nnny0123,ynyn0263,nyyn0013,yyny0293,nnyn0030,nyyn0021,yynn0063
+DATA:360000:0:1609,1230:99 224 -1 false false false 1630895612679 1575.0 906.0 false:100 224 false null 2849.0 1085.0 false:581854 items.Speed 409 330 2,null
