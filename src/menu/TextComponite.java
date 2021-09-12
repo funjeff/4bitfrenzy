@@ -20,7 +20,16 @@ public class TextComponite extends MenuComponite{
 	}
 	
 	public TextComponite(Menu m, String text) {
-		super(getTextSpace(text), 16, m);
+		super(getTextSpace(text), getTextSpaceY(text), m);
+		t = new Textbox (text);
+		t.changeWidth(text.length());
+		t.changeHeight(1);
+		t.setLineSpacing(1);
+		t.changeBoxVisability();
+	}
+	
+	public TextComponite(Menu m, String text, boolean centerAlined) {
+		super(getTextSpace(text), getTextSpaceY(text), m);
 		t = new Textbox (text);
 		t.changeWidth(text.length());
 		t.changeHeight(1);
@@ -31,6 +40,10 @@ public class TextComponite extends MenuComponite{
 	public static int getTextSpace (String text) {
 		Textbox t = new Textbox(text);
 		return t.getTextSpaceUsage()[0];
+	}
+	public static int getTextSpaceY(String text) {
+		Textbox t = new Textbox(text);
+		return t.getTextSpaceUsage()[1];
 	}
 	
 	public void setText(String message) {

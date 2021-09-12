@@ -1,0 +1,5 @@
+Gravestone 233 161
+Gravestone 233 481
+Gravestone 767 481
+Gravestone 767 161
+Gravestone 502 319

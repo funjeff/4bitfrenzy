@@ -25,7 +25,13 @@ public class Map extends GameObject  {
 		int drawPosY = 240;
 		for (int i = 0; i < Roome.map.length; i++) {
 			for (int j = 0; j < Roome.map[i].length;j++) {
-				tile.draw(drawPosX + j*32, drawPosY + i*32);
+				
+				if (Roome.map[i][j].bigRoomSegment() == -1) {
+					tile.draw(drawPosX + j*32, drawPosY + i*32);
+				} else {
+					Sprite segement = new Sprite ("resources/sprites/bigMapTile" + Roome.map[i][j].bigRoomSegment() + ".png");
+					segement.draw(drawPosX + j*32, drawPosY + i*32);
+				}
 				if (Roome.map[i][j].bottomJunction) {
 					bridge.draw(drawPosX + j*32 + 13, drawPosY + i*32 + 26);
 				}

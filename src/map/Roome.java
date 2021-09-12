@@ -284,9 +284,7 @@ public class Roome extends GameObject {
 			idVal = ids.get (idx);
 			
 			if (getRoomNameFromId(idVal).contains("big")) {
-				System.out.println("bg");
 				if (!r.makeBigRoom(getRoomePathFromId(idVal))) {
-					System.out.println("dez nutsg");
 					while (getRoomNameFromId(idVal).contains("big")) {
 						idx = (int)(Math.random () * ids.size ());
 						idVal = ids.get (idx);
@@ -570,16 +568,22 @@ public class Roome extends GameObject {
 		Sprite bgSprite = new Sprite (roomPath + "background.png");
 		Sprite spawnMask = new Sprite (roomPath + "spawn_mask.png");
 		Sprite collisionMask = new Sprite (roomPath + "collision_mask.png");
-
+		
 		this.setSprite (bgSprite);
-		this.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMask.getFrame(0).getSubimage(216, 144, 648, 432));
-		this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432)); 
+		if (this.bigRoomSegment != 0) {
+			this.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMask.getFrame(0).getSubimage(216, 144, 648, 432));
+			this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMask.getFrame(0).getSubimage(216, 144, 648, 432));
+		} else {
+			this.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648 + 216,432 + 144,spawnMask.getFrame(0).getSubimage(216, 144, 648 + 216, 432 + 144));
+			this.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648 + 216,432 + 144,collisionMask.getFrame(0).getSubimage(216, 144, 648 + 216, 432 + 144));
+		}
+	 
 	}
 	
 	public void init (int id, int colorNum) {
 		if (spawningBitch == null || collisionBitch == null) {
 			
-			update (id);
+			update (id); //this design is dumb but don't change it pls
 			
 			if (!GameCode.devMode ()) {
 //				walls[0] = new Textbox("");
@@ -1123,6 +1127,16 @@ public class Roome extends GameObject {
 		working.isSpecial = true;
 		
 		for (int i = 0; i < finalRooms.size(); i++) {
+			working = (Roome) finalRooms.get(i);
+			if (working.roomPosX == Roome.mapWidth/2 && working.roomPosY == Roome.mapHeight/2){
+				working.init(37, r.nextInt (5));
+				working.isSpecial = true;
+				break;
+			}
+		}
+		
+		
+		for (int i = 0; i < finalRooms.size(); i++) {
 			working = (Roome)finalRooms.get(i);
 			if (working != null && working.getSprite () == null && !working.isSpecial) {
 				int lol = rollRoomeId (working);
@@ -1330,8 +1344,8 @@ public class Roome extends GameObject {
 		Sprite collisionMaskRight = new Sprite (path + "collision_mask2.png");
 
 		right.setSprite (bgRight);
-		right.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMaskRight.getFrame(0).getSubimage(216, 144, 648, 432));
-		right.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMaskRight.getFrame(0).getSubimage(216, 144, 648, 432)); 
+		right.spawningBitch = new PixelBitch (1080 + this.getX(),144 + this.getY(),648 + 216,432 + 144,spawnMaskRight.getFrame(0).getSubimage(0, 144, 648 + 216, 432 + 144));
+		right.collisionBitch = new PixelBitch (1080 + this.getX(),144 + this.getY(),648 + 216,432 + 144,collisionMaskRight.getFrame(0).getSubimage(0, 144, 648 + 216, 432 + 144)); 
 
 		
 		
@@ -1348,8 +1362,8 @@ public class Roome extends GameObject {
 		Sprite collisionMaskBottom = new Sprite (path + "collision_mask3.png");
 
 		bottom.setSprite (bgBottom);
-		bottom.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMaskBottom.getFrame(0).getSubimage(216, 144, 648, 432));
-		bottom.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMaskBottom.getFrame(0).getSubimage(216, 144, 648, 432)); 
+		bottom.spawningBitch = new PixelBitch (216 + this.getX(),720 + this.getY(),648 + 216,432 + 144,spawnMaskBottom.getFrame(0).getSubimage(216, 0, 648 + 216, 432 + 144));
+		bottom.collisionBitch = new PixelBitch (216 + this.getX(),720 + this.getY(),648 + 216,432 + 144,collisionMaskBottom.getFrame(0).getSubimage(216, 0, 648 + 216, 432 + 144)); 
 
 		
 		bottom.bigRoomSegment = 2;
@@ -1365,8 +1379,8 @@ public class Roome extends GameObject {
 		Sprite collisionMaskBottomRight = new Sprite (path + "collision_mask4.png");
 
 		bottomRight.setSprite (bgBottomRight);
-		bottomRight.spawningBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,spawnMaskBottomRight.getFrame(0).getSubimage(216, 144, 648, 432));
-		bottomRight.collisionBitch = new PixelBitch (216 + this.getX(),144 + this.getY(),648,432,collisionMaskBottomRight.getFrame(0).getSubimage(216, 144, 648, 432)); 
+		bottomRight.spawningBitch = new PixelBitch (1080 + this.getX(),720 + this.getY(),648 + 216,432 + 144,spawnMaskBottomRight.getFrame(0).getSubimage(0, 0, 648 + 216, 432 + 144));
+		bottomRight.collisionBitch = new PixelBitch (1080 + this.getX(),720 + this.getY(),648 + 216,432 + 144,collisionMaskBottomRight.getFrame(0).getSubimage(0, 0, 648 + 216, 432 + 144)); 
 
 		
 		
@@ -1820,6 +1834,9 @@ public class Roome extends GameObject {
 			}
 		}
 		if (collisionBitch != null) {
+//			if (this.bigRoomSegment == 2) {
+//				System.out.println(collisionBitch.getSprite());
+//			}
 			if (collisionBitch.isColliding(obj)) {
 				return true;
 			}

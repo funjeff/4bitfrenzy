@@ -84,16 +84,16 @@ public class TitleBit extends GameObject {
 		double startX = getX ();
 		double startY = getY ();
 		if (!frozen) {
-			if (keyDown (GameCode.getSettings().getControls()[0])) {
+			if (keyDown (GameCode.getSettings().getControls()[0]) ||keyDown(GameCode.getSettings().getControls()[8])) {
 				goY (getY () - speed);
 			}
-			if (keyDown (GameCode.getSettings().getControls()[2])) {
+			if (keyDown (GameCode.getSettings().getControls()[2]) ||keyDown(GameCode.getSettings().getControls()[10])) {
 				goX (getX () - speed);
 			}
-			if (keyDown (GameCode.getSettings().getControls()[1])) {
+			if (keyDown (GameCode.getSettings().getControls()[1])||keyDown(GameCode.getSettings().getControls()[9])) {
 				goY (getY () + speed);
 			}
-			if (keyDown (GameCode.getSettings().getControls()[3])) {
+			if (keyDown (GameCode.getSettings().getControls()[3]) ||keyDown(GameCode.getSettings().getControls()[11])) {
 				goX (getX () + speed);
 			}
 		}

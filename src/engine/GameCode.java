@@ -52,10 +52,12 @@ import npcs.Baseball;
 import npcs.Basketball;
 import npcs.NPC;
 import npcs.SettingsTxt;
+import npcs.USB;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
 import resources.Textbox;
+import titleScreen.Scene;
 import titleScreen.TitleScreen;
 import titleScreen.TitleScreen.ArrowButtons;
 
@@ -86,6 +88,8 @@ public class GameCode {
 	private File loadFile = null;
 	private static double scoreMultiplier = 1;
 	private static boolean hasPerk15 = false;
+	
+	private static Scene introScene;
 	
 	public static final String[] packageList = new String[] {"items", "npcs"};
 	
@@ -365,10 +369,20 @@ public class GameCode {
 	
 	public static void renderFunc () {
 		
-		if (TitleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted) {
-			initGameState ();
-			gameStarted = true;
-			NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ());
+		if (TitleScreen.titleClosed && NetworkHandler.isHost () && !gameStarted && introScene == null) {
+			startGame();
+		}
+		if (introScene != null) {
+			introScene.frameEvent();
+			introScene.draw();
+			
+			if (!introScene.isPlaying()) {
+				initGameState ();
+				gameStarted = true;
+				if (NetworkHandler.isHost()) {
+					NetworkHandler.getServer ().sendMessage ("START:" + Roome.saveMap ()); //TODO intro scene for clients
+				}
+			}
 		}
 		
 		for (int i = 0; i < bits.size (); i++) {
@@ -379,6 +393,31 @@ public class GameCode {
 		}
 		
 	}
+	public static void startGame () {
+		introScene = new Scene ("resources/scenes/intro.txt");
+		viewX = (Roome.getMapWidth () / 2) * 1080;
+		viewY = (Roome.getMapHeight() / 2) * 720;
+		introScene.setX(viewX);
+		introScene.setY(viewY);
+		introScene.play();
+		introScene.frameEvent();
+		
+		for (int i = 0; i < 4; i++) {
+			if (perks[i] != -1) {
+				Bit bit = new Bit ();
+				bit.playerNum = i + 1;
+				bit.setPerk(perks[i]);
+				bit.updateIcon ();
+				introScene.objs.get(i).sprite = bit.getSprite();
+			} else {
+				introScene.objs.get(i).sprite = new Sprite ("resources/sprites/blank.png");
+			}
+		}
+		
+		if (!NetworkHandler.isHost()) {
+			ObjectHandler.getObjectsByName("USB").get(0).setVisability(false);
+		}
+	}
 	
 	public static TitleScreen getTitleScreen () {
 		return titleScreen;
@@ -388,14 +427,11 @@ public class GameCode {
 	}
 	
 	public static void setPerk (int perk, int player) {
-		perks[player] = perk;
-		
-		
+		perks[player] = perk;	
 	}
 
 	
 	public static void initGameState () {
-		
 		Hud hud = new Hud ();
 		
 		//Check for perk 15 (score booster, no longer default)
@@ -436,8 +472,6 @@ public class GameCode {
 			}
 			Bit bit = new Bit ();
 			bit.playerNum = i + 1;
-			PixelBitch IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter = Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].getSpawningMask ();
-			int [] spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
 			if (perks[i] == 5) {
 				Bit bit1dot5 = new Bit();
 				bit1dot5.playerNum = i + 1;
@@ -445,15 +479,15 @@ public class GameCode {
 				bit1dot5.setActive(false);
 				bit1dot5.makeSecondaryBit();
 				bit1dot5.updateIcon();
-				bit1dot5.declare(spawnCoords[0], spawnCoords[1]);
+				bit1dot5.declare((int)(introScene.objs.get(i).x + + introScene.getX()), (int)(introScene.objs.get(i).y + + introScene.getY()));
 				bits.add(bit1dot5);
 			}
-			bit.declare(spawnCoords[0],spawnCoords[1]);
-			while (bit.isColliding ("Register")) {
-				spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
-				bit.setX (spawnCoords [0]);
-				bit.setY (spawnCoords [1]); //Fix for bit spawning inside register
-			}
+			bit.declare((int)(introScene.objs.get(i).x + introScene.getX()), (int)(introScene.objs.get(i).y + introScene.getY()));
+//			while (bit.isColliding ("Register")) {
+//				spawnCoords = IReallyDidentThinkIWouldHaveToUseThisTypeEnoghToHaveThisMatter.getPosibleCoords(bit.hitbox().width, bit.hitbox().height);
+//				bit.setX (spawnCoords [0]);
+//				bit.setY (spawnCoords [1]); //Fix for bit spawning inside register
+//			} //TODO fix bit spawning inside register again
 			bit.setPerk(perks[i]);
 			bit.updateIcon ();
 			bits.add(bit);
@@ -477,7 +511,13 @@ public class GameCode {
 		if (TitleScreen.initialData != null) {
 			Client.updateGameData (TitleScreen.initialData);
 		}
-		
+		if (NetworkHandler.isHost()) {
+			USB USB = new USB((int)(introScene.objs.get(4).x + introScene.getX()),(int) (introScene.objs.get(4).y + introScene.getY()));
+			USB.declare((int)(introScene.objs.get(4).x + introScene.getX()),(int) (introScene.objs.get(4).y + introScene.getY()));
+		} else {
+			ObjectHandler.getObjectsByName("USB").get(0).setVisability(true);
+		}
+		introScene = null;
 	}
 	
 	public static void changeMusic (String songPath) {

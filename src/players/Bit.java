@@ -15,7 +15,7 @@ import gameObjects.ControlsHint;
 import gameObjects.DataSlot;
 import gameObjects.Highlightable;
 import gameObjects.Register;
-import gameObjects.WaveCompleteGraphic;
+import gameObjects.FadingGraphic;
 import items.Item;
 import items.ItemBox;
 import map.Map;
@@ -270,7 +270,7 @@ public class Bit extends GameObject {
 					inventory.setVisability(true);
 				}
 			}
-			if (!this.isActive() && keys != null && keys.contains("C") && !switching) {
+			if (!this.isActive() && keys != null && keys.contains("C") && !switching && !frozen) {
 				active = true;
 				switching = true;
 				GameCode.setView((int)this.getX() - 540, (int)this.getY() - 360);
@@ -321,25 +321,29 @@ public class Bit extends GameObject {
 				double yStart = getY ();
 				if (!frozen) {
 					
-					if (keys != null && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains ("U") && this.isSecondaryBit()))) {
+					if (keys != null && ((this.perk != 5 && (keys.contains("W") || keys.contains("U"))) ||
+							(this.perk == 5 && ((keys.contains ("W") && !this.isSecondaryBit()) || (keys.contains ("U") && this.isSecondaryBit()))))) {
 						if (this.goY((int)(this.getY() - speed))) {
 							this.carryRegestersY((((int)speed) * -1) - 1);
 						}
 						lastMove = 0;
 					}
-					if (keys != null && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains ("R") && this.isSecondaryBit()))) {
+					if (keys != null && ((this.perk != 5 && (keys.contains("D") || keys.contains("R"))) ||
+							(this.perk == 5 && ((keys.contains ("D") && !this.isSecondaryBit()) || (keys.contains ("R") && this.isSecondaryBit()))))) {
 						if (this.goX((int)(this.getX() + speed))) {
 							this.carryRegestersX((int)speed);
 						}
 						lastMove = 2;
 					}
-					if (keys != null && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains ("L") && this.isSecondaryBit()))) {
+					if (keys != null && ((this.perk != 5 && (keys.contains("A") || keys.contains("L"))) ||
+							(this.perk == 5 && ((keys.contains ("A") && !this.isSecondaryBit()) || (keys.contains ("L") && this.isSecondaryBit()))))) {
 						if (this.goX((int)(this.getX() - speed))) {
 							this.carryRegestersX((((int)speed) * -1) - 1);
 						}
 						lastMove = 3;
 					}
-					if (keys != null && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains ("G") && this.isSecondaryBit()))) {
+					if (keys != null && ((this.perk != 5 && (keys.contains("S") || keys.contains("G"))) ||
+							(this.perk == 5 && ((keys.contains ("S") && !this.isSecondaryBit()) || (keys.contains ("G") && this.isSecondaryBit()))))) {
 						if (this.goY((int)(this.getY() + speed))) {
 							this.carryRegestersY((int)speed);
 						}

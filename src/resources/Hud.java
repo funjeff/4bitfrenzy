@@ -14,7 +14,7 @@ import gameObjects.DataSlot;
 import gameObjects.GameOverScreen;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
-import gameObjects.WaveCompleteGraphic;
+import gameObjects.FadingGraphic;
 import items.Bombs;
 import items.DataScrambler;
 import items.Glue;
@@ -54,6 +54,10 @@ public class Hud extends GameObject {
 
 	public static final engine.Sprite HEART = new engine.Sprite ("resources/sprites/heart.png");
 	public static final Sprite LIFE_SEGMENT = new Sprite ("resources/sprites/life_segment.png");
+	
+	public static final Sprite TIME_UP = new Sprite ("resources/sprites/time up.png");
+	public static final Sprite WAVE_COMPLEATE = new Sprite ("resources/sprites/wave_complete.png");
+	
 
 	
 	public Hud () {
@@ -164,6 +168,10 @@ public class Hud extends GameObject {
 		if (prevTime != 0 && NetworkHandler.isHost ()) {
 			timeLeft = timeLeft - (System.currentTimeMillis() - prevTime);
 			if (timeLeft <= 0) {
+				
+				FadingGraphic g = new FadingGraphic();
+				g.setSprite(TIME_UP);
+				
 				newWave();
 			}
 		}
@@ -193,6 +201,7 @@ public class Hud extends GameObject {
 		
 		waitingForNewWave = false;
 		roundNum = roundNum + 1;
+		
 		waveNum.changeText(Integer.toString(roundNum));
 
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
@@ -433,7 +442,7 @@ public class Hud extends GameObject {
 		
 		//Update the round timer
 		if (roundNum == 1) {
-			timeLeft = 360000; // 6 minutes
+			timeLeft =  360000; // 6 minutes
 		} else {
 			timeLeft = 300000 - 30000 * roundNum;
 			if (timeLeft <= 120000) {
@@ -449,7 +458,8 @@ public class Hud extends GameObject {
 			NetworkHandler.getServer ().sendMessage ("ROUND COMPLETE");
 		}
 		setRoundTime (10000);
-		new WaveCompleteGraphic ();
+		FadingGraphic g = new FadingGraphic ();
+		g.setSprite(WAVE_COMPLEATE);
 	}
 	public static void setRoundTime (long roundTime) {
 		timeLeft = roundTime;
