@@ -1,7 +1,7 @@
 resources/sprites/rooms/default/ 100
-resources/sprites/rooms/corners/ 1000
-resources/sprites/rooms/bricks/ 1000
-resources/sprites/rooms/flower/ 1000
+resources/sprites/rooms/corners/ 100
+resources/sprites/rooms/bricks/ 100
+resources/sprites/rooms/flower/ 100
 resources/sprites/rooms/funny/ 20
 resources/sprites/rooms/head/ 100
 resources/sprites/rooms/heart/ 400
