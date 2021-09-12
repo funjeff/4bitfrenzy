@@ -26,8 +26,10 @@ public class LoadedDice extends NPC {
 	
 	private int timer = -150;
 	
-	private int lastUsed = 0;
+	private int lastUsed = -1;
 	private int useDenyTimer = 0;
+	
+	private int updates = 0;
 	
 	public LoadedDice (double x, double y) {
 		super (x, y);
@@ -35,16 +37,16 @@ public class LoadedDice extends NPC {
 	}
 	
 	public boolean roll () {
-		if (!useable ()) {
-			if (timer <= 0) {
-				useDenyTimer = 150;
-			}
-			return false;
-		} else {
-			timer = 150;
+		//TODO deny message can show for host when client tries to use dice (not that important)
+		if (useable () && NetworkHandler.isHost ()) {
+			timer = 150; //Only host can actually roll the dice
 			lastUsed = Hud.roundNum;
 			return true;
 		}
+		if (!useable () && timer <= 0) {
+			useDenyTimer = 150; //Hint text is client side
+		}
+		return false;
 	}
 	
 	public boolean useable () {
@@ -53,50 +55,57 @@ public class LoadedDice extends NPC {
 	
 	@Override
 	public void frameEvent () {
-		if (timer > 0) {
-			timer--;
-			Random r = new Random ();
-			boolean diceWereUpdated = false;
-			if (timer % 5 == 0) {
-				die1 = r.nextInt (6) + 1;
-				die2 = r.nextInt (6) + 1;
-				diceWereUpdated = true;
-			}
-			if (timer % 10 == 0) {
-				SoundPlayer play = new SoundPlayer ();
-				play.playSoundEffect(GameCode.volume,"resources/sounds/effects/pickup.wav");
-				NetworkHandler.getServer().sendMessage("SOUND:"  + 2 + ":resources/sounds/effects/pickup.wav");
-				NetworkHandler.getServer().sendMessage("SOUND:"  + 3 + ":resources/sounds/effects/pickup.wav");
-				NetworkHandler.getServer().sendMessage("SOUND:"  + 4 + ":resources/sounds/effects/pickup.wav");
-			}
-			if (timer == 0) {
-				if (r.nextInt (4) == 0 || (die1 == 1 && die2 == 1)) {
-					//Snake eyes (spawning in new registers is yet to be implemented)
-					die1 = 1;
-					die2 = 1;
-				} else {
-					//Successful, remove a register
-					ArrayList<GameObject> registers = ObjectHandler.getObjectsByName ("Register");
-					ArrayList<GameObject> dataSlots = ObjectHandler.getObjectsByName ("DataSlot");
-					if (registers != null && registers.size () != 0) {
-						int toTurnIn = r.nextInt (registers.size ());
-						Register regToTurnIn = (Register)registers.get (toTurnIn);
-						for (int i = 0; i < dataSlots.size (); i++) {
-							if (((DataSlot)dataSlots.get (i)).memAddress == regToTurnIn.memAddress) {
-								regToTurnIn.setX (dataSlots.get (i).getX ());
-								regToTurnIn.setY (dataSlots.get (i).getY ());
+		if (NetworkHandler.isHost ()) {
+			if (timer > 0) {
+				timer--;
+				Random r = new Random ();
+				boolean diceWereUpdated = false;
+				if (timer % 5 == 0) {
+					die1 = r.nextInt (6) + 1;
+					die2 = r.nextInt (6) + 1;
+					diceWereUpdated = true;
+				}
+				if (timer % 10 == 0) {
+					SoundPlayer play = new SoundPlayer ();
+					play.playSoundEffect(GameCode.volume,"resources/sounds/effects/pickup.wav");
+					NetworkHandler.getServer().sendMessage("SOUND:"  + 2 + ":resources/sounds/effects/pickup.wav");
+					NetworkHandler.getServer().sendMessage("SOUND:"  + 3 + ":resources/sounds/effects/pickup.wav");
+					NetworkHandler.getServer().sendMessage("SOUND:"  + 4 + ":resources/sounds/effects/pickup.wav");
+				}
+				if (timer == 0) {
+					if (r.nextInt (4) == 0 || (die1 == 1 && die2 == 1)) {
+						//Snake eyes (spawning in new registers is yet to be implemented)
+						die1 = 1;
+						die2 = 1;
+					} else {
+						//Successful, remove a register
+						ArrayList<GameObject> registers = ObjectHandler.getObjectsByName ("Register");
+						ArrayList<GameObject> dataSlots = ObjectHandler.getObjectsByName ("DataSlot");
+						if (registers != null && registers.size () != 0) {
+							int toTurnIn = r.nextInt (registers.size ());
+							Register regToTurnIn = (Register)registers.get (toTurnIn);
+							for (int i = 0; i < dataSlots.size (); i++) {
+								if (((DataSlot)dataSlots.get (i)).memAddress == regToTurnIn.memAddress) {
+									regToTurnIn.setX (dataSlots.get (i).getX ());
+									regToTurnIn.setY (dataSlots.get (i).getY ());
+								}
 							}
 						}
 					}
+					diceWereUpdated = true;
 				}
-				diceWereUpdated = true;
+				if (diceWereUpdated) {
+					if (NetworkHandler.isHost ()) {
+						NetworkHandler.getServer ().sendMessage ("NPC UPDATE " + toString ());
+					}
+				}
 			}
-			if (diceWereUpdated) {
-				if (NetworkHandler.isHost ()) {
-					NetworkHandler.getServer ().sendMessage ("NPC UPDATE " + toString ());
-				}
+		} else {
+			if (timer > 0) {
+				timer--;
 			}
 		}
+		
 		if (useDenyTimer != 0) {
 			useDenyTimer--;
 		}
@@ -143,11 +152,15 @@ public class LoadedDice extends NPC {
 	
 	@Override
 	public void updateNpc (String s) {
-		System.out.println (s);
 		super.updateNpc (s);
 		String[] params = s.split (":");
 		die1 = Integer.parseInt (params [4]);
 		die2 = Integer.parseInt (params [5]);
+		if (timer == -150 && updates > 0) {
+			timer = 150;
+			lastUsed = Hud.roundNum;
+		}
+		updates++;
 	}
 	
 }

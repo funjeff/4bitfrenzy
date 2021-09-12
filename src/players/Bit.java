@@ -142,6 +142,12 @@ public class Bit extends GameObject {
 		if (keyPressed ('P')) {
 			System.out.println ("[" + getX () + ", " + getY () + "]");
 		}
+		if (!NetworkHandler.isHost () && keyDown (GameCode.getSettings().getControls()[4])) {
+			//Client can attempt a roll to get the hint text
+			if (isColliding ("LoadedDice")) {
+				((LoadedDice)getCollisionInfo ().getCollidingObjects ().get (0)).roll ();
+			}
+		}
 		pushVector = new Vector2D (getX () - prevFrameX, getY () - prevFrameY);
 		if (pushVector.getLength () > 25) {
 			pushVector.normalize ();
@@ -173,11 +179,12 @@ public class Bit extends GameObject {
 			
 			boolean showHint = false;
 			//Check for colliding with register
-			if (this.isColliding ("Register") && regestersBeingCarried == null) {
-				//GRAB FOR REGISTER
-				controlsHint.showGrabHint ();
-				showHint = true;
-			}
+			//DISABLING THIS AS IT IS NO LONGER NEEDED
+			//if (this.isColliding ("Register") && regestersBeingCarried == null) {
+			//	//GRAB FOR REGISTER
+			//	controlsHint.showGrabHint ();
+			//	showHint = true;
+			//}
 			
 			//Check for colliding with loaded dice
 			if (this.isColliding ("LoadedDice")) {
