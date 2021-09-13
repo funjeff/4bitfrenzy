@@ -1,0 +1,18 @@
+bit1 -400 -400 resources/sprites/config/bits_green.txt
+bit2 -400 -400 resources/sprites/config/bits_purple.txt
+bit3 -400 -400 resources/sprites/config/bits_yellow.txt
+bit4 -400 -400 resources/sprites/config/bits_red.txt
+USB 500 0 resources/sprites/USB.png
+END
+USB 0 10
+FRAME 30
+bit1 930 770
+bit2 930 770
+bit3 930 770
+bit4 930 770 
+FRAME 1
+bit1 -3 -3
+bit2 3 -3
+bit3 -3 3
+bit4 3 3
+FRAME 40

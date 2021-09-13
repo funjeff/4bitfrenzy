@@ -28,8 +28,11 @@ resources/sprites/rooms/bitcoin_farm/ 100
 resources/sprites/rooms/pianos/ 100
 resources/sprites/rooms/leak/ 100
 resources/sprites/rooms/breakroom/ 100
-resources/sprites/rooms/big/ 60
+resources/sprites/rooms/big/ 20
+resources/sprites/rooms/bigGerm/ 20
+resources/sprites/rooms/bigBolder/ 80
 resources/sprites/rooms/church/ 200
 resources/sprites/rooms/computer/ 100
 resources/sprites/rooms/geocities/ 100
 resources/sprites/rooms/graveyard/ 100
+resources/sprites/rooms/start/ 0

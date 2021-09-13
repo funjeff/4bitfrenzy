@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import engine.GameCode;
 import engine.GameObject;
 import engine.RenderLoop;
 import engine.Sprite;
@@ -36,17 +37,18 @@ public class Menu extends GameObject {
 	
 	boolean wasClosed = false;
 	
+	boolean enterClose = false;
+	
+	boolean recentlyOpened = false;
+	
 	public Menu () {
 		
 	}
 	
 	@Override
 	public void draw () {
-		
 		if (open) {
-			
 			if (backgroundColor != -1) {
-			
 				Graphics g = RenderLoop.wind.getBufferGraphics();
 			
 				g.setColor(new Color (backgroundColor));
@@ -95,8 +97,6 @@ public class Menu extends GameObject {
 		
 		
 	}
-	
-	
 
 	@Override
 	public void frameEvent () {
@@ -104,6 +104,11 @@ public class Menu extends GameObject {
 			for (int i = 0; i <componites.size(); i++) {
 				componites.get(i).compointeFrame();
 			}
+			
+			if (!recentlyOpened && enterClose && keyReleased(GameCode.getSettings().getControls()[5])) {
+				this.close();
+			}
+			
 			if (closeButton != null) {
 				closeButton.frameEvent();
 				if (closeButton.isPressed() && !disableCloseButton) {
@@ -115,9 +120,13 @@ public class Menu extends GameObject {
 					}
 				}
 			}
+			recentlyOpened = false;
 		}
 	}
 	
+	public void enterClose () {
+		this.enterClose = true;
+	}
 	public void setBackgroundColor(int backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}
@@ -146,7 +155,9 @@ public class Menu extends GameObject {
 	public boolean closeAttempt() {
 		boolean oldClosed = wasClosed;
 		wasClosed = false;
-		closeButton.reset();
+		if (closeButton != null) {
+			closeButton.reset();
+		}
 		return oldClosed;
 	}
 	/**
@@ -188,6 +199,7 @@ public class Menu extends GameObject {
 		if (!this.declared()) {
 			this.declare((int)this.getX(), (int)this.getY());
 		}
+		recentlyOpened = true;
 	}	
 	public ArrayList <GameObject> getAllObjs (){
 		ArrayList <GameObject> objs = new ArrayList <GameObject>();
@@ -210,6 +222,10 @@ public class Menu extends GameObject {
 	}
 	
 	public void close () {
+		
+		if (this instanceof GraveyardText) {
+			System.out.println("debug");
+		}
 		open = false;
 	}
 	public boolean isClosed () {

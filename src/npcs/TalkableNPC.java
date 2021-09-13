@@ -1,9 +1,7 @@
 package npcs;
 
-import java.util.ArrayList;
-
 import engine.GameCode;
-import engine.GameObject;
+
 import engine.Sprite;
 import menu.Menu;
 import network.NetworkHandler;
@@ -13,7 +11,6 @@ import titleScreen.TitleBit;
 public class TalkableNPC extends NPC {
 	
 	Menu diolog;
-	
 	
 	TitleBit pausedBit;
 	Bit alternativeBit;
@@ -88,7 +85,7 @@ public class TalkableNPC extends NPC {
 			
 			if (this.isColliding("TitleBit")) {
 				Sprite tBubble = new Sprite ("resources/sprites/text buble.png");
-				tBubble.draw((int)this.getDrawX(), (int)(this.getDrawY() - 22));
+				tBubble.draw((int)this.getCenterX() - GameCode.getViewX(), (int)(this.getDrawY() - 22));
 			}
 			
 			if (this.isColliding("Bit")) {
@@ -96,7 +93,7 @@ public class TalkableNPC extends NPC {
 				
 				if (b.playerNum == NetworkHandler.getPlayerNum()) {
 					Sprite tBubble = new Sprite ("resources/sprites/text buble.png");
-					tBubble.draw((int)this.getDrawX(), (int)(this.getDrawY() - 22));
+					tBubble.draw((int)this.getCenterX() - GameCode.getViewX(), (int)(this.getDrawY() - 22));
 				}
 			}
 			

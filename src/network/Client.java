@@ -31,6 +31,7 @@ import npcs.NPC;
 import players.Bit;
 import resources.Hud;
 import resources.SoundPlayer;
+import titleScreen.Scene;
 import titleScreen.TitleScreen;
 
 public class Client extends Thread {
@@ -274,7 +275,7 @@ public class Client extends Thread {
 				RenderLoop.unPause();
 				
 				
-				GameCode.initGameState ();
+				GameCode.startGame ();
 				
 				
 				GameCode.closeTitleScreen();
