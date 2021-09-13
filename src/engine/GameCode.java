@@ -456,7 +456,7 @@ public class GameCode {
 		
 		//DEBUG SPAWNING STARTS HERE
 		if (NetworkHandler.isHost ()) {
-			Roome.map [5][5].spawnObject (Bombs.class);
+			//Roome.map [5][5].spawnObject (Bombs.class);
 		}
 		//Roome.map [5][5].spawnObject (Bombs.class);
 		//DEBUG SPAWNING ENDS HERE
