@@ -50,6 +50,10 @@ public class Item extends GameObject {
 		return dropper;
 	}
 	
+	public void clientPickupFunc () {
+		System.out.println ("CLIENT PICKED UP: " + this);
+	}
+	
 	@Override
 	public void frameEvent () {
 		if (dropper != null && !this.isColliding (dropper)) {

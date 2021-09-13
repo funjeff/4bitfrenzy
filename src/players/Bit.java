@@ -255,6 +255,9 @@ public class Bit extends GameObject {
 						it.dropItem(this);
 					}
 					inventory.putItem (toUse);
+					if (NetworkHandler.getPlayerNum () != playerNum) {
+						NetworkHandler.getServer ().sendMessage ("PICKUP " + playerNum + " " + toUse.id);
+					}
 					toUse.pickUpItem(this);
 					toUse.forget();
 				}

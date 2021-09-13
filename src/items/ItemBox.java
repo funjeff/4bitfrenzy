@@ -10,11 +10,13 @@ import engine.GameCode;
 import engine.GameObject;
 import engine.RenderLoop;
 import engine.Sprite;
+import network.NetworkHandler;
 import players.Bit;
 
 public class ItemBox extends GameObject {
 	
 	private Item item = null;
+	private Item descItem = null;
 	
 	private int itemHintTime;
 	private Point itemHintPos;
@@ -46,10 +48,19 @@ public class ItemBox extends GameObject {
 
 	public void putItem (Item item) {
 		this.item = item;
+		System.out.println ("PUT ITEM " + item);
+		showItemDesc (item);
+	}
+	
+	public void updateItem (Item item) {
+		this.item = item;
+	}
+	
+	public void showItemDesc (Item item) {
+		descItem = item;
 		itemHintPos = new Point ((int)getX (), (int)getY ());
 		itemHintTime = ITEM_HINT_TIME;
 	}
-
 
 	public void useItem (Bit user) {
 		if (item != null) {
@@ -80,7 +91,7 @@ public class ItemBox extends GameObject {
 		}
 		
 		//Draw item text if needed
-		if (itemHintTime != 0 && item != null) {
+		if (itemHintTime != 0 && descItem != null) {
 			
 			//Set up the drawing color
 			Graphics g = RenderLoop.wind.getBufferGraphics ();
@@ -91,7 +102,7 @@ public class ItemBox extends GameObject {
 			g.setFont (f);
 			int messageX = (int)(itemHintPos.getX ());
 			int messageY = (int)(itemHintPos.getY ());
-			String[] lines = item.getDesc ().split ("\n");
+			String[] lines = descItem.getDesc ().split ("\n");
 			
 			//Draw the background
 			int totalWidth = -1;
@@ -107,7 +118,7 @@ public class ItemBox extends GameObject {
 			
 			//Draw the text
 			g.setColor (new Color (1, 1, 1, alpha));
-			g.drawString (item.getName (), messageX + TEXT_OFFSET_X, messageY + TEXT_OFFSET_Y);
+			g.drawString (descItem.getName (), messageX + TEXT_OFFSET_X, messageY + TEXT_OFFSET_Y);
 			for (int i = 0; i < lines.length; i++) {
 				g.drawString (lines [i], messageX + TEXT_OFFSET_X, messageY + LINE_HEIGHT * i + DESC_OFFSET + TEXT_OFFSET_Y);
 			}
