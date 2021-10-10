@@ -30,6 +30,7 @@ import npcs.NPC;
 import npcs.PopcornMachine;
 import npcs.SettingsTxt;
 import npcs.TalkableNPC;
+import npcs.TutorialNPC;
 import resources.SoundPlayer;
 import resources.Textbox;
 
@@ -94,6 +95,7 @@ public class TitleScreen extends GameObject {
 	
 	private SettingsTxt settingsBot;
 	private ControlsTxt controlMenu;
+	private TutorialNPC tutorial;
 	
 	private static Scene perkScene;
 	
@@ -131,6 +133,24 @@ public class TitleScreen extends GameObject {
 		infoBox.changeBoxVisability ();
 		
 		infoBox.setRenderPriority(99);
+		
+	}
+	
+	public static void clearTitleScreen () {
+		ObjectHandler.getObjectsByName("TitleBit").get(0).forget();
+		ObjectHandler.getObjectsByName("TitleRegister").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("PerkStation").get(0).forget();
+		ObjectHandler.getObjectsByName("TitleSlot").get(0).forget();
+		ObjectHandler.getObjectsByName("TutorialNPC").get(0).forget();
+		ObjectHandler.getObjectsByName("SettingsTxt").get(0).forget();
+		ObjectHandler.getObjectsByName("ControlsTxt").get(0).forget();
+		ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).forget();
 		
 	}
 	
@@ -303,9 +323,11 @@ public class TitleScreen extends GameObject {
 
 		settingsBot = new SettingsTxt (150,200);
 		controlMenu = new ControlsTxt(450,200);
+		tutorial = new TutorialNPC (550, 400);
 		
 		settingsBot.setRenderPriority(101);
 		controlMenu.setRenderPriority(101);
+		tutorial.setRenderPriority(101);
 	
 		blastStation = new PerkStation (1);
 		gripStation = new PerkStation (2);
@@ -325,6 +347,7 @@ public class TitleScreen extends GameObject {
 //		settingsSlot.declare (1150, 600);
 		settingsBot.declare(290 + OBJECT_SPAWN_RING_PADDING ,350);
 		controlMenu.declare(470 + OBJECT_SPAWN_RING_PADDING ,350);
+		tutorial.declare(550 + OBJECT_SPAWN_RING_PADDING, 400);
 		
 
 		blastStation.declare (90 + OBJECT_SPAWN_RING_PADDING , 416);

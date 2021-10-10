@@ -201,6 +201,7 @@ public class Bit extends GameObject {
 			
 			//Hide the compass if grabbing
 			//NOTE: COMPASS CAN BE NULL HERE... WEIRD
+			//hiding the compass was intentional?  OK I guess?
 			if (regestersBeingCarried != null && regestersBeingCarried.size () > 0 && compass != null) {
 				compass.setVisability (false);
 			} else {

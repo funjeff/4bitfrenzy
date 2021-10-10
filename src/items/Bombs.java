@@ -34,6 +34,13 @@ public class Bombs extends Item {
 		return true;
 	}
 	
+	//made so you can throw a bomb in the tutorial
+	public void useItemAlternate (int direction,int x, int y) {
+		this.declare(x, y);
+		thrown = true;
+		this.direction = direction;
+		pickupability = false;
+	}
 	
 	
 	@Override

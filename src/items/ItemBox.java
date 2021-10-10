@@ -67,11 +67,16 @@ public class ItemBox extends GameObject {
 	}
 	
 	@Override
+	public void onDeclare() {
+		this.setX(1153);
+		this.setY(61);
+	}
+	
+	@Override
 	public void draw () {
 		
 		//Draw the item box and the item inside it
-		this.setX(1153);
-		this.setY(61);
+	
 		super.drawAbsolute ();
 		if (item != null && isVisable()) {
 			item.setX(this.getX());

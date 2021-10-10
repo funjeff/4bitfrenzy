@@ -48,6 +48,7 @@ public class TextComponite extends MenuComponite{
 	
 	public void setText(String message) {
 		t.changeText(message);
+		t.changeWidth(message.length());
 	}
 	
 	public Textbox getTextbox () {

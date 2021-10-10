@@ -21,7 +21,7 @@ public class HelpWindow extends GameObject {
 		
 		//Make the menu
 		menu = new Menu ();
-		menu.declare (Tutorial.TUTORIAL_MENU_X, Tutorial.TUTORIAL_MENU_Y);
+		menu.declare (OldTutorial.TUTORIAL_MENU_X, OldTutorial.TUTORIAL_MENU_Y);
 		menu.setRenderPriority (42001);
 		
 		//Add components and set menu dimension
@@ -63,8 +63,8 @@ public class HelpWindow extends GameObject {
 	@Override
 	public void frameEvent () {
 		super.frameEvent ();
-		menu.setX(Tutorial.TUTORIAL_MENU_X + GameCode.getViewX());
-		menu.setY(Tutorial.TUTORIAL_MENU_Y + GameCode.getViewY());
+		menu.setX(OldTutorial.TUTORIAL_MENU_X + GameCode.getViewX());
+		menu.setY(OldTutorial.TUTORIAL_MENU_Y + GameCode.getViewY());
 		if (keyPressed ('H')) {
 			if (menu.isOpen ()) {
 				menu.close ();

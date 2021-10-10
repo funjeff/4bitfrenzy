@@ -13,7 +13,7 @@ import menu.Menu;
 import menu.MenuComponite;
 import menu.TextComponite;
 
-public class Tutorial extends GameObject {
+public class OldTutorial extends GameObject {
 
 	public Menu menu;
 	public MovableRectHighlight highlight;
@@ -36,7 +36,7 @@ public class Tutorial extends GameObject {
 	public static final Rectangle livesRect = new Rectangle (318, 25, 289, 32);
 	public static final Rectangle screenRect = new Rectangle (4, 4, 1272, 712);
 	
-	public Tutorial () {
+	public OldTutorial () {
 		//Render stuff
 		setRenderPriority (42000);
 		

@@ -20,7 +20,6 @@ import gameObjects.HelpWindow;
 import gameObjects.MovableRectHighlight;
 import gameObjects.PixelBitch;
 import gameObjects.Register;
-import gameObjects.Tutorial;
 import gui.MenuBar;
 import items.BasketBomb;
 import items.Bombs;
@@ -60,6 +59,7 @@ import resources.Textbox;
 import titleScreen.Scene;
 import titleScreen.TitleScreen;
 import titleScreen.TitleScreen.ArrowButtons;
+import titleScreen.Tutorial;
 
 public class GameCode {
 	
@@ -93,13 +93,42 @@ public class GameCode {
 	
 	public static final String[] packageList = new String[] {"items", "npcs"};
 	
+	static Tutorial tutorial;
+	
 	public static void testBitch () {
 		
 		titleScreen = new TitleScreen ();
 		
+		File playedTutorial = new File ("resources/saves/tutorial");
+		if (!playedTutorial.exists()) {
+	
+			Menu m = new Menu ();
+			m.setBackgroundColor(0xFFFFFF);
+			m.addComponite(new TextComponite (m," ~CWhite~DO YOU WANT TO PLAY THE TUTORIAL?(Y/N)"));
+			m.setWidth(400);
+			m.setHeight(-1);
+			m.open();
+			m.setRenderPriority(69);
+			tutorial = new Tutorial (m);
+		} else {
+			titleScreen.declare (0, 0);
+			titleScreen.setRenderPriority(69);
+			}
+		}
+	
+	public static void endTutorial () {
 		titleScreen.declare (0, 0);
 		titleScreen.setRenderPriority(69);
+		tutorial.forget();
+		tutorial = null;
+		File playedTutorial = new File ("resources/saves/tutorial");
+		try {
+			playedTutorial.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	}
 	
 	public static void setView (int x, int y) {
 		//Sets the top-right coordinate of the viewport of the room to (x, y)
@@ -240,9 +269,33 @@ public class GameCode {
 		if (!NetworkHandler.isHost ()) {
 			Client.processMessages ();
 		}
+		
 		if (titleScreen.keyPressed ('Q')) {
 			devMode = true;
 		}
+		if (titleScreen.keyDown('Y') && tutorial != null && !tutorial.hasStarted()) {
+			tutorial.start();
+			tutorial.declare();
+		}
+		
+		if (titleScreen.keyDown('N') && tutorial != null) {
+			
+			tutorial.getConsoleOut().forget();
+			tutorial = null;
+			
+			File playedTutorial = new File ("resources/saves/tutorial");
+			
+			try {
+				playedTutorial.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			titleScreen.declare (0, 0);
+			titleScreen.setRenderPriority(69);
+		}
+	
 		if (NetworkHandler.isHost() && !gameStarted) {
 			NetworkHandler.getServer ().sendMessage ("PERKS " + perks[0] + ":" + perks[1] + ":" + perks[2] + ":" + perks[3]);
 		}
@@ -494,7 +547,7 @@ public class GameCode {
 			i = i + 1;
 		}
 		
-		new Tutorial ();
+		//new OldTutorial ();
 		new HelpWindow ();
 		
 	

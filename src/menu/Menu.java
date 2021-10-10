@@ -47,6 +47,7 @@ public class Menu extends GameObject {
 	
 	@Override
 	public void draw () {
+		
 		if (open) {
 			if (backgroundColor != -1) {
 				Graphics g = RenderLoop.wind.getBufferGraphics();
@@ -223,9 +224,6 @@ public class Menu extends GameObject {
 	
 	public void close () {
 		
-		if (this instanceof GraveyardText) {
-			System.out.println("debug");
-		}
 		open = false;
 	}
 	public boolean isClosed () {
@@ -243,6 +241,13 @@ public class Menu extends GameObject {
 			height = height - (comp.getHeight()/8.0);
 		}
 
+	}
+	public ArrayList<MenuComponite> getComponites() {
+		return componites;
+	}
+	
+	public void clear () {
+		componites = new ArrayList<MenuComponite>();
 	}
 	
 }

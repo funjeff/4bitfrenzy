@@ -657,9 +657,13 @@ public abstract class GameObject extends GameAPI implements Catalogable {
 		double x = this.getX();
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
 		this.setX(val);
-		if (currentRoom.isColliding(this)) {
-			this.setX(x);
-			return false;
+		try {
+			if (currentRoom.isColliding(this)) {
+				this.setX(x);
+				return false;
+			}
+		} catch (NullPointerException e) {
+			
 		}
 		return true;
 	}
@@ -683,9 +687,13 @@ public abstract class GameObject extends GameAPI implements Catalogable {
 		double y = this.getY();
 		this.setY(val);
 		Roome currentRoom = Roome.getRoom(this.getX(), this.getY());
-		if (currentRoom.isColliding(this)) {
-			this.setY(y);
-			return false;
+		try {
+			if (currentRoom.isColliding(this)) {
+				this.setY(y);
+				return false;
+			}
+		} catch (NullPointerException e) {
+			
 		}
 		return true;
 	}

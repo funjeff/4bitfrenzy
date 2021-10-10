@@ -148,16 +148,20 @@ public class TitleBit extends GameObject {
 		frozen = false;
 	}
 	
+	public boolean isCarrying() {
+		return carried != null;
+	}
+	
 	@Override
 	public boolean goX(double val) {
 		double ogVal = this.getX();
 		this.setX(val);
 		
 		//the title code walls is coliding method is overriden so we need to run its is colling on this instead of the other way around
-		if (ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).isColliding(this)) {
-			this.setX(ogVal);
-			return false;
-		}
+			if (ObjectHandler.getObjectsByName("TitleCodeWalls") != null && ObjectHandler.getObjectsByName("TitleCodeWalls").size() > 0 && ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).isColliding(this)) {
+				this.setX(ogVal);
+				return false;
+			}
 		return true;
 	}
 	
@@ -167,10 +171,10 @@ public class TitleBit extends GameObject {
 		this.setY(val);
 		
 		//the title code walls is coliding method is overriden so we need to run its is colling on this instead of the other way around
-		if (ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).isColliding(this)) {
-			this.setY(ogVal);
-			return false;
-		}
+			if (ObjectHandler.getObjectsByName("TitleCodeWalls") != null && ObjectHandler.getObjectsByName("TitleCodeWalls").size() > 0 && ObjectHandler.getObjectsByName("TitleCodeWalls").get(0).isColliding(this)) {
+				this.setY(ogVal);
+				return false;
+			}
 		return true;
 	}
 }

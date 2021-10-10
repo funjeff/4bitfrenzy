@@ -29,16 +29,21 @@ public class Compass extends GameObject {
 	
 	GameObject pointObject; // the object the compass is pointing too
 	
-	Bit owner;
+	GameObject owner;
 	
-	public Compass (Bit owner) {
+	public Compass (GameObject owner) {
 		this.owner = owner;
-		this.setRenderPriority(3);
 		setSprite (RIGHT);
 		registerBox = new Textbox ("FF");
 		registerBox.setFont ("text (lime green)");
 		registerBox.changeBoxVisability ();
 		setRenderPriority (42000);
+	}
+	
+	@Override
+	public void onDeclare () {
+		this.setX(25);
+		this.setY(30);
 	}
 	
 	@Override
@@ -150,8 +155,7 @@ public class Compass extends GameObject {
 	@Override
 	public void draw () {
 		if (this.isVisable ()) {
-			this.setX(25);
-			this.setY(30);
+		
 			
 			String memAdress = "";
 			boolean regOrDs = false; //true for reg false for ds
