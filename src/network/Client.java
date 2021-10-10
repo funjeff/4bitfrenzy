@@ -306,6 +306,27 @@ public class Client extends Thread {
 				Roome.map [y][x].update (id);
 			}
 			
+			if (str.length () >= 6 && str.substring (0, 6).equals ("PICKUP")) {
+				System.out.println ("PICKED UP!");
+				Scanner s = new Scanner (str);
+				s.next (); //Skip PICKUP text
+				int bitNum = s.nextInt ();
+				int itemId = s.nextInt ();
+				if (NetworkHandler.getPlayerNum () == bitNum) {
+				ArrayList<ArrayList<GameObject>> items = ObjectHandler.getChildrenByName ("Item");
+					for (int i = 0; i < items.size (); i++) {
+						for (int j = 0; j < items.get (i).size (); j++) {
+							if (items.get (i).get (j).getId () == itemId) {
+								Item it = (Item) items.get (i).get (j);
+								Bit.getCurrentPlayer ().inventory.putItem (it);
+								it.clientPickupFunc ();
+							}
+						}
+					}
+				}
+				s.close ();
+			}
+			
 			//This section has been copy-pasted into TitleScreen
 			if (str.length () >= 3 && str.substring (0,4).equals ("NPC ")) {
 				String[] args = str.split (" ");
@@ -480,11 +501,11 @@ public class Client extends Thread {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									b.inventory.putItem (it);
+									b.inventory.updateItem (it);
 								}
 								s2.close();
 							} else {
-								b.inventory.putItem (null);
+								b.inventory.updateItem (null);
 							}
 						} catch (IndexOutOfBoundsException e) {
 							//Do nothing

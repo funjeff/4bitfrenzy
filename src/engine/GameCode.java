@@ -508,7 +508,9 @@ public class GameCode {
 		}
 		
 		//DEBUG SPAWNING STARTS HERE
-		//Roome.map [5][5].spawnObject (Lighter.class);
+		if (NetworkHandler.isHost ()) {
+			//Roome.map [5][5].spawnObject (Bombs.class);
+		}
 		//Roome.map [5][5].spawnObject (Bombs.class);
 		//DEBUG SPAWNING ENDS HERE
 		//Declare the hud and make the bits
