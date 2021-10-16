@@ -16,9 +16,9 @@ public class Menu extends GameObject {
 	ArrayList <MenuComponite> componites = new ArrayList <MenuComponite> ();
 	
 	//I kinda gave up on this naming scheme halfway through
-	Sprite verticalBar = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png","rectangle 16 0 1 8");
-	Sprite bottomBar = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png", "rectangle 24 0 8 1");
-	Sprite top = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png", "rectangle 0 0 8 8");
+	Sprite verticalBar = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png","rectangle 16 0 1 8",1);
+	Sprite bottomBar = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png", "rectangle 24 0 8 1",1);
+	Sprite top = Textbox.getTextboxResource("resources/sprites/Text/windowspritesGreen.png", "rectangle 0 0 8 8",1);
 	
 	boolean disableCloseButton = false;
 	

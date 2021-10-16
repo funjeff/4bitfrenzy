@@ -53,11 +53,12 @@ public class RenderLoop {
 		//Create the GameWindow
 		wind = new GameWindow (1280, 720);
 	
-		GameCode.testBitch();
+		
 		//Start the game logic loop on a separate thread
 		gameLoop = new GameLoop ();
 		gameThread = new Thread (gameLoop);
 		GameCode.init ();
+		GameCode.testBitch();
 		//initMultithreading ();
 		//TODO swap between single-threaded and multi-threaded as necessary
 		//Initializes lastUpdate to the current time

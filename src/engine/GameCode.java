@@ -452,16 +452,16 @@ public class GameCode {
 		viewY = (Roome.getMapHeight() / 2) * 720;
 		introScene.setX(viewX);
 		introScene.setY(viewY);
+	
 		introScene.play();
 		introScene.frameEvent();
 		
 		for (int i = 0; i < 4; i++) {
 			if (perks[i] != -1) {
 				Bit bit = new Bit ();
-				bit.playerNum = i + 1;
 				bit.setPerk(perks[i]);
-				bit.updateIcon ();
 				introScene.objs.get(i).sprite = bit.getSprite();
+				introScene.objs.get(i).frame = i;
 			} else {
 				introScene.objs.get(i).sprite = new Sprite ("resources/sprites/blank.png");
 			}

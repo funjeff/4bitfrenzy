@@ -52,6 +52,10 @@ public class ItemBox extends GameObject {
 		showItemDesc (item);
 	}
 	
+	public void putItemQuietly (Item item) {
+		this.item = item;
+	}
+	
 	public void updateItem (Item item) {
 		this.item = item;
 	}
