@@ -330,7 +330,7 @@ public abstract class GameObject extends GameAPI implements Catalogable {
 	 * Draws this GameObject at its x and y coordinates relative to the room view.
 	 */
 	public void draw () {
-		//TODO
+		//TODO wtf?
 		if (this.getSprite() != null) {
 			Rectangle thisRect = new Rectangle ((int)this.getX(), (int)this.getY(), this.getSprite().getFrame(0).getWidth(), this.getSprite().getFrame(0).getHeight());
 			

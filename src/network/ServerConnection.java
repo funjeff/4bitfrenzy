@@ -20,6 +20,7 @@ public class ServerConnection extends Thread {
 	Server server;
 	Socket incoming;
 	boolean open = true;
+	boolean setupFinished = false;
 	
 	private volatile LinkedBlockingDeque<String> message = new LinkedBlockingDeque<String> ();
 	
@@ -39,6 +40,9 @@ public class ServerConnection extends Thread {
 			OutputStream outStream = incoming.getOutputStream ();
 			DataOutputStream dataOut = new DataOutputStream (outStream);
 			
+			//Prevent a race condition
+			setupFinished = true;
+			
 			//Recieve data (blocking)
 			while (open) {
 				//System.out.println ("RECIEVING DATA!");
@@ -50,8 +54,8 @@ public class ServerConnection extends Thread {
 				if (dataIn.available () != 0) {
 					String str = dataIn.readUTF ();
 					if (str.substring (0, 4).equals ("PING")) {
-						GameCode.setPerk(Integer.parseInt(str.substring(5)), server.getNumPlayers());
-						dataOut.writeUTF ("PLAYER " + (server.getNumPlayers () + 1));
+						GameCode.setPerk(Integer.parseInt(str.substring(5)), server.getNumPlayers() - 1);
+						dataOut.writeUTF ("PLAYER " + (server.getNumPlayers ()));
 						TitleScreen.playerJoin ();
 						dataOut.flush ();
 					}

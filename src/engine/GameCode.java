@@ -258,8 +258,10 @@ public class GameCode {
 		
 		getSettings (); //Initializes the settings
 		
-		RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
-		RenderLoop.wind.resizeWindow (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
+		if (RenderLoop.wind != null) {
+			RenderLoop.wind.setResolution (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
+			RenderLoop.wind.resizeWindow (getSettings ().getResolutionX(), getSettings ().getResolutionY ());
+		}
 		
 		initSoundEffects();
 	}
@@ -550,7 +552,9 @@ public class GameCode {
 		}
 		
 		//new OldTutorial ();
-		new HelpWindow ();
+		if (Bit.getCurrentPlayer () != null) {
+			new HelpWindow ();
+		}
 		
 	
 //	Roome.map[Roome.getMapHeight() / 2][Roome.getMapWidth () / 2].spawnObject (Bombs.class);

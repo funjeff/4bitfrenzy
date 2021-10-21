@@ -2,6 +2,9 @@ package engine;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Scanner;
+
+import network.NetworkHandler;
 
 /**
  * The loop for rendering the game to the GameWindow. Runs on the event dispatching thread.
@@ -48,10 +51,22 @@ public class RenderLoop {
 	}
 
 	public static void main (String[] args) {
+		
+		//Handle command line arguments
+		for (int i = 0; i < args.length; i++) {
+			if (args [i].equals ("-server")) {
+				NetworkHandler.setServerMode();
+			}
+		}
+		//NetworkHandler.setServerMode();
+		
 		//Sets the initial frame time
 		frameTime = System.currentTimeMillis ();
 		//Create the GameWindow
-		wind = new GameWindow (1280, 720);
+		
+		if (!NetworkHandler.isServer ()) {
+			wind = new GameWindow (1280, 720);
+		}
 	
 		GameCode.testBitch();
 		//Start the game logic loop on a separate thread
@@ -64,6 +79,15 @@ public class RenderLoop {
 		lastUpdate = System.nanoTime ();
 		renderThread = Thread.currentThread ();
 		
+		if (NetworkHandler.isServer ()) {
+			System.out.println ("4 Bit Frenzy Initialized. Waiting for players...");
+			while (GameCode.getTitleScreen () == null);
+			GameCode.getTitleScreen ().enterHostMode ();
+			NetworkHandler.waitForPlayers ();
+			GameCode.getTitleScreen ().doConnect ();
+			System.out.println ("DO THING");
+		}
+		
 		while (running) {
 				//Get the target time in nanoseconds for this iteration; should be constant if the framerate doesn't change
 				long targetNanoseconds = (long)(1000000000 / maxFramerate);
@@ -71,17 +95,19 @@ public class RenderLoop {
 				long startTime = System.nanoTime ();
 				frameTime = System.currentTimeMillis ();
 				if (!paused) {
-				//Run the game loop
-				if (!useMultithreading && !gameThread.isAlive()) {
-					gameThread.run ();
-				}
-				//Render the window
-			
-				GameCode.renderFunc ();
-				ObjectHandler.renderAll ();
-				wind.refresh();
-				//Calculate elapsed time and time to sleep for
-				lastUpdate = System.nanoTime ();
+					//Run the game loop
+					if (!useMultithreading && !gameThread.isAlive()) {
+						gameThread.run ();
+					}
+					//Render the window
+				
+					GameCode.renderFunc ();
+					if (!NetworkHandler.isServer ()) {
+						ObjectHandler.renderAll ();
+						wind.refresh();
+					}
+					//Calculate elapsed time and time to sleep for
+					lastUpdate = System.nanoTime ();
 				}
 				
 				long elapsedTime = lastUpdate - startTime;

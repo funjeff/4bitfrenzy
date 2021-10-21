@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import engine.GameCode;
@@ -47,7 +48,7 @@ public class TitleScreen extends GameObject {
 	
 	private static Textbox ipBox;
 	private static Textbox infoBox;
-	private static volatile int numPlayers = 1;
+	private static volatile int numPlayers = 0;
 	
 	private Button hostButton;
 	private Button joinButton;
@@ -109,30 +110,32 @@ public class TitleScreen extends GameObject {
 	@Override
 	public void onDeclare () {
 		
-		//Set stuff
-		ip = "";
-		
-		//Make the buttons
-		initMainMenu();
-		
-		//Make the textboxes
-		ipBox = new Textbox ("");
-		ipBox.declare (0, 32);
-		ipBox.changeWidth (128);
-		ipBox.changeHeight (128);
-		ipBox.setFont ("text (red)");
-		ipBox.changeBoxVisability ();
-		
-		ipBox.setRenderPriority(99);
-		
-		infoBox = new Textbox ("");
-		infoBox.declare (0, 48);
-		infoBox.changeWidth (128);
-		infoBox.changeHeight (128);
-		infoBox.setFont ("text (red)");
-		infoBox.changeBoxVisability ();
-		
-		infoBox.setRenderPriority(99);
+		if (!NetworkHandler.isServer ()) {
+			//Set stuff
+			ip = "";
+			
+			//Make the buttons
+			initMainMenu();
+			
+			//Make the textboxes
+			ipBox = new Textbox ("");
+			ipBox.declare (0, 32);
+			ipBox.changeWidth (128);
+			ipBox.changeHeight (128);
+			ipBox.setFont ("text (red)");
+			ipBox.changeBoxVisability ();
+			
+			ipBox.setRenderPriority(99);
+			
+			infoBox = new Textbox ("");
+			infoBox.declare (0, 48);
+			infoBox.changeWidth (128);
+			infoBox.changeHeight (128);
+			infoBox.setFont ("text (red)");
+			infoBox.changeBoxVisability ();
+			
+			infoBox.setRenderPriority(99);
+		}
 		
 	}
 	
@@ -190,7 +193,7 @@ public class TitleScreen extends GameObject {
 			}
 		}
 		
-		if (startGameSlot.isSelected ()) {
+		if (startGameSlot != null && startGameSlot.isSelected ()) {
 			
 			if (tutorialMode) {
 				mapLoadPath = "resources/maps/tutorial_map.txt";
@@ -257,8 +260,10 @@ public class TitleScreen extends GameObject {
 		if (isHost) {
 			System.out.println ("STARTING");
 			closeTitleScreen ();
-			ipBox.forget ();
-			infoBox.forget();
+			if (!NetworkHandler.isServer ()) {
+				ipBox.forget ();
+				infoBox.forget();
+			}
 			forget ();
 		} else {
 			if (!failedMode && !connected) {
@@ -286,8 +291,10 @@ public class TitleScreen extends GameObject {
 	
 	public void setupHostMode () {
 		//Change box contents for host
-		ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
-		infoBox.changeText ("PRESS ENTER ONCE ALL PLAYERS HAVE JOINED TO START THE GAME");
+		if (!NetworkHandler.isServer ()) {
+			ipBox.changeText ("CONNECT USING IP " + server.getIp () + " (" + numPlayers + "/4 PLAYERS JOINED)");
+			infoBox.changeText ("PRESS ENTER ONCE ALL PLAYERS HAVE JOINED TO START THE GAME");
+		}
 	}
 	
 	public void setupJoinMode () {
@@ -442,10 +449,13 @@ public class TitleScreen extends GameObject {
 	@Override
 	public void draw () {
 		//clearScreen ();
-		super.draw ();
+		if (!NetworkHandler.isServer()) {
+			super.draw ();
+		}
 		if (this.getSprite() != null && this.getSprite() == lobbySprite) {
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
+					
 					Textbox perk = null;
 					
 					ArrayList <String> parserQuantitys = new ArrayList<String> ();
@@ -533,15 +543,19 @@ public class TitleScreen extends GameObject {
 		
 		isHost = true;
 		
-		GameCode.setPerk(perkNum, 0);
 		NetworkHandler.setHost (true);
+		if (NetworkHandler.isHostAPlayer()) {
+			GameCode.setPerk(perkNum, 0);
+		}
 		
 		this.setSprite(new Sprite ("resources/sprites/now loading.png"));
 		
 		RenderLoop.pause();
 		
-		this.draw();
-		RenderLoop.wind.refresh();
+		if (!NetworkHandler.isServer ()) {
+			this.draw();
+			RenderLoop.wind.refresh();
+		}
 		enterIpMode ();
 		
 		//If there is a map to load

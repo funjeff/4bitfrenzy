@@ -37,10 +37,18 @@ public class GameLoop implements Runnable {
 			//Get the time before running the game logic
 			long startTime = System.nanoTime ();
 			//doGameLogic
-			inputImage = RenderLoop.wind.getInputImage ();
+			if (NetworkHandler.isServer ()) {
+				if (inputImage == null) {
+					inputImage = new InputManager (); //So that the server doesn't crash when things try to get inputs
+				}
+			} else {
+				inputImage = RenderLoop.wind.getInputImage ();
+			}
 			GameCode.gameLoopFunc ();
 			ObjectHandler.callAll ();
-			RenderLoop.wind.resetInputBuffers ();
+			if (!NetworkHandler.isServer ()) {
+				RenderLoop.wind.resetInputBuffers ();
+			}
 			//Calculate elapsed time and time to sleep for
 			
 			if (RenderLoop.useMultithreading) {

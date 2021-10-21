@@ -176,7 +176,6 @@ public class Bit extends GameObject {
 		this.setY (getY () - yOffs);
 		this.setHitboxAttributes (hitbox ().width + xOffs * 2, hitbox ().height + yOffs * 2);
 		if (NetworkHandler.getPlayerNum () == playerNum) {
-			
 			boolean showHint = false;
 			//Check for colliding with register
 			//DISABLING THIS AS IT IS NO LONGER NEEDED

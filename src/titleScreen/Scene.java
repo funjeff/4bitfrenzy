@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import engine.GameObject;
 import engine.Sprite;
+import network.NetworkHandler;
 
 public class Scene extends GameObject {
 	
@@ -115,7 +116,9 @@ public class Scene extends GameObject {
 		}
 		
 		public void draw () {
-			sprite.draw ((int)x + getDrawX (), (int)y + getDrawY (), frame);
+			if (!NetworkHandler.isServer ()) {
+				sprite.draw ((int)x + getDrawX (), (int)y + getDrawY (), frame);
+			}
 		}
 		
 		@Override

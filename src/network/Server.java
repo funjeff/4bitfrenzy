@@ -151,11 +151,11 @@ public class Server extends Thread {
 	}
 	
 	public int getNumPlayers () {
-		return connections.size ();
+		return NetworkHandler.isHostAPlayer () ? connections.size () + 1 : connections.size ();
 	}
 	
 	public String getPlayerInputs (int playerNum) {
-		if (playerNum == 1) {
+		if (NetworkHandler.isHostAPlayer() && playerNum == 1) {
 			//Do inputs normally
 			String toSend = "";
 			try {
@@ -207,9 +207,10 @@ public class Server extends Thread {
 				return ""; //Stuff hasn't been initialized yet
 			}
 		} else {
-			//Do inputs specially			
-			if (playerNum - 1 <= connections.size ()) {
-				return connections.get (playerNum - 2).getInputs ();
+			//Do inputs specially
+			int startNum = NetworkHandler.isHostAPlayer () ? playerNum - 2 : playerNum - 1;
+			if (startNum <= connections.size ()) {
+				return connections.get (startNum).getInputs ();
 			} else {
 				return "";
 			}
@@ -231,8 +232,8 @@ public class Server extends Thread {
 				try {
 					incoming = socket.accept ();
 					ServerConnection curr = new ServerConnection (this.server, incoming);
-					curr.start ();
 					connections.add (curr);
+					curr.start ();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -240,6 +241,15 @@ public class Server extends Thread {
 				
 			}
 		}
+	}
+	
+	public boolean areAllConnectionsInitialized () {
+		for (int i = 0; i < connections.size (); i++) {
+			if (!connections.get (i).setupFinished) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }
