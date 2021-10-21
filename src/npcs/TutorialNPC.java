@@ -68,12 +68,25 @@ public class TutorialNPC extends TalkableNPC {
 			this.getMenu().close();
 		}
 		if (confirmButton.isPressed()) {
-			File playedTutorial = new File ("resources/saves/tutorial");
-			playedTutorial.delete();
 			TitleScreen.clearTitleScreen();
+			GameCode.getTitleScreen().forget();
+			
+			Menu m = new Menu ();
 			
 			
-			GameCode.testBitch();
+			m.setBackgroundColor(0xFFFFFF);
+			m.addComponite(new TextComponite (m," ~CWhite~YO WELCOME BACK TO MY 4 BIT FRENZY CONTROLS TUTORIAL!"));
+			m.setWidth(400);
+			m.setHeight(-1);
+			m.open();
+			m.setRenderPriority(69);
+			
+			Tutorial t = new Tutorial (m);
+			
+			t.start();
+			
+			t.declare(0, 0);
+			
 			confirmButton.reset();
 			this.getMenu().close();
 		}

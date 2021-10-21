@@ -42,6 +42,8 @@ public class Sprite {
 	 */
 	private boolean isAnimated;
 	
+	private float opacity = 1;
+	
 	/**
 	 * 
 	 * Constructs a sprite with the given image filepath and parsing parameter filepath.
@@ -399,17 +401,23 @@ public class Sprite {
 		g.setComposite(ac);
 		g.drawImage(this.getFrame(frame), 0, 0, newImg.getWidth(), newImg.getHeight(), null);
 		this.setFrame(frame, newImg);
+		this.opacity = opacity;
 	}
 	
 	public void setOpacity (float opacity) {
 		for (int i = 0; i < this.getFrameCount(); i++) {
 			BufferedImage newImg = new BufferedImage (this.getFrame(i).getWidth(), this.getFrame(i).getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 			Graphics2D g = (Graphics2D) newImg.getGraphics();
-			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,(float) opacity);
+			AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,opacity);
 			g.setComposite(ac);
 			g.drawImage(this.getFrame(i), 0, 0, newImg.getWidth(), newImg.getHeight(), null);
 			this.setFrame(i, newImg);
+			this.opacity = opacity;
 		}
+	}
+	
+	public float getOpacity () {
+		return opacity;
 	}
 	
 	private static class CacheNode {

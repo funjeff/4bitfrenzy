@@ -91,6 +91,35 @@ public class Textbox extends GameObject {
 		return returnText;
 	}
 	
+	public void setTransparancy (float transparancy) {
+		String clean = "";
+		
+		boolean read = true;
+		boolean inTilde = false;
+		
+		for (int i = 0; i < text.length(); i++) {
+			
+			if (read) {
+				if (text.charAt(i) == '~' && (text.charAt(i + 1) == 'T' && !inTilde)) {
+					read = false;
+				} else {
+					if (text.charAt(i) == '~') {
+						inTilde = !inTilde;
+					}
+					clean = clean + text.charAt(i);
+				}
+			} else {
+				if (text.charAt(i) == '~') {
+				 	read = true;
+			 	}
+			}
+		}
+		//clean now has no transparnsy identifyers in it
+		
+		clean = "~T" + transparancy + "~" + clean;
+		this.changeText(clean);
+	}
+	
 	/**
 	 * @param pos the position of a charictar you are intrested
 	 * @return the real place that charictar is at in the string (takeing tildes into account)
@@ -227,35 +256,49 @@ public class Textbox extends GameObject {
 		return spacesUsed;
 		
 	}
-	
 	public static Sprite getTextboxResource (String path, String parseStr) {
+		return getTextboxResource(path,parseStr,1);
+	}
+	
+	public static Sprite getTextboxResource (String path, String parseStr, float opacity) {
 		//Construct the cache string
-		String cacheStr = path + ":" + parseStr;
-		if (resourceCache.containsKey (cacheStr)) {
+		String hashStr = path + ":" + parseStr + ":" + opacity;
+		if (resourceCache.containsKey (hashStr)) {
 			//Resource is cached
-			return resourceCache.get (cacheStr);
+			return resourceCache.get (hashStr);
 		} else {
 			//Resource is not cached, load it
 			ArrayList<String> parseStrs = new ArrayList<String> ();
 			parseStrs.add (parseStr);
 			Sprite spr = new Sprite (path, new SpriteParser (parseStrs));
-			resourceCache.put (cacheStr, spr);
+			if (opacity != 1) {
+				spr.setOpacity(opacity);
+			}
+			resourceCache.put (hashStr, spr);
 			return spr;
 		}
 	}
 	public void setFont (String fontName) {
-		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16");
+		
+		if (fontSheet == null) {
+			fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16",1);
+		} else {
+			fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16",fontSheet.getOpacity());
+		}
 		
 		tempColor = fontName;
 		
 		font = fontName;
+		
 	}
 	private void setFontTemporarily (String fontName) {
-		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16");
+		fontSheet = getTextboxResource ("resources/sprites/Text/" + fontName + ".png", "grid 16 16",fontSheet.getOpacity());
 		
 		tempColor = fontName;
 		if (textSize != 16) {
-			fontSheet = new Sprite (Sprite.scale(getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ 16 + " " + 16), textSize, textSize));
+			
+			fontSheet = new Sprite (Sprite.scale(getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ 16 + " " + 16,fontSheet.getOpacity()), textSize, textSize));
+			
 		}
 	}
 	
@@ -264,6 +307,7 @@ public class Textbox extends GameObject {
 			this.setFont(font);
 		}
 	}
+	
 	
 	//I think Im gonna rewrite this at some point
 	/*public void giveName (String boxName) {
@@ -274,10 +318,10 @@ public class Textbox extends GameObject {
 		}
 	}*/
 	public void setBox (String color) {
-		textBoxTop = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 0 0 8 8");
-		textBoxBottum = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 24 0 8 1");
-		textBoxSides= getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 16 0 1 8");
-		textBoxBackground = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 8 0 8 8");
+		textBoxTop = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 0 0 8 8",1);
+		textBoxBottum = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 24 0 8 1",1);
+		textBoxSides= getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 16 0 1 8",1);
+		textBoxBackground = getTextboxResource ("resources/sprites/Text/windowsprites" + color + ".png", "rectangle 8 0 8 8",1);
 	}
 	
 	public int getSpace () {
@@ -285,7 +329,8 @@ public class Textbox extends GameObject {
 	}
 	public void setTextSize(int textSize) {	
 	
-			fontSheet = new Sprite (Sprite.scale(getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ this.textSize + " " + this.textSize), textSize, textSize));
+			fontSheet = new Sprite (Sprite.scale(getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ this.textSize + " " + this.textSize, fontSheet.getOpacity()), textSize, textSize));
+			
 			
 			this.textSize = textSize;
 			
@@ -298,11 +343,10 @@ public class Textbox extends GameObject {
 	//2017 Jeffrey appologizes for this garbage code (he would never admit it though)
 	//EDIT I FINALLY FUCKIN REWROTE IT AFTER 5 FUCKING YEARS geez I can't belive ive been doing this for so long
 public void drawBox () {
+
 	//draws the box itself
 	if (renderBox) {
-		
-		
-		
+
 		for (int i = 0; i < width/8; i++) {
 			for (int j = 0; j < height/8; j++) {
 				textBoxBackground.draw((int)((this.getX() - GameCode.getViewX()) + (i * 8)),(int) ( (this.getY() - GameCode.getViewY()) + (j * 8) -10));
@@ -584,6 +628,7 @@ private int dealWithTilde (String message, int startI) {
 				i = i + 1;
 				identifyingChar = message.charAt(i);
 			}
+		
 			i = i + 1;
 			this.setFontTemporarily(color);
 			break;
@@ -610,7 +655,10 @@ private int dealWithTilde (String message, int startI) {
 				i = i + 1;
 				identifyingChar = message.charAt(i);
 			}
-			fontSheet.setOpacity(Integer.parseInt(transparancy));
+			if (Float.parseFloat(transparancy) < 0) {
+				transparancy = "0.0";
+			}
+			fontSheet = getTextboxResource ("resources/sprites/Text/" + tempColor + ".png", "grid "+ this.textSize + " " + this.textSize, Float.parseFloat(transparancy));
 			break;
 		case 'H':
 			changeTextShake = changeTextShake + 1;

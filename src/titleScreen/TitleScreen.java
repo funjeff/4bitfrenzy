@@ -380,6 +380,8 @@ public class TitleScreen extends GameObject {
 //		helpSlot.forget ();
 		settingsBot.forget();
 		controlMenu.forget();
+		tutorial.forget();
+		
 		walls.forget();
 		/*hostButton.forget();
 		joinButton.forget();

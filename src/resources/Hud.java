@@ -160,18 +160,16 @@ public class Hud extends GameObject {
 		}
 		if (NetworkHandler.isHost () && numSlots == 0 && !waitingForNewWave) {
 			waitingForNewWave = true;
-			waveOver ();
+			
 		}
 		registersRemaining.changeText("" + numSlots);
 		registersRemaining.draw();
 		
 		if (prevTime != 0 && NetworkHandler.isHost ()) {
 			timeLeft = timeLeft - (System.currentTimeMillis() - prevTime);
+		
 			if (timeLeft <= 0) {
-				
-				FadingGraphic g = new FadingGraphic();
-				g.setSprite(TIME_UP);
-				
+				waveOver ();
 				newWave();
 			}
 		}
@@ -203,7 +201,6 @@ public class Hud extends GameObject {
 		roundNum = roundNum + 1;
 		
 		waveNum.changeText(Integer.toString(roundNum));
-
 		ArrayList<GameObject> slots = ObjectHandler.getObjectsByName("DataSlot");
 
 		//Remove completed data slots
@@ -413,7 +410,6 @@ public class Hud extends GameObject {
 				DataSlot ds = (DataSlot)Roome.map [2][0].spawnObject (DataSlot.class);
 				ds.setMemAddress (255);
 				
-				Basketball bb = (Basketball)Roome.map [2][2].spawnObject (Basketball.class);
 				
 			} else if (roundNum == 2) {
 				
@@ -442,7 +438,7 @@ public class Hud extends GameObject {
 		
 		//Update the round timer
 		if (roundNum == 1) {
-			timeLeft =  360000; // 6 minutes
+			timeLeft =  36000; // 6 minutes
 		} else {
 			timeLeft = 300000 - 30000 * roundNum;
 			if (timeLeft <= 120000) {
@@ -456,10 +452,29 @@ public class Hud extends GameObject {
 		}
 		if (NetworkHandler.isHost ()) {
 			NetworkHandler.getServer ().sendMessage ("ROUND COMPLETE");
+		} else {
+			if (roundNum == 0) {
+				roundNum = 2;
+			} else {
+				roundNum = roundNum +1;
+			}
 		}
+		
+		
+		
+		if (ObjectHandler.getObjectsByName("Register").size() == 0) {
+			FadingGraphic g = new FadingGraphic();
+			g.setX(300);
+			g.setY(350);
+		
+		} else {
+			FadingGraphic g = new FadingGraphic();
+			g.setX(400);
+			g.setY(300);
+			g.setText("~Ctext (red)~ ~S48~TIMES UP!");
+		}
+		
 		setRoundTime (10000);
-		FadingGraphic g = new FadingGraphic ();
-		g.setSprite(WAVE_COMPLEATE);
 	}
 	public static void setRoundTime (long roundTime) {
 		timeLeft = roundTime;

@@ -155,7 +155,7 @@ public class Tutorial extends GameObject{
 			success.setTime(1);
 			return success;
 		case 7:
-			RegTask carry = new RegTask ("~CWhite~ USE CARRY INSTRUCTIONS BY HOLDING " + KeyEvent.getKeyText(GameCode.getSettings().getControls()[4]).toUpperCase() + " WHILE NEAR THE REGISTER", false);
+			RegTask carry = new RegTask ("~CWhite~ SET THE CARRY FLAG BY HOLDING " + KeyEvent.getKeyText(GameCode.getSettings().getControls()[4]).toUpperCase() + " WHILE NEAR THE REGISTER", false);
 			carry.setTime(2500);
 			return carry;
 		case 8:
@@ -228,7 +228,7 @@ public class Tutorial extends GameObject{
 			return tutorial;
 		case 25:
 			EndTutorialTask ending = new EndTutorialTask ("~CWhite~ BE SURE TO RATE 5 STARS AND SUBSCRIBE FOR MORE EPIC TUTORIALS", false);
-			ending.setTime(1400);
+			ending.setTime(2500);
 			return ending;
 		
 			
@@ -334,7 +334,7 @@ public class Tutorial extends GameObject{
 			
 			TitleBit spawned = (TitleBit) ObjectHandler.getObjectsByName("TitleBit").get(0);
 			
-			if (spawned.getX() != 220 && spawned.getY() != 58) {
+			if (spawned.getX() != 220 || spawned.getY() != 58) {
 				return true;
 			} else {
 				return false;
@@ -407,6 +407,10 @@ private class RegTask extends Task {
 				prev.setText("~CWhite~ CREATING REGISTER   [==================================] %100");
 				r = new TitleRegister ();
 				r.declare(280, 150);
+				
+				if (r.isColliding("TitleBit")) {
+					r.getCollisionInfo().getCollidingObjects().get(0).setY(r.getCollisionInfo().getCollidingObjects().get(0).getY() + 50);
+				}
 			}
 		}
 	}
@@ -443,8 +447,16 @@ private class RegTask extends Task {
 			TitleRegister r = new TitleRegister ();
 			r.declare(300, 300);
 			
+			if (r.isColliding("TitleBit")) {
+				r.getCollisionInfo().getCollidingObjects().get(0).setY(r.getCollisionInfo().getCollidingObjects().get(0).getY() + 50);
+			}
+			
 			TitleRegister r2 = new TitleRegister ();
 			r2.declare(450, 100);
+			
+			if (r2.isColliding("TitleBit")) {
+				r2.getCollisionInfo().getCollidingObjects().get(0).setY(r2.getCollisionInfo().getCollidingObjects().get(0).getY() + 50);
+			}
 			
 		}
 	}
@@ -464,7 +476,6 @@ private class RegTask extends Task {
 				s = new Compass (ObjectHandler.getObjectsByName("TitleBit").get(0));
 				s.setPointObject(ObjectHandler.getObjectsByName("TitleRegister").get(0));
 				s.declare(00, 250);
-				s.setX(2000);
 				s.setX(750);
 				
 			}
@@ -537,7 +548,8 @@ private class SpawnBombTask extends Task {
 		} else {
 			if (b.isColliding(ObjectHandler.getObjectsByName("TitleBit").get(0))) {
 				if (b.pickupability) {
-					itemB.putItem(b);
+					itemB.putItemQuietly(b);
+					b.forget();
 				}
 			}
 		}
@@ -565,7 +577,7 @@ public class EndTutorialTask extends Task {
 		ObjectHandler.getObjectsByName("TitleRegister").get(0).forget();
 		ObjectHandler.getObjectsByName("ItemBox").get(0).forget();
 		ObjectHandler.getObjectsByName("Compass").get(0).forget();
-		
+		ObjectHandler.getObjectsByName("Bombs").get(0).forget();
 
 		
 		consoleOut.close();
