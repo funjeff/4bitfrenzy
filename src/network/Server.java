@@ -93,7 +93,7 @@ public class Server extends Thread {
 	public void sendMessage (String message) {
 		
 		//Save the message if applicable
-		if (saveWriter != null) {
+		/*if (saveWriter != null) {
 			try {
 				if (!message.substring (0, 5).equals ("PERKS")) {
 					saveWriter.append (message);
@@ -112,9 +112,9 @@ public class Server extends Thread {
 				}
 				saveWriter = null;
 			}
-		}
+		}*/
 		
-		allMessages.add (message);
+		/*allMessages.add (message);
 		if (!doneLogging && message.substring (0, 4).equals("DATA")) {
 			File f = new File ("log.txt");
 			FileWriter fw;
@@ -130,7 +130,7 @@ public class Server extends Thread {
 				e.printStackTrace();
 			}
 			doneLogging = true;
-		}
+		}*/
 		writeMessage.add (message);
 	}
 	

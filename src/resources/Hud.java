@@ -132,6 +132,16 @@ public class Hud extends GameObject {
 				Roome.getRoom (ds.getX (), ds.getY ()).ds = ds;
 			}
 		}
+		//Update time remaining
+		if (prevTime != 0 && NetworkHandler.isHost ()) {
+			timeLeft = timeLeft - (System.currentTimeMillis() - prevTime);
+		
+			if (timeLeft <= 0) {
+				waveOver ();
+				newWave();
+			}
+		}
+		prevTime = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -160,20 +170,9 @@ public class Hud extends GameObject {
 		}
 		if (NetworkHandler.isHost () && numSlots == 0 && !waitingForNewWave) {
 			waitingForNewWave = true;
-			
 		}
 		registersRemaining.changeText("" + numSlots);
 		registersRemaining.draw();
-		
-		if (prevTime != 0 && NetworkHandler.isHost ()) {
-			timeLeft = timeLeft - (System.currentTimeMillis() - prevTime);
-		
-			if (timeLeft <= 0) {
-				waveOver ();
-				newWave();
-			}
-		}
-		prevTime = System.currentTimeMillis();
 		
 		int numMinutes = (int) (timeLeft/60000);
 		int numSeconds = (int) ((timeLeft - numMinutes * 60000)/1000);
