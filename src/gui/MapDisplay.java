@@ -19,7 +19,7 @@ public class MapDisplay extends GameObject {
 		roomTitle.setText ("HELLO");
 		mapDispMenu.addComponite (roomTitle);
 		
-		mapDispMenu.open ();
+		//mapDispMenu.open (); Uncomment to show map display
 		
 		setRenderPriority (69420);
 		

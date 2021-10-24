@@ -54,7 +54,7 @@ public class Server extends Thread {
 	@Override
 	public void run () {
 		try {
-			socket = new ServerSocket (8080);
+			socket = new ServerSocket (NetworkHandler.getPort ());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,6 +241,7 @@ public class Server extends Thread {
 				
 			}
 		}
+		
 	}
 	
 	public boolean areAllConnectionsInitialized () {

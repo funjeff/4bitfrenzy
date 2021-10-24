@@ -9,6 +9,7 @@ public class NetworkHandler {
 	private static boolean hostIsPlayer = true;
 	private static Server server;
 	private static Client client;
+	private static int port = 52754; //Arbitrary random port above 30,000
 	
 	public static void setServerMode () {
 		hostIsPlayer = false;
@@ -53,6 +54,10 @@ public class NetworkHandler {
 		return server;
 	}
 	
+	public static int getPort () {
+		return port; 
+	}
+	
 	public static void setClient (Client c) {
 		client = c;
 	}
@@ -65,17 +70,26 @@ public class NetworkHandler {
 		playerNum = num;
 	}
 	
+	public static void setPort (int portNum) {
+		port = portNum;
+	}
+	
 	public static void waitForPlayers () {
-		int TIMEOUT_TIME = 60000;
+		int TIMEOUT_TIME = 30000;
 		InputWaitThread waitObj = new InputWaitThread ();
 		Thread inputWaitThread = new Thread (waitObj);
-		inputWaitThread.run ();
+		int numPlayers = 0;
+		inputWaitThread.start ();
 		long startTime = System.currentTimeMillis ();
 		while (true) {
+			if (numPlayers != getServer ().getNumPlayers ()) {
+				numPlayers = getServer ().getNumPlayers ();
+				startTime = System.currentTimeMillis ();
+			}
 			if (waitObj.inputRecieved()) {
 				return;
 			}
-			if (System.currentTimeMillis() - startTime > TIMEOUT_TIME) {
+			if (getServer ().getNumPlayers () > 0 && System.currentTimeMillis() - startTime > TIMEOUT_TIME) {
 				return;
 			}
 			if (getServer ().getNumPlayers () == 4 && getServer ().areAllConnectionsInitialized ()) {

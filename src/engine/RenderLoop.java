@@ -57,6 +57,10 @@ public class RenderLoop {
 			if (args [i].equals ("-server")) {
 				NetworkHandler.setServerMode();
 			}
+			if (args [i].length () > 5 && args [i].substring (0, 5).equals ("-port")) {
+				int port = Integer.parseInt (args [i].substring (5));
+				NetworkHandler.setPort (port);
+			}
 		}
 		//NetworkHandler.setServerMode();
 		

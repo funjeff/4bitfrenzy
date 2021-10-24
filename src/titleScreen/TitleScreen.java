@@ -112,7 +112,7 @@ public class TitleScreen extends GameObject {
 		
 		if (!NetworkHandler.isServer ()) {
 			//Set stuff
-			ip = "";
+			ip = "127.0.0.1:41881"; //Default IP
 			
 			//Make the buttons
 			initMainMenu();
