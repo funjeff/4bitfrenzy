@@ -2,7 +2,7 @@ package proxy;
 
 public class ProxyTarget {
 
-	public static void main (String[] args) {
+	public static void main (String [] args) {
 		new InstanceHandler ();
 	}
 	

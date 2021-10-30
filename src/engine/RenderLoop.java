@@ -50,7 +50,7 @@ public class RenderLoop {
 		paused = false;
 	}
 
-	public static void main (String[] args) {
+	public static void main (String [] args) {
 		
 		//Handle command line arguments
 		for (int i = 0; i < args.length; i++) {
