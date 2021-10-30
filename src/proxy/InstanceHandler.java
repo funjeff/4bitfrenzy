@@ -69,6 +69,7 @@ public class InstanceHandler {
 					if (currInstance == null || currInstance.gameStarted ()) {
 						currInstance = new ServerInstance (0);
 					}
+					System.out.println("connected to port:" + currInstance.getPort());
 					//Connect to the server instance
 					Socket server = new Socket ("127.0.0.1", currInstance.getPort ());
 					
