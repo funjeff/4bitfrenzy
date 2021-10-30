@@ -73,7 +73,7 @@ public class Pipe extends Thread {
 				}
 				
 				//Check to see if the server instance is done
-				if (server.proc.isAlive ()) {
+				if (!server.proc.isAlive ()) {
 					clientIn.close ();
 					clientOut.close ();
 					serverIn.close ();
