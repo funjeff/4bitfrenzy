@@ -31,8 +31,9 @@ public class ServerInstance {
 		}
 		this.port = port;
 		
+		//diffrent for windows
 		try {
-			proc = Runtime.getRuntime ().exec (new String []{"java", "-jar", InstanceHandler.JAR_PATH,"-server", ("-port" + port)});
+			proc = Runtime.getRuntime ().exec (new String []{"/bin/java", "-jar", InstanceHandler.JAR_PATH,"-server", ("-port" + port)});
 		} catch (IOException e) {
 			
 			// TODO Auto-generated catch block
