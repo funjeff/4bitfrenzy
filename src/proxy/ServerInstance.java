@@ -33,7 +33,9 @@ public class ServerInstance {
 		
 		//diffrent for windows
 		try {
+			System.out.println("debug");
 			proc = Runtime.getRuntime ().exec (new String []{"/bin/java", "-jar", InstanceHandler.JAR_PATH,"-server", ("-port" + port)});
+			System.out.println("java -jar " + InstanceHandler.JAR_PATH + " -server " + "-port" +port);
 		} catch (IOException e) {
 			
 			// TODO Auto-generated catch block
