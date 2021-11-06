@@ -437,7 +437,7 @@ public class Hud extends GameObject {
 		
 		//Update the round timer
 		if (roundNum == 1) {
-			timeLeft =  36000; // 6 minutes
+			timeLeft =  360000; // 6 minutes
 		} else {
 			timeLeft = 300000 - 30000 * roundNum;
 			if (timeLeft <= 120000) {
