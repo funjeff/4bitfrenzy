@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
+import menu.DisconnectScreen;
 import network.NetworkHandler;
 
 /**
@@ -29,6 +30,8 @@ public class GameLoop implements Runnable {
 	 */
 	static private InputManager inputImage;
 	
+	static private boolean disconnected = false;
+	
 	@Override
 	public void run () {
 		do {
@@ -44,8 +47,11 @@ public class GameLoop implements Runnable {
 			} else {
 				inputImage = RenderLoop.wind.getInputImage ();
 			}
-			GameCode.gameLoopFunc ();
-			ObjectHandler.callAll ();
+			
+			if (!disconnected) {
+				GameCode.gameLoopFunc ();
+				ObjectHandler.callAll ();
+			}
 			if (!NetworkHandler.isServer ()) {
 				RenderLoop.wind.resetInputBuffers ();
 			}
@@ -79,4 +85,13 @@ public class GameLoop implements Runnable {
 	public static InputManager getInputImage () {
 		return inputImage;
 	}
+	
+	/**
+	 * Pretty self-explanatory
+	 */
+	public static void gayBabyJail () {
+		disconnected = true;
+		new DisconnectScreen ();
+	}
+	
 }

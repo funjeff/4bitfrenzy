@@ -7,12 +7,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import engine.GameCode;
 import engine.RenderLoop;
+import players.Bit;
 import titleScreen.TitleScreen;
 
 public class ServerConnection extends Thread {
@@ -21,14 +23,16 @@ public class ServerConnection extends Thread {
 	Socket incoming;
 	boolean open = true;
 	boolean setupFinished = false;
+	int playerNum;
 	
 	private volatile LinkedBlockingDeque<String> message = new LinkedBlockingDeque<String> ();
 	
 	private String inputs;
 	
-	public ServerConnection (Server server, Socket incoming) {
+	public ServerConnection (Server server, Socket incoming, int playerNum) {
 		this.server = server;
 		this.incoming = incoming;
+		this.playerNum = playerNum;
 	}
 	
 	@Override
@@ -87,8 +91,14 @@ public class ServerConnection extends Thread {
 					
 					//Send the message
 					if (s != null) {
-						dataOut.writeUTF (s);
-						dataOut.flush ();
+						try {
+							dataOut.writeUTF (s);
+							dataOut.flush ();
+						} catch (SocketException e) {
+							Bit.getBitByPlayerNum (playerNum).dissolve ();
+							NetworkHandler.getServer ().sendMessage ("DISSOLVE " + playerNum);
+							return;
+						}
 					}
 					
 				}

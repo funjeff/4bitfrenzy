@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import engine.GameCode;
+import engine.GameLoop;
 import engine.ObjectHandler;
 import engine.RenderLoop;
 import engine.Sprite;
@@ -95,8 +97,12 @@ public class Client extends Thread {
 				}
 				
 				//Send message
-				dataOut.writeUTF (message);
-				readyToSend = false;
+				try {
+					dataOut.writeUTF (message);
+					readyToSend = false;
+				} catch (SocketException e) {
+					GameLoop.gayBabyJail ();
+				}
 				//System.out.println ("Message sent: " + message);
 				
 			}
@@ -249,6 +255,12 @@ public class Client extends Thread {
 						ds.forget();
 					}
 				}
+			}
+			
+			if (str.length () >= 8 && str.substring (0, 8).equals("DISSOLVE")) {
+				Scanner s = new Scanner (str);
+				s.next ();
+				Bit.getBitByPlayerNum (s.nextInt ()).dissolve ();
 			}
 			
 			

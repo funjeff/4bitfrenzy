@@ -231,7 +231,7 @@ public class Server extends Thread {
 				Socket incoming;
 				try {
 					incoming = socket.accept ();
-					ServerConnection curr = new ServerConnection (this.server, incoming);
+					ServerConnection curr = new ServerConnection (this.server, incoming, NetworkHandler.isHostAPlayer() ? 2 + connections.size () : 1 + connections.size ());
 					connections.add (curr);
 					curr.start ();
 				} catch (IOException e) {

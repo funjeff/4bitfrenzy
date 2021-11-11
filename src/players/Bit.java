@@ -10,6 +10,7 @@ import engine.GameObject;
 import engine.ObjectHandler;
 import engine.Sprite;
 import engine.SpriteParser;
+import gameObjects.BitParticle;
 import gameObjects.Compass;
 import gameObjects.ControlsHint;
 import gameObjects.DataSlot;
@@ -76,6 +77,8 @@ public class Bit extends GameObject {
 	public static final int HIGHLIGHT_RADIUS = 120;
 	
 	public boolean frozen = false;
+	
+	private int dissolveTimer = -1; //Not dissolving if -1
 	
 	public boolean isSecondaryBit() {
 		return secondaryBit;
@@ -424,6 +427,29 @@ public class Bit extends GameObject {
 				this.setX(this.getX() + (xOffs + 1));
 				this.setY(this.getY() + (yOffs + 1));
 				wasPushed = false;
+				
+				//Handle dissolving
+				if (dissolveTimer != -1) {
+					dissolveTimer--;
+					int PARTICLE_PERIOD = 300;
+					double prob = Math.sin ((dissolveTimer / (double)PARTICLE_PERIOD) * Math.PI * 2) * .25 + .35;
+					System.out.println(prob);
+					if (dissolveTimer < 50) {
+						prob += 5 * (1.0 - (double)dissolveTimer / 50);
+					}
+					double randVal = Math.random ();
+					while (Math.random () < prob) {
+						//Make particle
+						int px = (int)getX () - 10 + (int)(Math.random () * 44);
+						int py = (int)getY () - 10 + (int)(Math.random () * 48);
+						new BitParticle ().declare (px, py);
+						prob--;
+					}
+				}
+				if (dissolveTimer == 0) {
+					forget ();
+				}
+				
 			}
 	public int getSpeed() {
 		
@@ -631,10 +657,18 @@ public class Bit extends GameObject {
 		
 	}
 	
+	public void dissolve () {
+		dissolveTimer = 900;
+	}
+	
 	public static Bit getCurrentPlayer () {
+		return getBitByPlayerNum (NetworkHandler.getPlayerNum ());
+	}
+	
+	public static Bit getBitByPlayerNum (int playerNum) {
 		ArrayList<GameObject> bits = ObjectHandler.getObjectsByName ("Bit");
 		for (int i = 0; i < bits.size (); i++) {
-			if (((Bit)bits.get (i)).playerNum == NetworkHandler.getPlayerNum ()) {
+			if (((Bit)bits.get (i)).playerNum == playerNum) {
 				return (Bit)bits.get (i);
 			}
 		}
